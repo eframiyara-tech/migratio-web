@@ -238,13 +238,14 @@
     width: 34%;
     transform: rotate(4deg);
     filter: drop-shadow(0 4px 8px rgba(38, 36, 61, .2));
+    z-index: 1;
   }
   .postmark {
     position: absolute;
-    top: 7%;
-    right: 27%;
-    width: 36%;
-    opacity: .72;
+    top: 9%;
+    right: 40%;
+    width: 22%;
+    opacity: .7;
     transform: rotate(-12deg);
     pointer-events: none;
   }
@@ -650,20 +651,13 @@
         <div class="env-inner">
           <div class="par-avion mono">Por avión<span>Par avion</span></div>
           <img class="env-stamp" src="logo.png" alt="">
-          <svg class="postmark" viewBox="0 0 220 120">
+          <svg class="postmark" viewBox="6 6 108 108">
             <defs><path id="pm-ring" d="M60,60 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs>
             <circle cx="60" cy="60" r="48" fill="none" stroke="#26243d" stroke-width="2"/>
             <circle cx="60" cy="60" r="31" fill="none" stroke="#26243d" stroke-width="1.2"/>
             <text font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="2.4" fill="#26243d"><textPath href="#pm-ring">MENDOZA · ARGENTINA · MIGRATIO ·</textPath></text>
             <text x="60" y="57" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" letter-spacing="1" fill="#26243d">GESTORÍA</text>
             <text x="60" y="70" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" letter-spacing="1" fill="#26243d">CONSULAR</text>
-            <g fill="none" stroke="#26243d" stroke-width="2" stroke-linecap="round">
-              <path d="M114 36 q9 -7 18 0 t18 0 t18 0 t18 0 t18 0"/>
-              <path d="M112 50 q9 -7 18 0 t18 0 t18 0 t18 0 t18 0"/>
-              <path d="M112 64 q9 -7 18 0 t18 0 t18 0 t18 0 t18 0"/>
-              <path d="M112 78 q9 -7 18 0 t18 0 t18 0 t18 0 t18 0"/>
-              <path d="M114 92 q9 -7 18 0 t18 0 t18 0 t18 0 t18 0"/>
-            </g>
           </svg>
           <div class="env-address">
             <span class="mono">Para</span>
