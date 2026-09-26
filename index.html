@@ -7,6 +7,7 @@
 <meta name="description" content="Gestoría migratoria y consular: ciudadanía italiana y española, juicios en Italia, visados y documentación de cualquier país. Atención 100% remota.">
 <meta name="theme-color" content="#efe6d3">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="https://migratiogestoria.com/">
 <meta property="og:type" content="website">
@@ -481,6 +482,9 @@
     .step .num { position: absolute; left: 0; top: 0; margin: 0; }
   }
 
+  a.more { color: var(--navy); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1.5px; }
+  a.more:hover { color: var(--burgundy); }
+  .guide-link { margin-top: 14px; }
   /* ---------- faq ---------- */
   .faq { border-top: 1px solid var(--line); }
   .faq .wrap { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(28px, 5vw, 72px); }
@@ -725,10 +729,10 @@
       </div>
 
       <div class="tablist" role="tablist" aria-label="Destinos">
-        <button class="tab" role="tab" id="tab-italia" aria-controls="italia" aria-selected="true"><img src="stamp-italia.png" alt="">Italia <span class="count">09</span></button>
-        <button class="tab" role="tab" id="tab-espana" aria-controls="espana" aria-selected="false" tabindex="-1"><img src="stamp-espana.png" alt="">España <span class="count">06</span></button>
-        <button class="tab" role="tab" id="tab-argentina" aria-controls="argentina" aria-selected="false" tabindex="-1"><img src="stamp-argentina.png" alt="">Argentina <span class="count">07</span></button>
-        <button class="tab" role="tab" id="tab-otros" aria-controls="otros" aria-selected="false" tabindex="-1"><span class="globe"><svg class="ico" aria-hidden="true"><use href="#ic-globe"/></svg></span>Otros destinos <span class="count">02+</span></button>
+        <button class="tab" role="tab" id="tab-italia" aria-controls="italia" aria-selected="true"><img src="stamp-italia.png" alt="">Italia</button>
+        <button class="tab" role="tab" id="tab-espana" aria-controls="espana" aria-selected="false" tabindex="-1"><img src="stamp-espana.png" alt="">España</button>
+        <button class="tab" role="tab" id="tab-argentina" aria-controls="argentina" aria-selected="false" tabindex="-1"><img src="stamp-argentina.png" alt="">Argentina</button>
+        <button class="tab" role="tab" id="tab-otros" aria-controls="otros" aria-selected="false" tabindex="-1"><span class="globe"><svg class="ico" aria-hidden="true"><use href="#ic-globe"/></svg></span>Otros destinos</button>
       </div>
 
       <div class="panel" role="tabpanel" id="italia" aria-labelledby="tab-italia">
@@ -737,7 +741,7 @@
           <p>Ciudadanía por descendencia y trámites ante el consulado o la Justicia italiana.</p>
         </div>
         <div class="svc-grid">
-          <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-passport"/></svg><h4>Pasaporte y ciudadanía iure sanguinis</h4><p>Turnos y acompañamiento en el reconocimiento por descendencia.</p></article>
+          <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-passport"/></svg><h4>Pasaporte y ciudadanía iure sanguinis</h4><p>Vía consular para hijos y nietos de italianos. <a class="more" href="ciudadania-italiana/">Requisitos y cómo lo gestionamos →</a></p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-search"/></svg><h4>Búsqueda de actas y genealogía</h4><p>Investigación genealógica y localización de partidas.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-rings"/></svg><h4>Ciudadanía por matrimonio</h4><p>3 años de matrimonio (2 si viven en Italia, la mitad con hijos) y certificado B1.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg><h4>Inscripción al AIRE</h4><p>Registro obligatorio para italianos residentes en el exterior.</p></article>
@@ -762,7 +766,7 @@
       <div class="panel" role="tabpanel" id="espana" aria-labelledby="tab-espana" hidden>
         <div class="panel-intro">
           <h3>España</h3>
-          <p>Ciudadanía, residencia y documentación ante el Estado español.</p>
+          <p>Ciudadanía, residencia y documentación ante el Estado español. <a class="more" href="ciudadania-espanola/">Qué opciones quedan después de la Ley de Nietos →</a></p>
         </div>
         <div class="svc-grid">
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-passport"/></svg><h4>Ciudadanía por Ley de Memoria Democrática</h4><p>Revisión de carpeta y armado del expediente.</p></article>
@@ -796,7 +800,7 @@
           <p>Otros visados y trámites que gestionamos.</p>
         </div>
         <div class="svc-grid">
-          <article class="svc"><img class="mini-flag" src="stamp-eeuu.png" alt=""><h4>Visado de turista para EEUU</h4><p>Completamos el DS-160, coordinamos la tasa consular y el turno para la entrevista en la embajada.</p></article>
+          <article class="svc"><img class="mini-flag" src="stamp-eeuu.png" alt=""><h4>Visado de turista para EEUU</h4><p>Completamos el DS-160, coordinamos la tasa consular y el turno para la entrevista en la embajada. <a class="more" href="visa-estados-unidos/">Cómo la gestionamos →</a></p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-plane"/></svg><h4>Visado de estudio para Europa</h4><p>Para cualquier país europeo.</p></article>
         </div>
       </div>
@@ -865,6 +869,7 @@
         <a class="btn btn-primary" href="https://wa.me/5492616530445" target="_blank" rel="noopener">Consultar tu caso</a>
       </div>
       <p class="fine">Es un área en constante actualización judicial y la jurisprudencia varía según el tribunal. Analizamos cada caso antes de avanzar.</p>
+      <p class="guide-link"><a class="more" href="juicio-ciudadania-italiana/">Guía completa del juicio: documentación, pasos y preguntas frecuentes →</a></p>
     </div>
   </section>
 
