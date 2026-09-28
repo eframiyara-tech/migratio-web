@@ -327,6 +327,16 @@
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   if (!location.hash) window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  // lists enter once when they scroll into view; content stays visible without JS or with reduced motion
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.why-grid, .req-grid, .opt-grid, .steps, .contact-grid, .check-list').forEach(function (g) {
+      if (g.getBoundingClientRect().top > innerHeight) { g.classList.add('reveal'); io.observe(g); }
+    });
+  }
   var menuBtn = document.getElementById('menu-btn');
   var mnav = document.getElementById('mnav');
   function setMenu(open) {
