@@ -193,13 +193,14 @@
     width: 34%;
     transform: rotate(4deg);
     filter: drop-shadow(0 4px 8px rgba(38, 36, 61, .2));
+    z-index: 1;
   }
   .postmark {
     position: absolute;
-    top: 7%;
-    right: 27%;
-    width: 36%;
-    opacity: .72;
+    top: 9%;
+    right: 40%;
+    width: 22%;
+    opacity: .7;
     transform: rotate(-12deg);
     pointer-events: none;
   }
@@ -553,3 +554,34 @@
   .alt { background: var(--sand); border-block: 1px solid var(--line-strong); }
   .alt .req { background: var(--paper); border: 1px solid var(--line); }
   .page-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  nav.links { gap: 20px; font-size: .86rem; }
+  .hero-flags { position: relative; width: 210px; height: 190px; }
+  .hero-flags img { position: absolute; width: 130px; filter: drop-shadow(0 10px 16px rgba(38, 36, 61, .18)); }
+  .hero-flags img:nth-child(1) { left: 0; top: 0; transform: rotate(-8deg); }
+  .hero-flags img:nth-child(2) { right: 0; top: 18px; transform: rotate(6deg); }
+  .hero-flags img:nth-child(3) { left: 36px; bottom: 0; transform: rotate(-2deg); }
+  @media (max-width: 760px) { .hero-flags { display: none; } }
+  .destinos + section.block { border-top: 0; }
+  .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 860px) { .opt-grid { grid-template-columns: 1fr; } }
+  .opt { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 22px 8px; display: flex; flex-direction: column; gap: 12px; }
+  .opt-head { display: flex; gap: 12px; align-items: center; }
+  .opt-head .ico { width: 24px; height: 24px; flex: none; }
+  .opt-head .mono { display: block; color: var(--burgundy); font-size: .7rem; }
+  .opt-head h3 { font-size: 1.05rem; }
+  .opt-note { color: var(--ink-soft); font-size: .92rem; }
+  .pp { margin: 0; }
+  .pp > div { display: grid; grid-template-columns: 124px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .pp dt { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: .85rem; align-self: start; }
+  .pp dt > img { width: 28px; }
+  .pp-flags { display: inline-flex; }
+  .pp-flags img { width: 24px; }
+  .pp-flags img + img { margin-left: -9px; }
+  .pp dd { margin: 0; color: var(--ink-soft); font-size: .92rem; }
+  @media (max-width: 420px) { .pp > div { grid-template-columns: 1fr; gap: 6px; } }
+  nav.links a { white-space: nowrap; }
+  @media (max-width: 1200px) {
+    nav.links { display: none; }
+    .menu-btn { display: grid; }
+    .mnav:not([hidden]) { display: block !important; }
+  }
