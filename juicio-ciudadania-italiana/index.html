@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
 <title>Juicio de ciudadanía italiana para bisnietos · Migratio Gestoría</title>
 <meta name="description" content="Después del Decreto Tajani (Legge 74/2025), los bisnietos y descendientes más lejanos solo pueden obtener la ciudadanía italiana por juicio en Italia. Requisitos, pruebas de vínculo y cómo lo gestionamos.">
 <meta name="theme-color" content="#efe6d3">
@@ -127,6 +128,8 @@
   <symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="ic-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></symbol>
   <symbol id="ic-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/></symbol>
+  <symbol id="ic-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
   <symbol id="ic-wa" viewBox="0 0 24 24"><path d="M4 20l1.2-4.2A8 8 0 1 1 8.4 19z"/><path d="M9.2 8.6c.3 2.4 2 4.6 4.6 5.6l1-1.1 1.8.8-.4 1.6c-3.6.2-7.2-3.2-7.4-7l1.5-.5.8 1.8z"/></symbol>
 </svg>
 
@@ -321,15 +324,18 @@
           <span class="value">+54 9 2616 53-0445</span>
           <div class="actions">
             <a class="chip-btn solid" href="https://wa.me/5492616530445" target="_blank" rel="noopener">Abrir chat</a>
-            <button class="chip-btn copy" id="copy-wa" data-copy="+54 9 2616 53-0445">Copiar número</button>
+            <button class="copy-link copy" data-copy="+54 9 2616 53-0445" data-what="Número" aria-label="Copiar número"><svg aria-hidden="true"><use href="#ic-copy"/></svg><span class="lbl">Copiar</span></button>
           </div>
+          <span class="sr-only copy-status" role="status"></span>
         </div>
         <div class="contact">
           <div class="c-top"><span class="c-ico"><svg aria-hidden="true"><use href="#ic-mail"/></svg></span><span class="mono">Email</span></div>
-          <span class="value">migratio.gestoria@<wbr>gmail.com</span>
+          <span class="value">migratio.gestoria@gmail.com</span>
           <div class="actions">
-            <button class="chip-btn copy" id="copy-mail" data-copy="migratio.gestoria@gmail.com">Copiar email</button>
+            <a class="chip-btn" href="mailto:migratio.gestoria@gmail.com">Escribir email</a>
+            <button class="copy-link copy" data-copy="migratio.gestoria@gmail.com" data-what="Email" aria-label="Copiar email"><svg aria-hidden="true"><use href="#ic-copy"/></svg><span class="lbl">Copiar</span></button>
           </div>
+          <span class="sr-only copy-status" role="status"></span>
         </div>
         <div class="contact">
           <div class="c-top"><span class="c-ico"><svg aria-hidden="true"><use href="#ic-ig"/></svg></span><span class="mono">Instagram</span></div>
@@ -390,17 +396,29 @@
   mnav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !mnav.hidden) { setMenu(false); menuBtn.focus(); } });
   document.querySelectorAll('.copy').forEach(function (btn) {
+    var lbl = btn.querySelector('.lbl'), use = btn.querySelector('use'), idle = lbl.textContent;
+    var status = btn.closest('.contact').querySelector('.copy-status'), timer;
+    function done(msg, ok, said) {
+      lbl.textContent = msg;
+      use.setAttribute('href', ok ? '#ic-check' : '#ic-copy');
+      btn.classList.toggle('done', ok);
+      status.textContent = said;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        lbl.textContent = idle; use.setAttribute('href', '#ic-copy'); btn.classList.remove('done'); status.textContent = '';
+      }, 1800);
+    }
+    function select() {
+      var r = document.createRange(); r.selectNodeContents(btn.closest('.contact').querySelector('.value'));
+      var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      done('Seleccionado', false, btn.getAttribute('data-what') + ' seleccionado');
+    }
     btn.addEventListener('click', function () {
-      var text = btn.getAttribute('data-copy'), label = btn.textContent;
-      function done(msg) { btn.textContent = msg; setTimeout(function () { btn.textContent = label; }, 1800); }
       try {
-        navigator.clipboard.writeText(text).then(function () { done('Copiado'); }, function () {
-          var v = btn.closest('.contact').querySelector('.value');
-          var r = document.createRange(); r.selectNodeContents(v);
-          var s = getSelection(); s.removeAllRanges(); s.addRange(r);
-          done('Seleccionado');
-        });
-      } catch (e) { done('Copialo a mano'); }
+        navigator.clipboard.writeText(btn.getAttribute('data-copy')).then(function () {
+          done('Copiado', true, btn.getAttribute('data-what') + ' copiado');
+        }, select);
+      } catch (e) { select(); }
     });
   });
 </script>
