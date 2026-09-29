@@ -639,6 +639,171 @@
     .btn:active, .chip-btn:active, .copy-link:active, .tab:active, a.jump:active, .menu-btn:active { transform: none; }
     .dest img { transition: none; }
   }
+
+  /* ---------- postal de consulta ---------- */
+  .postal {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    box-shadow: 0 24px 48px -24px rgba(0, 0, 0, .55);
+  }
+  .pc-form { padding: clamp(22px, 3.4vw, 40px); display: flex; flex-direction: column; gap: 18px; border-right: 1.5px dashed var(--line-strong); }
+  .pc-form > .mono { color: var(--burgundy); }
+  .pc-form h3 { font-family: var(--f-display); font-weight: 500; font-size: clamp(1.5rem, 2.6vw, 1.95rem); line-height: 1.15; letter-spacing: -0.01em; }
+  .pc-form > p { color: var(--ink-soft); font-size: .93rem; max-width: 46ch; margin-bottom: 4px; }
+  .pc-extra { display: grid; gap: 18px; }
+  .pc-extra:empty { display: none; }
+  .pc-extra .pf { animation: rise 260ms var(--ease-out) both; }
+  .pc-extra .pf + .pf { animation-delay: 50ms; }
+  .pc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .pf { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .pf span { font-family: var(--f-mono); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); }
+  .pf select, .pf input {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 28px 8px 0;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    border-bottom: 1.5px solid var(--line-strong);
+    border-radius: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color .2s ease;
+  }
+  .pf input { padding-right: 0; }
+  .pf select {
+    cursor: pointer;
+    text-overflow: ellipsis;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' fill='none' stroke='%2326243d' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    background-size: 12px;
+  }
+  .pf select:hover, .pf input:hover { border-bottom-color: var(--ink-soft); }
+  .pf select:focus, .pf input:focus { border-bottom-color: var(--navy); }
+  .pc-card { position: relative; padding: clamp(22px, 3.4vw, 40px); display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .pc-stamp { position: absolute; top: clamp(18px, 2.6vw, 28px); right: clamp(18px, 2.6vw, 28px); width: 96px; height: auto; transform: rotate(4deg); filter: drop-shadow(0 3px 6px rgba(38, 36, 61, .2)); }
+  .pc-mark { position: absolute; top: clamp(40px, 4.4vw, 52px); right: clamp(92px, 9vw, 104px); width: 88px; opacity: 0; transform: rotate(-12deg); pointer-events: none; }
+  .postal.sent .pc-mark { opacity: .8; animation: mark-in 320ms var(--ease-out) both; }
+  .pc-to { display: flex; flex-direction: column; gap: 2px; padding-right: 200px; min-height: 96px; }
+  .pc-to .mono { color: var(--ink-soft); }
+  .pc-to span:last-child { font-family: var(--f-display); font-size: 1.3rem; }
+  .pc-text {
+    flex: 1;
+    min-height: 180px;
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: 1.18rem;
+    line-height: 36px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    background-image: repeating-linear-gradient(to bottom, transparent 0 35px, var(--line) 35px 36px);
+    background-position: 0 1px;
+  }
+  .pc-send { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; margin-top: 6px; }
+  .pc-note { color: var(--ink-soft); font-size: .82rem; max-width: 48ch; }
+  @media (max-width: 860px) {
+    .postal { grid-template-columns: 1fr; }
+    .pc-form { border-right: 0; border-bottom: 1.5px dashed var(--line-strong); }
+    .pc-stamp { width: 76px; }
+    .pc-mark { width: 72px; right: 84px; top: 34px; }
+    .pc-to { padding-right: 150px; min-height: 76px; }
+  }
+  @media (max-width: 520px) {
+    .pc-row { grid-template-columns: 1fr; }
+    .pc-send .btn { width: 100%; }
+  }
+
+  /* ---------- orientador ---------- */
+  .orientador { border-bottom: 1px solid var(--line); }
+  .or-wrap { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(28px, 5vw, 72px); align-items: start; }
+  .or-wrap .head { margin-bottom: 0; position: sticky; top: 104px; }
+  .or-note { margin-top: 18px; padding-left: 16px; border-left: 2px solid var(--burgundy); font-size: .93rem !important; }
+  @media (max-width: 900px) { .or-wrap { grid-template-columns: 1fr; } .or-wrap .head { position: static; } }
+  .or-card {
+    background: var(--white);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    padding: clamp(22px, 3.4vw, 36px);
+    box-shadow: 0 18px 40px -28px rgba(38, 36, 61, .45);
+  }
+  .or-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-bottom: 14px; margin-bottom: 24px; border-bottom: 1.5px dashed var(--line-strong); }
+  .or-top .mono { color: var(--ink-soft); }
+  .or-top #or-step { color: var(--burgundy); }
+  .or-body > * { animation: rise 280ms var(--ease-out) both; }
+  .or-q { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .or-q legend, .or-res h3 { font-family: var(--f-display); font-weight: 500; font-size: clamp(1.35rem, 2.4vw, 1.7rem); line-height: 1.2; letter-spacing: -0.01em; padding: 0; margin-bottom: 8px; }
+  .or-q legend:focus, .or-res h3:focus { outline: none; }
+  .or-hint { color: var(--ink-soft); font-size: .93rem; max-width: 58ch; }
+  .or-opts { display: grid; gap: 8px; margin-top: 20px; }
+  .or-opt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    min-height: 54px;
+    padding: 12px 18px;
+    font: inherit;
+    font-weight: 600;
+    text-align: left;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--line-strong);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color .2s ease, background-color .2s ease, transform .16s var(--ease-out);
+    animation: rise 280ms var(--ease-out) both;
+  }
+  .or-opt:nth-child(2) { animation-delay: 40ms; }
+  .or-opt:nth-child(3) { animation-delay: 80ms; }
+  .or-opt:nth-child(4) { animation-delay: 120ms; }
+  .or-opt svg { width: 18px; height: 18px; flex-shrink: 0; stroke: var(--navy); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s var(--ease-out); }
+  @media (hover: hover) and (pointer: fine) {
+    .or-opt:hover { border-color: var(--navy); background: var(--white); }
+    .or-opt:hover svg { transform: translateX(3px); }
+  }
+  .or-opt:active { transform: scale(.98); }
+  .or-back { margin-top: 16px; min-height: 44px; padding: 0; background: none; border: 0; font: inherit; font-size: .88rem; font-weight: 700; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .or-back:hover { color: var(--ink); }
+  .or-stamp {
+    display: inline-block;
+    margin-bottom: 18px;
+    padding: 7px 14px;
+    font-family: var(--f-mono);
+    font-size: .76rem;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--teal);
+    border: 2px solid currentColor;
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 2px var(--white), inset 0 0 0 3.5px currentColor;
+    transform: rotate(-3deg);
+    animation: stamp-drop 360ms var(--ease-out) 60ms both;
+  }
+  .or-res.info .or-stamp { color: var(--navy); }
+  .or-res.rev .or-stamp, .or-res.no .or-stamp { color: var(--burgundy); }
+  @keyframes stamp-drop { from { opacity: 0; transform: rotate(-10deg) scale(1.4); } }
+  .or-res > p { color: var(--ink-soft); max-width: 60ch; }
+  .or-check { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 10px; }
+  .or-check li { display: flex; gap: 10px; font-size: .95rem; }
+  .or-check svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 3px; stroke: var(--teal); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .or-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .or-res > .or-src { max-width: none; }
+  .or-src { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); font-size: .82rem; color: var(--ink-soft); }
+  .or-src a { color: var(--ink); text-underline-offset: 2px; }
+  @media (max-width: 520px) { .or-actions .btn { width: 100%; } }
+  @media (prefers-reduced-motion: reduce) {
+    .or-body > *, .or-opt, .or-stamp, .pc-extra .pf, .postal.sent .pc-mark { animation-name: fade; animation-delay: 0ms; }
+    .or-opt:active { transform: none; }
+  }
 </style>
 </head>
 <body>
@@ -880,6 +1045,23 @@
     </div>
   </section>
 
+  <section id="orientador" class="block orientador">
+    <div class="wrap or-wrap">
+      <div class="head">
+        <span class="mono kicker">Orientador de ciudadanías</span>
+        <h2>¿Qué vía te corresponde?</h2>
+        <p>Dos o tres preguntas sobre tu familia y tu situación. Te mostramos la vía que suele aplicar según la norma vigente y la fuente oficial en la que se basa.</p>
+        <p class="or-note">Es una orientación general, no un dictamen. Cada caso se confirma con la documentación.</p>
+      </div>
+      <div class="or-card">
+        <div class="or-top"><span class="mono" id="or-step">Pregunta 1</span><span class="mono" id="or-path">Italia · España · Argentina</span></div>
+        <div class="or-body" id="or-body">
+          <noscript><p class="or-hint">El orientador necesita JavaScript. Podés <a href="https://wa.me/5492616530445">consultarnos por WhatsApp</a>.</p></noscript>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="juicios" class="block juicios">
     <div class="wrap">
       <div class="top">
@@ -992,6 +1174,48 @@
         <span class="mono kicker">Contacto</span>
         <h2 class="slogan-line">No hay peor trámite que el que no se realiza.</h2>
         <p>Delegalo y empezá a sacártelo de encima. Te decimos qué documentación necesitás según tu caso.</p>
+      </div>
+      <div class="postal" id="postal">
+        <div class="pc-form">
+          <span class="mono">Postal de consulta</span>
+          <h3>Armá tu mensaje antes de escribirnos</h3>
+          <p>Elegí el trámite y completá lo que sepas. El texto se escribe solo y lo revisás en WhatsApp antes de enviarlo.</p>
+          <label class="pf"><span>Trámite</span>
+            <select id="pc-tramite">
+              <option value="">Elegí un trámite</option>
+              <option value="italiana">Ciudadanía italiana</option>
+              <option value="juicio">Juicio de ciudadanía italiana</option>
+              <option value="espanola">Ciudadanía española</option>
+              <option value="argentina">Ciudadanía argentina</option>
+              <option value="eeuu">Visa para Estados Unidos</option>
+              <option value="oceania">Visas para Oceanía y Bali</option>
+              <option value="documentos">Actas, apostillas o traducciones</option>
+              <option value="otro">Otro trámite</option>
+            </select>
+          </label>
+          <div class="pc-extra" id="pc-extra"></div>
+          <div class="pc-row">
+            <label class="pf"><span>Tu nombre (opcional)</span><input id="pc-nombre" type="text" maxlength="60" autocomplete="given-name"></label>
+            <label class="pf"><span>Desde dónde escribís (opcional)</span><input id="pc-lugar" type="text" maxlength="60" autocomplete="address-level2"></label>
+          </div>
+        </div>
+        <div class="pc-card">
+          <img class="pc-stamp" src="logo-v2.png" alt="" width="96" height="64">
+          <svg class="pc-mark" viewBox="6 6 108 108" aria-hidden="true">
+            <defs><path id="pc-ring" d="M60,60 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="#8c2f45" stroke-width="2"/>
+            <circle cx="60" cy="60" r="31" fill="none" stroke="#8c2f45" stroke-width="1.2"/>
+            <text font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="2.4" fill="#8c2f45"><textPath href="#pc-ring">MIGRATIO · CONSULTA · MENDOZA ·</textPath></text>
+            <text x="60" y="57" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" letter-spacing="1" fill="#8c2f45">ENVIADO</text>
+            <text id="pc-date" x="60" y="70" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7.5" letter-spacing=".6" fill="#8c2f45"></text>
+          </svg>
+          <div class="pc-to"><span class="mono">Para</span><span>Migratio Gestoría</span></div>
+          <p class="pc-text" id="pc-text">Hola, Migratio. Quiero hacer una consulta.</p>
+          <div class="pc-send">
+            <a class="btn btn-primary" id="pc-send" href="https://wa.me/5492616530445" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg>Sellar y enviar por WhatsApp</a>
+            <p class="pc-note">El mensaje se arma en tu dispositivo y se abre en WhatsApp para que lo revises antes de enviarlo.</p>
+          </div>
+        </div>
       </div>
       <div class="contact-grid">
         <div class="contact main">
@@ -1132,6 +1356,179 @@
       } catch (e) { select(); }
     });
   });
+
+
+  // postal: arma el mensaje de WhatsApp en el dispositivo
+  (function () {
+    var root = document.getElementById('postal'); if (!root) return;
+    var WA = 'https://wa.me/5492616530445?text=';
+    var F = {
+      antIt: ['Tu antepasado italiano más cercano', [['Padre o madre', 'Mi antepasado italiano más cercano es mi padre o mi madre.'], ['Abuelo o abuela', 'Mi antepasado italiano más cercano es mi abuelo o mi abuela.'], ['Bisabuelo o bisabuela', 'Mi antepasado italiano más cercano es mi bisabuelo o mi bisabuela.'], ['Tatarabuelo o anterior', 'Mi antepasado italiano más cercano es un tatarabuelo o anterior.'], ['Todavía no lo sé', 'Todavía no sé en qué generación está mi antepasado italiano.']]],
+      antEs: ['Tu familiar español más cercano', [['Padre o madre', 'Mi familiar español más cercano es mi padre o mi madre.'], ['Abuelo o abuela', 'Mi familiar español más cercano es mi abuelo o mi abuela.'], ['Bisabuelo o anterior', 'Mi familiar español más cercano es un bisabuelo o anterior.'], ['No tengo familiares españoles', 'No tengo familiares españoles.']]],
+      actas: ['Actas', [['Tengo todas', 'Tengo todas las actas.'], ['Tengo algunas', 'Tengo algunas actas.'], ['Todavía no tengo ninguna', 'Todavía no tengo actas.'], ['No sé cuáles necesito', 'No sé qué actas necesito.']]],
+      sitAr: ['Tu situación', [['Soy hijo/a de argentino/a y nací en el exterior', 'Soy hijo/a de argentino/a y nací en el exterior.'], ['Soy extranjero/a y vivo en Argentina', 'Soy extranjero/a y vivo en Argentina.'], ['Otra situación', '']]],
+      eeuu: ['Tipo de trámite', [['Primera visa', 'Sería mi primera visa.'], ['Renovación', 'Quiero renovar mi visa.']]],
+      cuando: ['Cuándo viajarías', [['En los próximos 3 meses', 'Viajaría en los próximos 3 meses.'], ['En 3 a 6 meses', 'Viajaría en 3 a 6 meses.'], ['En más de 6 meses', 'Viajaría en más de 6 meses.'], ['Todavía no tengo fecha', 'Todavía no tengo fecha de viaje.']]],
+      destOc: ['Destino', [['Australia', 'Mi destino es Australia.'], ['Nueva Zelanda', 'Mi destino es Nueva Zelanda.'], ['Bali', 'Mi destino es Bali.']]],
+      pas: ['Pasaporte', [['Argentino', 'Viajaría con pasaporte argentino.'], ['Italiano', 'Viajaría con pasaporte italiano.'], ['Español', 'Viajaría con pasaporte español.']]],
+      doc: ['Qué necesitás', [['Búsqueda de actas', 'Necesito una búsqueda de actas.'], ['Rectificación de actas', 'Necesito rectificar un acta.'], ['Apostilla', 'Necesito apostillar documentos.'], ['Traducción', 'Necesito una traducción.']]],
+      pais: ['País de los documentos', [['Argentina', 'Los documentos son de Argentina.'], ['Italia', 'Los documentos son de Italia.'], ['España', 'Los documentos son de España.'], ['Otro país', 'Los documentos son de otro país.']]],
+      otro: ['Contanos en una línea', null]
+    };
+    var T = {
+      italiana: ['ciudadanía italiana', ['antIt', 'actas']],
+      juicio: ['un juicio de ciudadanía italiana', ['antIt', 'actas']],
+      espanola: ['ciudadanía española', ['antEs', 'actas']],
+      argentina: ['ciudadanía argentina', ['sitAr']],
+      eeuu: ['una visa para Estados Unidos', ['eeuu', 'cuando']],
+      oceania: ['una visa para Australia, Nueva Zelanda o Bali', ['destOc', 'pas']],
+      documentos: ['actas, apostillas o traducciones', ['doc', 'pais']],
+      otro: ['otro trámite', ['otro']]
+    };
+    var sel = document.getElementById('pc-tramite'), extra = document.getElementById('pc-extra');
+    var nombre = document.getElementById('pc-nombre'), lugar = document.getElementById('pc-lugar');
+    var text = document.getElementById('pc-text'), send = document.getElementById('pc-send');
+    function clean(v) { return v.replace(/\s+/g, ' ').trim(); }
+    function build() {
+      extra.innerHTML = '';
+      var t = T[sel.value]; if (!t) return;
+      t[1].forEach(function (k) {
+        var f = F[k], lab = document.createElement('label'); lab.className = 'pf';
+        var sp = document.createElement('span'); sp.textContent = f[0]; lab.appendChild(sp);
+        var el;
+        if (f[1]) {
+          el = document.createElement('select');
+          el.appendChild(new Option('Elegí una opción', ''));
+          f[1].forEach(function (o, i) { el.appendChild(new Option(o[0], String(i))); });
+        } else { el = document.createElement('input'); el.type = 'text'; el.maxLength = 160; }
+        el.setAttribute('data-f', k); el.addEventListener('input', compose); el.addEventListener('change', compose);
+        lab.appendChild(el); extra.appendChild(lab);
+      });
+    }
+    function compose() {
+      var parts = ['Hola, Migratio.'], n = clean(nombre.value), l = clean(lugar.value), t = T[sel.value];
+      if (n) parts.push('Soy ' + n + '.');
+      parts.push(t ? 'Quiero consultar por ' + t[0] + '.' : 'Quiero hacer una consulta.');
+      extra.querySelectorAll('[data-f]').forEach(function (el) {
+        var f = F[el.getAttribute('data-f')];
+        if (f[1]) { if (el.value !== '') { var s = f[1][+el.value][1]; if (s) parts.push(s); } }
+        else { var v = clean(el.value); if (v) parts.push(/[.!?]$/.test(v) ? v : v + '.'); }
+      });
+      if (l) parts.push('Escribo desde ' + l + '.');
+      var msg = parts.join(' ');
+      text.textContent = msg;
+      send.href = WA + encodeURIComponent(msg);
+    }
+    var map = { 'ciudadania-italiana': 'italiana', 'juicio-ciudadania-italiana': 'juicio', 'ciudadania-espanola': 'espanola', 'visa-estados-unidos': 'eeuu', 'visas-oceania': 'oceania' };
+    var seg = location.pathname.split('/').filter(function (s) { return s && s !== 'index.html'; }).pop();
+    if (map[seg]) sel.value = map[seg];
+    sel.addEventListener('change', function () { build(); compose(); });
+    [nombre, lugar].forEach(function (el) { el.addEventListener('input', compose); });
+    build(); compose();
+    var meses = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'], d = new Date();
+    var md = document.getElementById('pc-date'); if (md) md.textContent = d.getDate() + ' ' + meses[d.getMonth()] + ' ' + d.getFullYear();
+    send.addEventListener('click', function () { root.classList.remove('sent'); void root.offsetWidth; root.classList.add('sent'); });
+  })();
+
+  // orientador de ciudadanías: reglas verificadas en fuentes oficiales el 28/09/2026
+  (function () {
+    var body = document.getElementById('or-body'); if (!body) return;
+    var stepEl = document.getElementById('or-step'), pathEl = document.getElementById('or-path');
+    var WA = 'https://wa.me/5492616530445?text=', VER = 'Verificado el 28/09/2026';
+    var S = {
+      it: ['Consulado de Italia en Mendoza: ciudadanía', 'https://consmendoza.esteri.it/es/servizi-consolari-e-visti/servizi-per-il-cittadino-straniero/ciudadania-y-adopcion/'],
+      cc: ['Corte Costituzionale, sentenza 63/2026', 'https://www.cortecostituzionale.it/scheda-pronuncia/2026/63'],
+      escc: ['Código Civil español, arts. 17 a 28', 'https://www.mjusticia.gob.es/es/Ciudadano/Nacionalidad/Documents/1292428740202-Real_Decreto_de_24_de_julio_de_1889_Arts._17_a_28_Gaceta_de_Madrid_de_25_07_1889.PDF'],
+      lmd: ['Ley 20/2022 de Memoria Democrática (BOE)', 'https://www.boe.es/buscar/act.php?id=BOE-A-2022-17099'],
+      arop: ['Cancillería argentina: opción de nacionalidad', 'https://www.cancilleria.gob.ar/es/servicios/nacionalidad-argentina/opcion-de-nacionalidad-argentina-para-hijos-de-argentinos-nativos'],
+      l346: ['Ley 346 de Ciudadanía', 'https://www2.hcdn.gob.ar/export/hcdn/secparl/dgral_info_parlamentaria/dip/archivos/Ley_346_TA.pdf']
+    };
+    var G = {
+      it: ['Ver la guía', 'ciudadania-italiana/'],
+      jud: ['Guía del juicio', 'juicio-ciudadania-italiana/'],
+      es: ['Ver la guía', 'ciudadania-espanola/'],
+      ar: ['Ver servicios', '#argentina']
+    };
+    var Q = {
+      start: ['¿Qué ciudadanía te interesa?', 'Elegí una para empezar.', [['Italiana', 'it1'], ['Española', 'es1'], ['Argentina', 'ar1']]],
+      it1: ['¿Quién es tu antepasado italiano más cercano?', 'La persona de tu línea más próxima a vos que tuvo la ciudadanía italiana.', [['Mi padre o mi madre', 'it2'], ['Mi abuelo o mi abuela', 'it2'], ['Mi bisabuelo o alguien anterior', 'it3'], ['Todavía no lo sé', '=it_nose']]],
+      it2: ['¿Esa persona tiene o tuvo otra ciudadanía además de la italiana?', 'Por ejemplo, si se naturalizó argentina. Si falleció, cuenta su situación al morir.', [['No, solo la italiana', '=it_cons'], ['Sí', '=it_nat'], ['No lo sé', '=it_natq']]],
+      it3: ['¿Presentaste la solicitud, o te asignaron turno, antes del 27/03/2025?', 'Cuenta hasta las 23:59, hora de Roma. También vale una demanda judicial presentada antes de ese momento.', [['Sí', '=it_prev'], ['Intenté sacar turno, pero no me lo asignaron', '=it_jud'], ['No', '=it_no']]],
+      es1: ['¿Quién es tu familiar español más cercano?', 'Contá desde vos hacia atrás.', [['Mi padre o mi madre', 'es2'], ['Mi abuelo o mi abuela', 'es3'], ['Mi bisabuelo o alguien anterior', '=es_bis'], ['No tengo familiares españoles', '=es_res']]],
+      es2: ['¿Tu padre o tu madre era español/a cuando naciste?', 'Importa su situación en la fecha de tu nacimiento.', [['Sí', '=es_origen'], ['No: nació español/a en España, pero la había perdido', '=es_20b'], ['No: obtuvo la nacionalidad después', '=es_20a'], ['No lo sé', '=es_rev']]],
+      es3: ['¿Presentaste la solicitud por la Ley de Memoria Democrática antes del 22/10/2025?', 'Esa ley recibió solicitudes hasta esa fecha.', [['Sí', '=es_lmd'], ['No', '=es_cerrada']]],
+      ar1: ['¿Cuál es tu situación?', 'Elegí la que más se parezca a la tuya.', [['Soy hijo/a de argentino/a nativo/a y nací en el exterior', '=ar_op'], ['Soy extranjero/a y vivo en Argentina', 'ar2'], ['Otra situación', '=ar_rev']]],
+      ar2: ['¿Hace cuánto residís en Argentina?', 'Residencia continua en el país.', [['Menos de 2 años', '=ar_menos'], ['2 años o más', '=ar_nat']]]
+    };
+    var R = {
+      it_cons: ['ok', 'Vía consular probable', 'Reconocimiento ante el consulado', 'La Legge 74/2025 mantiene el reconocimiento por descendencia cuando tu padre, madre, abuelo o abuela tiene, o tenía al morir, solo la ciudadanía italiana. Se tramita ante el consulado de tu circunscripción.', ['Actas de nacimiento, matrimonio y defunción de toda la línea', 'Certificado de no naturalización de tu antepasado', 'Apostilla y traducción al italiano de las actas argentinas'], ['it'], 'it'],
+      it_nat: ['rev', 'Requiere revisión', 'Hay que revisar la ciudadanía de tu antepasado', 'La ley exige que tu padre, madre, abuelo o abuela tenga, o haya tenido al morir, solo la ciudadanía italiana. Si tuvo otra, esa vía no aplica. La norma prevé otra alternativa: que tu padre o tu madre, ya siendo italiano/a, haya residido 2 años seguidos en Italia antes de tu nacimiento.', ['Si hubo naturalización, en qué fecha', 'Si otro de tus padres o abuelos tuvo solo la ciudadanía italiana', 'Residencia de tu padre o madre en Italia antes de tu nacimiento'], ['it'], 'it'],
+      it_natq: ['info', 'Primero, un certificado', 'Confirmar si tu antepasado se naturalizó', 'La vía depende de que tu antepasado haya tenido solo la ciudadanía italiana. Eso se acredita con un certificado de no naturalización. Con ese dato, la vía queda definida.', ['Nombre completo y fecha aproximada de llegada a Argentina', 'Acta de defunción, si falleció', 'Datos de sus hijos para ubicar la línea'], ['it'], 'it'],
+      it_prev: ['ok', 'Reglas anteriores', 'Tu solicitud quedó a salvo de la reforma', 'La ley conserva las reglas previas para quien presentó la solicitud, o recibió turno del consulado, hasta las 23:59 (hora de Roma) del 27/03/2025. Lo mismo rige para las demandas judiciales presentadas hasta ese momento.', ['Comprobante de la solicitud, del turno asignado o de la demanda', 'Carpeta de actas completa y apostillada', 'Traducciones al italiano'], ['it'], 'it'],
+      it_jud: ['rev', 'Vía judicial, a evaluar', 'Un intento de turno no equivale a un turno asignado', 'La excepción alcanza a solicitudes presentadas o turnos comunicados antes del 27/03/2025. En 2026 la Corte Constitucional italiana confirmó la reforma (sentencia 63/2026). El margen para un juicio es estrecho: antes de recomendarlo, revisamos qué documentación de ese intento tenés.', ['Correos o comunicaciones con el consulado anteriores al 27/03/2025', 'Registros de tu cuenta de Prenot@mi', 'Familiares ya reconocidos por el mismo antepasado'], ['cc', 'it'], 'jud'],
+      it_no: ['no', 'Vía muy restringida', 'Por descendencia, la ley ya no lo permite', 'Sin solicitud ni turno anteriores al 27/03/2025, y sin padre, madre, abuelo o abuela con solo la ciudadanía italiana, la Legge 74/2025 no permite el reconocimiento por descendencia. La Corte Constitucional confirmó la reforma en 2026 (sentencia 63/2026). Quedan otras vías, como el matrimonio con un ciudadano italiano o la residencia en Italia.', ['Revisar si otra rama de tu familia tiene un antepasado italiano más cercano', 'Evaluar la vía por matrimonio o por residencia'], ['cc', 'it'], 'it'],
+      it_nose: ['info', 'Primero, la genealogía', 'Reconstruir la línea', 'Antes de definir la vía hay que saber quién emigró, en qué generación está y si se naturalizó. Buscamos actas en registros civiles, libros físicos, archivos y cementerios.', ['Nombres y fechas aproximadas que conozcas', 'Actas o documentos familiares que tengas a mano', 'Lugar de origen en Italia, aunque sea aproximado'], ['it'], 'it'],
+      es_origen: ['ok', 'Español/a de origen', 'Corresponde inscribir tu nacimiento', 'Si tu padre o tu madre era español/a cuando naciste, sos español/a de origen (art. 17 del Código Civil). El paso es inscribir tu nacimiento en el Registro Civil consular.', ['Tu partida de nacimiento, apostillada', 'Documentación española de tu padre o madre', 'Si tu padre o madre también nació fuera de España y pasaron más de 3 años desde tu mayoría de edad, hay que revisar si se conservó la nacionalidad (art. 24)'], ['escc'], 'es'],
+      es_20b: ['ok', 'Opción de nacionalidad', 'Podés optar, sin límite de edad', 'Si tu padre o tu madre nació en España siendo español/a, podés optar por la nacionalidad española aunque la haya perdido antes de tu nacimiento. Esta opción no tiene límite de edad (art. 20 del Código Civil).', ['Partida de nacimiento española de tu padre o madre', 'Tu partida de nacimiento, apostillada', 'Presentación ante el Registro Civil consular'], ['escc'], 'es'],
+      es_20a: ['rev', 'Depende de tu edad', 'Opción por patria potestad', 'Si tu padre o tu madre obtuvo la nacionalidad española cuando eras menor de edad, podés optar hasta los 20 años (art. 20 del Código Civil). Si ya eras mayor, esa opción no aplica y hay que evaluar otras vías.', ['Fecha en que tu padre o madre obtuvo la nacionalidad', 'Tu edad en ese momento', 'Tu partida de nacimiento, apostillada'], ['escc'], 'es'],
+      es_rev: ['rev', 'Requiere revisión', 'Hay que ver la situación de tu padre o madre', 'La vía cambia según si era español/a cuando naciste, si nació en España y cuándo obtuvo o perdió la nacionalidad. Con sus partidas lo definimos.', ['Partida de nacimiento de tu padre o madre', 'Documentación española, si la tiene', 'Tu partida de nacimiento'], ['escc'], 'es'],
+      es_lmd: ['ok', 'Expediente en curso', 'Tu solicitud sigue su trámite', 'La Ley de Memoria Democrática recibió solicitudes hasta el 22/10/2025. Si presentaste antes de esa fecha, tu expediente sigue su curso ante el Registro Civil consular.', ['Comprobante de presentación', 'Seguimiento del expediente', 'Documentación adicional que pida el consulado'], ['lmd'], 'es'],
+      es_cerrada: ['no', 'Vía cerrada', 'La vía para nietos cerró el 22/10/2025', 'La Ley de Memoria Democrática permitía a los nietos de españoles optar por la nacionalidad y recibió solicitudes hasta el 22/10/2025. Hoy la vía general para argentinos es la residencia legal en España durante 2 años (art. 22 del Código Civil).', ['Si tu padre o madre ya obtuvo la nacionalidad española, el análisis cambia', 'Residencia legal y continuada en España durante 2 años'], ['lmd', 'escc'], 'es'],
+      es_bis: ['no', 'Sin vía directa', 'Por un bisabuelo no hay vía directa', 'Ni el Código Civil ni la Ley de Memoria Democrática, que cerró el 22/10/2025, prevén hoy la nacionalidad por un bisabuelo de forma directa. La vía general para argentinos es la residencia legal en España durante 2 años (art. 22 del Código Civil).', ['Si tu padre, madre o un abuelo ya obtuvo la nacionalidad española, el análisis cambia', 'Residencia legal y continuada en España durante 2 años'], ['escc', 'lmd'], 'es'],
+      es_res: ['info', 'Por residencia', 'Nacionalidad por residencia', 'Sin familiares españoles, la vía general es la residencia legal y continuada en España. Para nacionales de países iberoamericanos, como Argentina, el plazo es de 2 años (art. 22 del Código Civil).', ['Residencia legal en España, no solo estadía', 'Certificados de antecedentes penales', 'Documentación de identidad y estado civil'], ['escc'], 'es'],
+      ar_op: ['ok', 'Opción de nacionalidad', 'Podés optar por la nacionalidad argentina', 'Los hijos de argentinos nativos nacidos en el exterior pueden optar por la nacionalidad argentina. Se tramita ante el consulado argentino o, si estás en Argentina, ante el Registro Civil.', ['Tu partida de nacimiento extranjera, apostillada y traducida si corresponde', 'Partida de nacimiento de tu padre o madre argentino/a', 'Documento de identidad'], ['arop', 'l346'], 'ar'],
+      ar_nat: ['ok', 'Naturalización', 'Naturalización ante el juzgado federal', 'La Ley 346 prevé la naturalización de extranjeros mayores de 18 años con 2 años de residencia continua en el país, ante el juzgado federal. El régimen tuvo cambios normativos en 2025 que la justicia revisó en 2026; confirmamos el procedimiento vigente al tomar tu caso.', ['Partida de nacimiento, apostillada y traducida si corresponde', 'Certificados de antecedentes penales', 'Acreditación de residencia y medios de vida'], ['l346'], 'ar'],
+      ar_menos: ['info', 'Todavía no', 'Falta cumplir el plazo de residencia', 'Por regla general, la Ley 346 pide 2 años de residencia continua en el país. Mientras tanto, podemos ordenar la documentación para presentarla cuando cumplas el plazo.', ['Mantener vigente la residencia', 'Partida de nacimiento, apostillada', 'Antecedentes penales del país de origen'], ['l346'], 'ar'],
+      ar_rev: ['rev', 'Requiere revisión', 'Tu caso necesita una revisión', 'La nacionalidad argentina se adquiere por nacimiento en el país, por opción (hijos de argentinos nativos nacidos en el exterior) o por naturalización. Si tu situación no encaja en esas vías, contanos tu caso.', [], ['l346'], 'ar']
+    };
+    var NAME = { it1: 'italiana', es1: 'española', ar1: 'argentina' };
+    var trail = [], answers = [];
+    function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; return e; }
+    function icon(id) { var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('aria-hidden', 'true'); var u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); u.setAttribute('href', '#' + id); s.appendChild(u); return s; }
+    function backBtn(label, fn) { var b = el('button', 'or-back', label); b.type = 'button'; b.addEventListener('click', fn); return b; }
+    function setPath() { pathEl.textContent = trail.length > 1 ? 'Ciudadanía ' + NAME[trail[1]] : 'Italia · España · Argentina'; }
+    function focus(node, move) { if (move) { node.tabIndex = -1; node.focus({ preventScroll: true }); } }
+    function ask(id, move) {
+      var q = Q[id]; body.innerHTML = ''; setPath();
+      stepEl.textContent = 'Pregunta ' + trail.length;
+      var fs = el('fieldset', 'or-q'), lg = el('legend', '', q[0]); fs.appendChild(lg);
+      fs.appendChild(el('p', 'or-hint', q[1]));
+      var opts = el('div', 'or-opts');
+      q[2].forEach(function (o) {
+        var b = el('button', 'or-opt'); b.type = 'button'; b.appendChild(el('span', '', o[0])); b.appendChild(icon('ic-arrow'));
+        b.addEventListener('click', function () {
+          answers.push(o[0]);
+          if (o[1].charAt(0) === '=') show(o[1].slice(1)); else { trail.push(o[1]); ask(o[1], true); }
+        });
+        opts.appendChild(b);
+      });
+      fs.appendChild(opts); body.appendChild(fs);
+      if (trail.length > 1) body.appendChild(backBtn('Volver a la pregunta anterior', function () { trail.pop(); answers.pop(); ask(trail[trail.length - 1], true); }));
+      focus(lg, move);
+    }
+    function show(id) {
+      var r = R[id]; body.innerHTML = ''; stepEl.textContent = 'Resultado';
+      var box = el('div', 'or-res ' + r[0]);
+      box.appendChild(el('span', 'or-stamp', r[1]));
+      var h = el('h3', '', r[2]); box.appendChild(h);
+      box.appendChild(el('p', '', r[3]));
+      if (r[4].length) { var ul = el('ul', 'or-check'); r[4].forEach(function (t) { var li = el('li'); li.appendChild(icon('ic-check')); li.appendChild(el('span', '', t)); ul.appendChild(li); }); box.appendChild(ul); }
+      var act = el('div', 'or-actions');
+      var msg = 'Hola, Migratio. Hice el orientador de ciudadanía ' + NAME[trail[1]] + '. Respuestas: ' + answers.slice(1).join('; ') + '. Resultado: ' + r[1] + '. Quiero consultar mi caso.';
+      var wa = el('a', 'btn btn-primary'); wa.href = WA + encodeURIComponent(msg); wa.target = '_blank'; wa.rel = 'noopener'; wa.appendChild(icon('ic-wa')); wa.appendChild(document.createTextNode('Consultar este resultado'));
+      var g = G[r[6]], gl = el('a', 'btn btn-outline', g[0]); gl.href = g[1];
+      if (g[1] === '#argentina') gl.addEventListener('click', function (e) { e.preventDefault(); if (typeof selectTab === 'function') selectTab('argentina'); document.getElementById('tramites').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
+      act.appendChild(wa); act.appendChild(gl); box.appendChild(act);
+      var src = el('p', 'or-src'); src.appendChild(document.createTextNode(r[5].length > 1 ? 'Fuentes oficiales: ' : 'Fuente oficial: '));
+      r[5].forEach(function (k, i) { if (i) src.appendChild(document.createTextNode(' · ')); var a = el('a', '', S[k][0]); a.href = S[k][1]; a.target = '_blank'; a.rel = 'noopener'; src.appendChild(a); });
+      src.appendChild(document.createTextNode('. ' + VER + '.'));
+      box.appendChild(src);
+      box.appendChild(backBtn('Empezar de nuevo', function () { trail = ['start']; answers = []; ask('start', true); }));
+      body.appendChild(box);
+      focus(h, true);
+    }
+    trail = ['start']; ask('start', false);
+  })();
 </script>
 
 </body>
