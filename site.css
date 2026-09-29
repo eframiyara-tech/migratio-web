@@ -514,6 +514,23 @@
   .contact.main .chip-btn.solid { background: var(--navy); color: var(--white); }
   .contact.main .chip-btn:hover { background: var(--navy-soft); color: var(--white); }
 
+  /* ---------- contacto: una acción principal por canal ---------- */
+  .contact-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1fr); }
+  @media (max-width: 1040px) { .contact-grid { grid-template-columns: 1fr; } }
+  .contact .value { font-size: clamp(.92rem, 4.7vw, 1.1rem); white-space: nowrap; }
+  .contact .actions { align-items: center; gap: 4px 8px; }
+  .copy-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 10px; border: 0; border-radius: 999px; background: transparent; color: #cfcce2; font: 700 .85rem var(--f-body); cursor: pointer; }
+  .copy-link svg { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .copy-link .lbl { min-width: 6.4ch; text-align: left; }
+  .contact.main .copy-link { color: var(--navy); }
+  .copy-link.done { color: var(--white); }
+  .contact.main .copy-link.done { color: var(--navy); }
+  @media (hover: hover) and (pointer: fine) {
+    .copy-link:hover { background: rgba(255, 255, 255, .1); color: var(--white); }
+    .contact.main .copy-link:hover { background: rgba(38, 36, 61, .08); color: var(--navy); }
+  }
+  .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
   /* ---------- footer ---------- */
   footer { background: var(--navy); color: #bdbad4; border-top: 1px solid rgba(255, 255, 255, .12); font-size: .88rem; }
   footer a { text-decoration: none; }
@@ -537,8 +554,8 @@
   img[src*="stamp-"] { aspect-ratio: 500 / 420; }
 
   /* press feedback */
-  .btn, .chip-btn, .tab, a.jump, .menu-btn { transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .16s var(--ease-out); }
-  .btn:active, .chip-btn:active, .tab:active, a.jump:active, .menu-btn:active { transform: scale(.97); }
+  .btn, .chip-btn, .copy-link, .tab, a.jump, .menu-btn { transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .16s var(--ease-out); }
+  .btn:active, .chip-btn:active, .copy-link:active, .tab:active, a.jump:active, .menu-btn:active { transform: scale(.97); }
 
   /* focal moment: the envelope arrives, the stamp is placed, the postmark lands */
   @keyframes env-in { from { opacity: 0; transform: translateY(18px) rotate(-4deg); } }
@@ -573,7 +590,7 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .envelope, .env-stamp, .postmark, .panel:not([hidden]) .panel-intro, .panel:not([hidden]) .svc, .panel:not([hidden]) .panel-foot > *, .faq-list details[open] p, .mnav:not([hidden]) .wrap { animation-name: fade; animation-delay: 0ms; }
-    .btn:active, .chip-btn:active, .tab:active, a.jump:active, .menu-btn:active { transform: none; }
+    .btn:active, .chip-btn:active, .copy-link:active, .tab:active, a.jump:active, .menu-btn:active { transform: none; }
     .dest img { transition: none; }
   }
 
