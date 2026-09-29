@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
 <title>Migratio Gestoría · Ciudadanía italiana y española, trámites consulares</title>
 <meta name="description" content="Gestoría migratoria y consular: ciudadanía italiana y española, juicios en Italia, visados y documentación de cualquier país. Atención 100% remota.">
 <meta name="theme-color" content="#efe6d3">
@@ -559,6 +560,23 @@
   .contact.main .chip-btn.solid { background: var(--navy); color: var(--white); }
   .contact.main .chip-btn:hover { background: var(--navy-soft); color: var(--white); }
 
+  /* ---------- contacto: una acción principal por canal ---------- */
+  .contact-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1fr); }
+  @media (max-width: 1040px) { .contact-grid { grid-template-columns: 1fr; } }
+  .contact .value { font-size: clamp(.92rem, 4.7vw, 1.1rem); white-space: nowrap; }
+  .contact .actions { align-items: center; gap: 4px 8px; }
+  .copy-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 10px; border: 0; border-radius: 999px; background: transparent; color: #cfcce2; font: 700 .85rem var(--f-body); cursor: pointer; }
+  .copy-link svg { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .copy-link .lbl { min-width: 6.4ch; text-align: left; }
+  .contact.main .copy-link { color: var(--navy); }
+  .copy-link.done { color: var(--white); }
+  .contact.main .copy-link.done { color: var(--navy); }
+  @media (hover: hover) and (pointer: fine) {
+    .copy-link:hover { background: rgba(255, 255, 255, .1); color: var(--white); }
+    .contact.main .copy-link:hover { background: rgba(38, 36, 61, .08); color: var(--navy); }
+  }
+  .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
   /* ---------- footer ---------- */
   footer { background: var(--navy); color: #bdbad4; border-top: 1px solid rgba(255, 255, 255, .12); font-size: .88rem; }
   footer a { text-decoration: none; }
@@ -582,8 +600,8 @@
   img[src*="stamp-"] { aspect-ratio: 500 / 420; }
 
   /* press feedback */
-  .btn, .chip-btn, .tab, a.jump, .menu-btn { transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .16s var(--ease-out); }
-  .btn:active, .chip-btn:active, .tab:active, a.jump:active, .menu-btn:active { transform: scale(.97); }
+  .btn, .chip-btn, .copy-link, .tab, a.jump, .menu-btn { transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .16s var(--ease-out); }
+  .btn:active, .chip-btn:active, .copy-link:active, .tab:active, a.jump:active, .menu-btn:active { transform: scale(.97); }
 
   /* focal moment: the envelope arrives, the stamp is placed, the postmark lands */
   @keyframes env-in { from { opacity: 0; transform: translateY(18px) rotate(-4deg); } }
@@ -618,7 +636,7 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .envelope, .env-stamp, .postmark, .panel:not([hidden]) .panel-intro, .panel:not([hidden]) .svc, .panel:not([hidden]) .panel-foot > *, .faq-list details[open] p, .mnav:not([hidden]) .wrap { animation-name: fade; animation-delay: 0ms; }
-    .btn:active, .chip-btn:active, .tab:active, a.jump:active, .menu-btn:active { transform: none; }
+    .btn:active, .chip-btn:active, .copy-link:active, .tab:active, a.jump:active, .menu-btn:active { transform: none; }
     .dest img { transition: none; }
   }
 </style>
@@ -643,6 +661,8 @@
   <symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="ic-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></symbol>
   <symbol id="ic-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/></symbol>
+  <symbol id="ic-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
   <symbol id="ic-wa" viewBox="0 0 24 24"><path d="M4 20l1.2-4.2A8 8 0 1 1 8.4 19z"/><path d="M9.2 8.6c.3 2.4 2 4.6 4.6 5.6l1-1.1 1.8.8-.4 1.6c-3.6.2-7.2-3.2-7.4-7l1.5-.5.8 1.8z"/></symbol>
 </svg>
 
@@ -977,15 +997,18 @@
           <span class="value">+54 9 2616 53-0445</span>
           <div class="actions">
             <a class="chip-btn solid" href="https://wa.me/5492616530445" target="_blank" rel="noopener">Abrir chat</a>
-            <button class="chip-btn copy" id="copy-wa" data-copy="+54 9 2616 53-0445">Copiar número</button>
+            <button class="copy-link copy" data-copy="+54 9 2616 53-0445" data-what="Número" aria-label="Copiar número"><svg aria-hidden="true"><use href="#ic-copy"/></svg><span class="lbl">Copiar</span></button>
           </div>
+          <span class="sr-only copy-status" role="status"></span>
         </div>
         <div class="contact">
           <div class="c-top"><span class="c-ico"><svg aria-hidden="true"><use href="#ic-mail"/></svg></span><span class="mono">Email</span></div>
-          <span class="value">migratio.gestoria@<wbr>gmail.com</span>
+          <span class="value">migratio.gestoria@gmail.com</span>
           <div class="actions">
-            <button class="chip-btn copy" id="copy-mail" data-copy="migratio.gestoria@gmail.com">Copiar email</button>
+            <a class="chip-btn" href="mailto:migratio.gestoria@gmail.com">Escribir email</a>
+            <button class="copy-link copy" data-copy="migratio.gestoria@gmail.com" data-what="Email" aria-label="Copiar email"><svg aria-hidden="true"><use href="#ic-copy"/></svg><span class="lbl">Copiar</span></button>
           </div>
+          <span class="sr-only copy-status" role="status"></span>
         </div>
         <div class="contact">
           <div class="c-top"><span class="c-ico"><svg aria-hidden="true"><use href="#ic-ig"/></svg></span><span class="mono">Instagram</span></div>
@@ -1082,21 +1105,29 @@
 
   // copy buttons
   document.querySelectorAll('.copy').forEach(function (btn) {
+    var lbl = btn.querySelector('.lbl'), use = btn.querySelector('use'), idle = lbl.textContent;
+    var status = btn.closest('.contact').querySelector('.copy-status'), timer;
+    function done(msg, ok, said) {
+      lbl.textContent = msg;
+      use.setAttribute('href', ok ? '#ic-check' : '#ic-copy');
+      btn.classList.toggle('done', ok);
+      status.textContent = said;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        lbl.textContent = idle; use.setAttribute('href', '#ic-copy'); btn.classList.remove('done'); status.textContent = '';
+      }, 1800);
+    }
+    function select() {
+      var r = document.createRange(); r.selectNodeContents(btn.closest('.contact').querySelector('.value'));
+      var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      done('Seleccionado', false, btn.getAttribute('data-what') + ' seleccionado');
+    }
     btn.addEventListener('click', function () {
-      var text = btn.getAttribute('data-copy');
-      var label = btn.textContent;
-      function done(msg) {
-        btn.textContent = msg;
-        setTimeout(function () { btn.textContent = label; }, 1800);
-      }
       try {
-        navigator.clipboard.writeText(text).then(function () { done('Copiado'); }, function () {
-          var v = btn.closest('.contact').querySelector('.value');
-          var r = document.createRange(); r.selectNodeContents(v);
-          var s = getSelection(); s.removeAllRanges(); s.addRange(r);
-          done('Seleccionado');
-        });
-      } catch (e) { done('Copialo a mano'); }
+        navigator.clipboard.writeText(btn.getAttribute('data-copy')).then(function () {
+          done('Copiado', true, btn.getAttribute('data-what') + ' copiado');
+        }, select);
+      } catch (e) { select(); }
     });
   });
 </script>
