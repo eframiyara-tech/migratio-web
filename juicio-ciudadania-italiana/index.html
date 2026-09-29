@@ -318,6 +318,48 @@
         <h2 class="slogan-line">No hay peor trámite que el que no se realiza.</h2>
         <p>Delegalo y empezá a sacártelo de encima. Te decimos qué documentación necesitás según tu caso.</p>
       </div>
+      <div class="postal" id="postal">
+        <div class="pc-form">
+          <span class="mono">Postal de consulta</span>
+          <h3>Armá tu mensaje antes de escribirnos</h3>
+          <p>Elegí el trámite y completá lo que sepas. El texto se escribe solo y lo revisás en WhatsApp antes de enviarlo.</p>
+          <label class="pf"><span>Trámite</span>
+            <select id="pc-tramite">
+              <option value="">Elegí un trámite</option>
+              <option value="italiana">Ciudadanía italiana</option>
+              <option value="juicio">Juicio de ciudadanía italiana</option>
+              <option value="espanola">Ciudadanía española</option>
+              <option value="argentina">Ciudadanía argentina</option>
+              <option value="eeuu">Visa para Estados Unidos</option>
+              <option value="oceania">Visas para Oceanía y Bali</option>
+              <option value="documentos">Actas, apostillas o traducciones</option>
+              <option value="otro">Otro trámite</option>
+            </select>
+          </label>
+          <div class="pc-extra" id="pc-extra"></div>
+          <div class="pc-row">
+            <label class="pf"><span>Tu nombre (opcional)</span><input id="pc-nombre" type="text" maxlength="60" autocomplete="given-name"></label>
+            <label class="pf"><span>Desde dónde escribís (opcional)</span><input id="pc-lugar" type="text" maxlength="60" autocomplete="address-level2"></label>
+          </div>
+        </div>
+        <div class="pc-card">
+          <img class="pc-stamp" src="../logo-v2.png" alt="" width="96" height="64">
+          <svg class="pc-mark" viewBox="6 6 108 108" aria-hidden="true">
+            <defs><path id="pc-ring" d="M60,60 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs>
+            <circle cx="60" cy="60" r="48" fill="none" stroke="#8c2f45" stroke-width="2"/>
+            <circle cx="60" cy="60" r="31" fill="none" stroke="#8c2f45" stroke-width="1.2"/>
+            <text font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="2.4" fill="#8c2f45"><textPath href="#pc-ring">MIGRATIO · CONSULTA · MENDOZA ·</textPath></text>
+            <text x="60" y="57" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8" letter-spacing="1" fill="#8c2f45">ENVIADO</text>
+            <text id="pc-date" x="60" y="70" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7.5" letter-spacing=".6" fill="#8c2f45"></text>
+          </svg>
+          <div class="pc-to"><span class="mono">Para</span><span>Migratio Gestoría</span></div>
+          <p class="pc-text" id="pc-text">Hola, Migratio. Quiero hacer una consulta.</p>
+          <div class="pc-send">
+            <a class="btn btn-primary" id="pc-send" href="https://wa.me/5492616530445" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg>Sellar y enviar por WhatsApp</a>
+            <p class="pc-note">El mensaje se arma en tu dispositivo y se abre en WhatsApp para que lo revises antes de enviarlo.</p>
+          </div>
+        </div>
+      </div>
       <div class="contact-grid">
         <div class="contact main">
           <div class="c-top"><span class="c-ico"><svg aria-hidden="true"><use href="#ic-wa"/></svg></span><span class="mono">WhatsApp</span></div>
@@ -421,6 +463,79 @@
       } catch (e) { select(); }
     });
   });
+
+
+  // postal: arma el mensaje de WhatsApp en el dispositivo
+  (function () {
+    var root = document.getElementById('postal'); if (!root) return;
+    var WA = 'https://wa.me/5492616530445?text=';
+    var F = {
+      antIt: ['Tu antepasado italiano más cercano', [['Padre o madre', 'Mi antepasado italiano más cercano es mi padre o mi madre.'], ['Abuelo o abuela', 'Mi antepasado italiano más cercano es mi abuelo o mi abuela.'], ['Bisabuelo o bisabuela', 'Mi antepasado italiano más cercano es mi bisabuelo o mi bisabuela.'], ['Tatarabuelo o anterior', 'Mi antepasado italiano más cercano es un tatarabuelo o anterior.'], ['Todavía no lo sé', 'Todavía no sé en qué generación está mi antepasado italiano.']]],
+      antEs: ['Tu familiar español más cercano', [['Padre o madre', 'Mi familiar español más cercano es mi padre o mi madre.'], ['Abuelo o abuela', 'Mi familiar español más cercano es mi abuelo o mi abuela.'], ['Bisabuelo o anterior', 'Mi familiar español más cercano es un bisabuelo o anterior.'], ['No tengo familiares españoles', 'No tengo familiares españoles.']]],
+      actas: ['Actas', [['Tengo todas', 'Tengo todas las actas.'], ['Tengo algunas', 'Tengo algunas actas.'], ['Todavía no tengo ninguna', 'Todavía no tengo actas.'], ['No sé cuáles necesito', 'No sé qué actas necesito.']]],
+      sitAr: ['Tu situación', [['Soy hijo/a de argentino/a y nací en el exterior', 'Soy hijo/a de argentino/a y nací en el exterior.'], ['Soy extranjero/a y vivo en Argentina', 'Soy extranjero/a y vivo en Argentina.'], ['Otra situación', '']]],
+      eeuu: ['Tipo de trámite', [['Primera visa', 'Sería mi primera visa.'], ['Renovación', 'Quiero renovar mi visa.']]],
+      cuando: ['Cuándo viajarías', [['En los próximos 3 meses', 'Viajaría en los próximos 3 meses.'], ['En 3 a 6 meses', 'Viajaría en 3 a 6 meses.'], ['En más de 6 meses', 'Viajaría en más de 6 meses.'], ['Todavía no tengo fecha', 'Todavía no tengo fecha de viaje.']]],
+      destOc: ['Destino', [['Australia', 'Mi destino es Australia.'], ['Nueva Zelanda', 'Mi destino es Nueva Zelanda.'], ['Bali', 'Mi destino es Bali.']]],
+      pas: ['Pasaporte', [['Argentino', 'Viajaría con pasaporte argentino.'], ['Italiano', 'Viajaría con pasaporte italiano.'], ['Español', 'Viajaría con pasaporte español.']]],
+      doc: ['Qué necesitás', [['Búsqueda de actas', 'Necesito una búsqueda de actas.'], ['Rectificación de actas', 'Necesito rectificar un acta.'], ['Apostilla', 'Necesito apostillar documentos.'], ['Traducción', 'Necesito una traducción.']]],
+      pais: ['País de los documentos', [['Argentina', 'Los documentos son de Argentina.'], ['Italia', 'Los documentos son de Italia.'], ['España', 'Los documentos son de España.'], ['Otro país', 'Los documentos son de otro país.']]],
+      otro: ['Contanos en una línea', null]
+    };
+    var T = {
+      italiana: ['ciudadanía italiana', ['antIt', 'actas']],
+      juicio: ['un juicio de ciudadanía italiana', ['antIt', 'actas']],
+      espanola: ['ciudadanía española', ['antEs', 'actas']],
+      argentina: ['ciudadanía argentina', ['sitAr']],
+      eeuu: ['una visa para Estados Unidos', ['eeuu', 'cuando']],
+      oceania: ['una visa para Australia, Nueva Zelanda o Bali', ['destOc', 'pas']],
+      documentos: ['actas, apostillas o traducciones', ['doc', 'pais']],
+      otro: ['otro trámite', ['otro']]
+    };
+    var sel = document.getElementById('pc-tramite'), extra = document.getElementById('pc-extra');
+    var nombre = document.getElementById('pc-nombre'), lugar = document.getElementById('pc-lugar');
+    var text = document.getElementById('pc-text'), send = document.getElementById('pc-send');
+    function clean(v) { return v.replace(/\s+/g, ' ').trim(); }
+    function build() {
+      extra.innerHTML = '';
+      var t = T[sel.value]; if (!t) return;
+      t[1].forEach(function (k) {
+        var f = F[k], lab = document.createElement('label'); lab.className = 'pf';
+        var sp = document.createElement('span'); sp.textContent = f[0]; lab.appendChild(sp);
+        var el;
+        if (f[1]) {
+          el = document.createElement('select');
+          el.appendChild(new Option('Elegí una opción', ''));
+          f[1].forEach(function (o, i) { el.appendChild(new Option(o[0], String(i))); });
+        } else { el = document.createElement('input'); el.type = 'text'; el.maxLength = 160; }
+        el.setAttribute('data-f', k); el.addEventListener('input', compose); el.addEventListener('change', compose);
+        lab.appendChild(el); extra.appendChild(lab);
+      });
+    }
+    function compose() {
+      var parts = ['Hola, Migratio.'], n = clean(nombre.value), l = clean(lugar.value), t = T[sel.value];
+      if (n) parts.push('Soy ' + n + '.');
+      parts.push(t ? 'Quiero consultar por ' + t[0] + '.' : 'Quiero hacer una consulta.');
+      extra.querySelectorAll('[data-f]').forEach(function (el) {
+        var f = F[el.getAttribute('data-f')];
+        if (f[1]) { if (el.value !== '') { var s = f[1][+el.value][1]; if (s) parts.push(s); } }
+        else { var v = clean(el.value); if (v) parts.push(/[.!?]$/.test(v) ? v : v + '.'); }
+      });
+      if (l) parts.push('Escribo desde ' + l + '.');
+      var msg = parts.join(' ');
+      text.textContent = msg;
+      send.href = WA + encodeURIComponent(msg);
+    }
+    var map = { 'ciudadania-italiana': 'italiana', 'juicio-ciudadania-italiana': 'juicio', 'ciudadania-espanola': 'espanola', 'visa-estados-unidos': 'eeuu', 'visas-oceania': 'oceania' };
+    var seg = location.pathname.split('/').filter(function (s) { return s && s !== 'index.html'; }).pop();
+    if (map[seg]) sel.value = map[seg];
+    sel.addEventListener('change', function () { build(); compose(); });
+    [nombre, lugar].forEach(function (el) { el.addEventListener('input', compose); });
+    build(); compose();
+    var meses = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'], d = new Date();
+    var md = document.getElementById('pc-date'); if (md) md.textContent = d.getDate() + ' ' + meses[d.getMonth()] + ' ' + d.getFullYear();
+    send.addEventListener('click', function () { root.classList.remove('sent'); void root.offsetWidth; root.classList.add('sent'); });
+  })();
 </script>
 </body>
 </html>
