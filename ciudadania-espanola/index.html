@@ -99,6 +99,29 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../site.css">
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LXLH3B2WEY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LXLH3B2WEY');
+  // Clics de contacto: WhatsApp es la conversión del sitio.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var evento = /wa\.me|api\.whatsapp\.com/.test(href) ? 'whatsapp_click'
+               : href.indexOf('mailto:') === 0 ? 'email_click' : null;
+    if (!evento) return;
+    var sec = a.closest('section[id], header, footer, nav') || a.closest('[id]') || a.closest('section, div[class]');
+    gtag('event', evento, {
+      link_text: (a.textContent || a.getAttribute('aria-label') || '').trim().slice(0, 60),
+      link_id: a.id || '',
+      seccion: sec ? (sec.id || (sec.className || '').toString().split(' ')[0] || sec.tagName.toLowerCase()) : ''
+    });
+  }, true);
+</script>
 </head>
 <body>
 <svg style="display:none" aria-hidden="true">
