@@ -282,14 +282,16 @@
       ]];
       if (pas && !men) fin.push(
         { k: 'primer', l: '¿Es tu primer pasaporte italiano?', t: 'choice', o: SN, req: 1 },
-        { k: 'pasAnt', l: 'Número del pasaporte anterior', h: 'Si no lo tenés a mano, escribí «no lo tengo».', t: 'text', req: 1, w: eq('primer', 'No') });
+        { k: 'pasAnt', l: 'Número del pasaporte anterior', h: 'Si ahora no lo encontrás, escribí «no lo tengo a mano».', t: 'text', req: 1, w: eq('primer', 'No') });
       if (pas && men) fin.push(
         { k: 'primer', l: '¿Es el primer pasaporte del menor?', t: 'choice', o: SN, req: 1 },
         { k: 'progTiene', l: '¿El progenitor tiene pasaporte italiano?', h: 'Vigente o vencido.', t: 'choice', o: SN, req: 1, w: eq('primer', 'Sí') },
         { k: 'progPas', l: 'Número de pasaporte del progenitor', h: 'Si los dos son italianos, el del progenitor que cargaste antes.', t: 'text', req: 1, w: function (d) { return d.primer === 'No' || (d.primer === 'Sí' && d.progTiene === 'Sí'); } });
       if (cie) fin.push(
         { k: 'aire', l: men ? '¿El menor está inscripto en el AIRE?' : '¿Estás inscripto en el AIRE?', h: 'El consulado solo emite la CIE a quienes están inscriptos en el AIRE.', t: 'choice', o: ['Sí', 'No', 'No lo sé'], req: 1 },
-        { k: 'aireNo', t: 'note', l: 'Sin la inscripción en el AIRE el consulado no emite la CIE. Podemos gestionar primero esa inscripción: lo vemos por WhatsApp.', w: eq('aire', 'No') },
+        { k: 'aireNo', t: 'note', l: 'Sin la inscripción en el AIRE el consulado no emite la CIE. Podemos tramitarla nosotros antes de pedir el turno.', w: eq('aire', 'No') },
+        { k: 'aireTram', l: men ? '¿Querés que tramitemos la inscripción del menor en el AIRE?' : '¿Querés que tramitemos tu inscripción en el AIRE?', h: 'La gestionamos en Fast It, el portal consular.', t: 'choice', o: SN, req: 1, w: eq('aire', 'No') },
+        { k: 'aireVer', l: men ? '¿Querés que averigüemos si el menor está inscripto?' : '¿Querés que averigüemos si estás inscripto?', h: 'Lo verificamos en Fast It, el portal consular. Si no figura la inscripción, podemos tramitarla.', t: 'choice', o: SN, req: 1, w: eq('aire', 'No lo sé') },
         { k: 'cieAnt', l: men ? '¿El menor tiene una CIE vencida o por vencer?' : '¿Tenés una CIE vencida o por vencer?', t: 'choice', o: SN, req: 1 },
         { k: 'cf', l: men ? '¿El menor tiene código fiscal italiano?' : '¿Tenés código fiscal italiano?', h: 'El codice fiscale. Si no hay, no pasa nada.', t: 'choice', o: SN, req: 1 },
         { k: 'cfNum', l: men ? 'Código fiscal del menor' : 'Código fiscal', h: '16 letras y números.', t: 'text', cf: 1, req: 1, w: eq('cf', 'Sí') });
@@ -377,7 +379,7 @@
     }
     function who(move) {
       st.i = -1; progress(0, 1, 'Inicio');
-      var h = head('¿Para quién es?', st.tram === 'pas' ? '' : 'Para la CIE hay que estar inscripto en el AIRE.');
+      var h = head('¿Para quién es?', st.tram === 'pas' ? '' : 'Para la CIE hay que estar inscripto en el AIRE.' + (st.tram === 'ambos' ? ' El pasaporte y la CIE van en turnos separados; en el Consulado de Mendoza, en días distintos.' : ''));
       body.appendChild(pickers([['mayor', 'Mayor de edad', 'Para vos o para otro adulto.'], ['menor', 'Menor de edad', 'Lo completa el padre o la madre.']], function (v) { if (st.kind !== v) st.d = carry(); st.kind = v; st.i = 0; step(true); }));
       var nav = el('div', 'sf-nav'); nav.appendChild(btn('sf-back', 'Cambiar el trámite', function () { start(true); })); body.appendChild(nav);
       go(h, move);
