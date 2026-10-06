@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
-<title>Solicitud de turno · Pasaporte italiano · Migratio</title>
+<title>Solicitud de turno · Pasaporte y CIE · Migratio</title>
 <meta name="robots" content="noindex, follow">
-<meta name="description" content="Formulario para clientes de Migratio Gestoría: datos para gestionar el turno de pasaporte italiano.">
+<meta name="description" content="Formulario para clientes de Migratio Gestoría: datos para gestionar el turno de pasaporte italiano o de CIE.">
 <meta name="theme-color" content="#efe6d3">
 <link rel="icon" href="../favicon.ico?v=2" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png?v=2">
@@ -16,8 +16,8 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_AR">
 <meta property="og:site_name" content="Migratio Gestoría">
-<meta property="og:title" content="Solicitud de turno · Pasaporte italiano">
-<meta property="og:description" content="Formulario para clientes de Migratio Gestoría: datos para gestionar el turno de pasaporte italiano.">
+<meta property="og:title" content="Solicitud de turno · Pasaporte y CIE">
+<meta property="og:description" content="Formulario para clientes de Migratio Gestoría: datos para gestionar el turno de pasaporte italiano o de CIE.">
 <meta property="og:url" content="https://migratiogestoria.com/solicitud-pasaporte/">
 <meta property="og:image" content="https://migratiogestoria.com/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -71,12 +71,16 @@
   .sf-opt input:checked + span { background: var(--navy); border-color: var(--navy); color: var(--white); }
   .sf-opt input:focus-visible + span { outline: 3px solid var(--navy); outline-offset: 3px; }
   .sf-f[data-bad] .sf-opt span { border-color: var(--burgundy); }
+  p.sf-warn { padding: 12px 16px; border-left: 2px solid var(--burgundy); background: var(--paper); font-size: .95rem; }
+  .sf-rq { color: var(--burgundy); }
+  .sf-none { margin: 6px 0 0; color: var(--ink-soft); font-size: .95rem; }
   .sf-err { color: var(--burgundy); font-size: .88rem; font-weight: 600; }
   .sf-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
   .sf-back, .sf-edit { min-height: 44px; padding: 0 4px; background: none; border: 0; font: inherit; font-size: .92rem; font-weight: 700; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
   .sf-back:hover, .sf-edit:hover { color: var(--ink); }
   .sf-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .sf-pickb { display: flex; flex-direction: column; gap: 6px; min-height: 110px; padding: 22px; text-align: left; font: inherit; color: var(--ink); background: var(--paper); border: 1.5px solid var(--line-strong); border-radius: var(--radius); cursor: pointer; transition: border-color .2s ease, background-color .2s ease, transform .16s cubic-bezier(0.23, 1, 0.32, 1); }
+  .sf-pick3 { grid-template-columns: repeat(3, 1fr); }
   .sf-pickb b { font-family: var(--f-display); font-weight: 500; font-size: 1.45rem; }
   .sf-pickb span { color: var(--ink-soft); font-size: .93rem; }
   @media (hover: hover) and (pointer: fine) { .sf-pickb:hover { border-color: var(--navy); background: var(--white); } }
@@ -94,7 +98,8 @@
   .sf-note a { color: var(--ink); }
   .sf-end { justify-content: flex-start; margin-top: 4px; }
   @media (max-width: 560px) {
-    .sf-pick { grid-template-columns: 1fr; }
+    .sf-pick, .sf-pick3 { grid-template-columns: 1fr; }
+    .sf-pickb { min-height: 0; }
     .sf-rev dl > div { grid-template-columns: 1fr; gap: 0; }
     .sf-nav .btn { flex: 1 1 auto; }
   }
@@ -193,8 +198,8 @@
   <section class="page-hero sf-hero">
     <div class="wrap">
       <div>
-        <nav class="crumbs" aria-label="Ruta"><a href="../">Inicio</a><span aria-hidden="true">›</span><a href="../turnos-consulado-italiano/">Turnos consulado italiano</a><span aria-hidden="true">›</span><span>Solicitud de pasaporte</span></nav>
-        <span class="mono kicker">Pasaporte italiano · Solicitud de turno</span>
+        <nav class="crumbs" aria-label="Ruta"><a href="../">Inicio</a><span aria-hidden="true">›</span><a href="../turnos-consulado-italiano/">Turnos consulado italiano</a><span aria-hidden="true">›</span><span>Solicitud de turno</span></nav>
+        <span class="mono kicker">Pasaporte y CIE · Solicitud de turno</span>
         <h1>Tus datos para pedir el turno</h1>
         <p class="lead">Completá este formulario una sola vez y con cuidado: con estos datos gestionamos tu turno en el Consulado. Si son varios en la familia, al final podés cargar a otra persona sin repetir el domicilio.</p>
       </div>
@@ -204,7 +209,7 @@
   <section id="solicitud" class="sf-sec">
     <div class="wrap sf-wrap">
       <div class="sf-card">
-        <div class="sf-top"><span class="mono" id="sf-step">Inicio</span><span class="mono" id="sf-kind">Pasaporte italiano</span></div>
+        <div class="sf-top"><span class="mono" id="sf-step">Inicio</span><span class="mono" id="sf-kind">Consulado italiano</span></div>
         <div class="sf-bar" aria-hidden="true"><i id="sf-bar"></i></div>
         <div class="sf-body" id="sf-body">
           <noscript><p class="sf-sub">Este formulario necesita JavaScript. Podés <a href="https://wa.me/5492616530445">enviarnos tus datos por WhatsApp</a>.</p></noscript>
@@ -250,7 +255,7 @@
   mnav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !mnav.hidden) { setMenu(false); menuBtn.focus(); } });
 
-  // Solicitud de turno de pasaporte: los datos se arman en el dispositivo y se envían por WhatsApp.
+  // Solicitud de turno (pasaporte y CIE): los datos se arman en el dispositivo y se envían por WhatsApp.
   (function () {
     var body = document.getElementById('sf-body'); if (!body) return;
     var stepEl = document.getElementById('sf-step'), kindEl = document.getElementById('sf-kind'), bar = document.getElementById('sf-bar');
@@ -261,81 +266,89 @@
     var OJOS = ['Marrón', 'Verde', 'Celeste', 'Gris', 'Negro'];
     var CONS = ['Mendoza', 'Córdoba', 'Rosario', 'Buenos Aires', 'La Plata', 'Lomas de Zamora', 'Morón', 'Mar del Plata', 'Bahía Blanca', 'Otro o no lo sé'];
     var SHARED = ['domicilio', 'cp', 'cambioDom', 'consulado', 'celular', 'email', 'servicio'];
+    var TRAM = { pas: ['Pasaporte', 'Pasaporte italiano'], cie: ['CIE', 'Carta de identidad (CIE)'], ambos: ['Pasaporte y CIE', 'Pasaporte italiano y CIE'] };
+    var KIND = { mayor: 'Mayor de edad', menor: 'Menor de edad' };
     function eq(k, v) { return function (d) { return d[k] === v; }; }
-    function contacto(plural) {
-      return ['Domicilio y contacto', 'El domicilio, tal cual figura en el DNI.', [
-        { k: 'domicilio', l: 'Domicilio completo', t: 'text', req: 1, ac: 'street-address' },
-        { k: 'cp', l: 'Código postal', t: 'text', req: 1, im: 'numeric', ac: 'postal-code' },
-        { k: 'cambioDom', l: plural ? '¿Cambiaron de domicilio recientemente?' : '¿Cambiaste de domicilio recientemente?', t: 'choice', o: SN, req: 1 },
-        { k: 'consulado', l: plural ? 'Consulado que les corresponde' : 'Consulado que te corresponde', t: 'select', o: CONS, req: 1 },
-        { k: 'celular', l: 'Celular', h: 'Con código de área.', t: 'tel', req: 1, ac: 'tel' },
-        { k: 'email', l: 'Correo electrónico', t: 'email', req: 1, ac: 'email' }
+    // Obligatorias (req): las mismas que en el formulario anterior y las que dependen de otra respuesta.
+    function flow(tram, kind) {
+      var pas = tram !== 'cie', cie = tram !== 'pas', men = kind === 'menor', fin = [], out;
+      var contacto = ['Domicilio y contacto', 'El domicilio, tal cual figura en el DNI.', [
+        { k: 'domicilio', l: 'Domicilio completo', t: 'text', ac: 'street-address' },
+        { k: 'cp', l: 'Código postal', t: 'text', im: 'numeric', ac: 'postal-code' },
+        { k: 'cambioDom', l: men ? '¿Cambiaron de domicilio recientemente?' : '¿Cambiaste de domicilio recientemente?', t: 'choice', o: SN },
+        { k: 'consulado', l: men ? 'Consulado que les corresponde' : 'Consulado que te corresponde', t: 'select', o: CONS },
+        { k: 'celular', l: 'Celular', h: 'Con código de área.', t: 'tel', ac: 'tel' },
+        { k: 'email', l: 'Correo electrónico', t: 'email', ac: 'email' }
       ]];
-    }
-    var FLOW = {
-      mayor: [
-        ['Tus datos', 'Tal cual figuran en tu DNI.', [
-          { k: 'nombre', l: 'Nombre completo', t: 'text', req: 1, ac: 'name' },
-          { k: 'lugarNac', l: 'Lugar de nacimiento', t: 'text', req: 1 },
-          { k: 'fechaNac', l: 'Fecha de nacimiento', t: 'date', req: 1, ac: 'bday' },
+      if (pas && !men) fin.push(
+        { k: 'primer', l: '¿Es tu primer pasaporte italiano?', t: 'choice', o: SN, req: 1 },
+        { k: 'pasAnt', l: 'Número del pasaporte anterior', h: 'Si no lo tenés a mano, escribí «no lo tengo».', t: 'text', req: 1, w: eq('primer', 'No') });
+      if (pas && men) fin.push(
+        { k: 'primer', l: '¿Es el primer pasaporte del menor?', t: 'choice', o: SN, req: 1 },
+        { k: 'progTiene', l: '¿El progenitor tiene pasaporte italiano?', h: 'Vigente o vencido.', t: 'choice', o: SN, req: 1, w: eq('primer', 'Sí') },
+        { k: 'progPas', l: 'Número de pasaporte del progenitor', h: 'Si los dos son italianos, el del progenitor que cargaste antes.', t: 'text', req: 1, w: function (d) { return d.primer === 'No' || (d.primer === 'Sí' && d.progTiene === 'Sí'); } });
+      if (cie) fin.push(
+        { k: 'aire', l: men ? '¿El menor está inscripto en el AIRE?' : '¿Estás inscripto en el AIRE?', h: 'El consulado solo emite la CIE a quienes están inscriptos en el AIRE.', t: 'choice', o: ['Sí', 'No', 'No lo sé'], req: 1 },
+        { k: 'aireNo', t: 'note', l: 'Sin la inscripción en el AIRE el consulado no emite la CIE. Podemos gestionar primero esa inscripción: lo vemos por WhatsApp.', w: eq('aire', 'No') },
+        { k: 'cieAnt', l: men ? '¿El menor tiene una CIE vencida o por vencer?' : '¿Tenés una CIE vencida o por vencer?', t: 'choice', o: SN, req: 1 },
+        { k: 'cf', l: men ? '¿El menor tiene código fiscal italiano?' : '¿Tenés código fiscal italiano?', h: 'El codice fiscale. Si no hay, no pasa nada.', t: 'choice', o: SN, req: 1 },
+        { k: 'cfNum', l: men ? 'Código fiscal del menor' : 'Código fiscal', h: '16 letras y números.', t: 'text', cf: 1, req: 1, w: eq('cf', 'Sí') });
+      fin.push(
+        { k: 'servicio', l: men ? '¿Qué modalidad quieren?' : '¿Qué modalidad querés?', h: 'Exprés: turno desde 24 horas. Común: en hasta 10 días.', t: 'choice', o: ['Exprés', 'Común'] },
+        men ? { k: 'noFechas', l: '¿Hay alguna fecha en los próximos 30 días en la que no puedan ir al Consulado?', h: pas ? 'Tienen que asistir ambos progenitores y el menor.' : '', t: 'choice', o: SN }
+            : { k: 'noFechas', l: '¿Hay alguna fecha en la que no puedas ir al Consulado?', h: 'A corto plazo: por un viaje, una enfermedad, etc.', t: 'choice', o: SN },
+        { k: 'cuales', l: '¿Qué fechas o días?', h: 'Recordá que los turnos son por la mañana.', t: 'text', req: 1, w: eq('noFechas', 'Sí') });
+      fin = [tram === 'pas' ? 'Pasaporte y turno' : tram === 'cie' ? 'CIE y turno' : 'Pasaporte, CIE y turno', 'Último paso antes de revisar.', fin];
+      if (!men) {
+        out = [['Tus datos', 'Tal cual figuran en tu DNI.', [
+          { k: 'nombre', l: 'Nombre completo', t: 'text', ac: 'name' },
+          { k: 'lugarNac', l: 'Lugar de nacimiento', t: 'text' },
+          { k: 'fechaNac', l: 'Fecha de nacimiento', t: 'date', ac: 'bday' },
           { k: 'estatura', l: 'Estatura', h: 'En centímetros.', t: 'number', req: 1, min: 50, max: 250 },
           { k: 'ojos', l: 'Color de ojos', t: 'choice', o: OJOS, req: 1 }
-        ]],
-        contacto(false),
-        ['Familia', 'Necesitamos saber si tu estado civil y tus hijos están inscriptos en el Consulado.', [
-          { k: 'hijos', l: '¿Tenés hijos menores de edad?', t: 'choice', o: ['No', '1', '2', '3 o más'], req: 1 },
+        ]], contacto];
+        if (pas) out.push(['Familia', 'Necesitamos saber si tu estado civil y tus hijos están inscriptos en el Consulado.', [
+          { k: 'hijos', l: '¿Tenés hijos menores de edad?', t: 'choice', o: ['No', '1', '2', '3 o más'] },
           { k: 'hijosInscr', l: '¿Inscribiste a todos tus hijos en el Consulado?', t: 'choice', o: SN, req: 1, w: function (d) { return d.hijos && d.hijos !== 'No'; } },
-          { k: 'civil', l: 'Estado civil', t: 'choice', o: ['Casado/a', 'Soltero/a', 'Viudo/a', 'Divorciado/a'], req: 1 },
+          { k: 'civil', l: 'Estado civil', t: 'choice', o: ['Casado/a', 'Soltero/a', 'Viudo/a', 'Divorciado/a'] },
           { k: 'matInscr', l: '¿Inscribiste el matrimonio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Casado/a') },
           { k: 'conyuge', l: 'Nombre completo de tu cónyuge', h: 'Tal cual figura en su DNI.', t: 'text', req: 1, w: eq('civil', 'Casado/a') },
           { k: 'divInscr', l: '¿Inscribiste el divorcio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Divorciado/a') },
           { k: 'defInscr', l: '¿Inscribiste la defunción de tu cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') }
-        ]],
-        ['Pasaporte y turno', 'Último paso antes de revisar.', [
-          { k: 'primer', l: '¿Es tu primer pasaporte italiano?', t: 'choice', o: SN, req: 1 },
-          { k: 'pasAnt', l: 'Número del pasaporte anterior', h: 'Si lo tenés a mano.', t: 'text', w: eq('primer', 'No') },
-          { k: 'servicio', l: '¿Qué modalidad querés?', h: 'Exprés: turno en hasta 7 días. Común: en hasta 30 días.', t: 'choice', o: ['Exprés', 'Común'], req: 1 },
-          { k: 'noFechas', l: '¿Hay alguna fecha en la que no puedas ir al Consulado?', h: 'A corto plazo: por un viaje, una enfermedad, etc.', t: 'choice', o: SN, req: 1 },
-          { k: 'cuales', l: '¿Qué fechas o días?', h: 'Recordá que los turnos son por la mañana.', t: 'text', req: 1, w: eq('noFechas', 'Sí') }
-        ]]
-      ],
-      menor: [
-        ['Datos del menor', 'Tal cual figuran en su DNI.', [
-          { k: 'nombre', l: 'Nombre completo del menor', t: 'text', req: 1 },
-          { k: 'fechaNac', l: 'Fecha de nacimiento del menor', t: 'date', req: 1 },
-          { k: 'estatura', l: 'Estatura del menor', h: 'En centímetros.', t: 'number', min: 30, max: 220 },
-          { k: 'ojos', l: 'Color de ojos del menor', t: 'choice', o: OJOS }
-        ]],
-        ['Progenitor italiano', 'Si los dos son italianos, cargá los datos de uno.', [
-          { k: 'progNombre', l: 'Nombre completo del progenitor italiano', h: 'Tal cual figura en el DNI.', t: 'text', req: 1, ac: 'name' },
-          { k: 'progLugar', l: 'Lugar de nacimiento del progenitor', t: 'text', req: 1 },
-          { k: 'progFecha', l: 'Fecha de nacimiento del progenitor', t: 'date', req: 1 },
-          { k: 'hijosProg', l: '¿Cuántos hijos menores tiene el progenitor?', h: 'Solo menores de edad.', t: 'choice', o: ['1', '2', '3 o más'], req: 1 },
-          { k: 'civil', l: 'Estado civil del progenitor', t: 'choice', o: ['Casado/a', 'Soltero/a', 'Viudo/a', 'Divorciado/a', 'Otro'], req: 1 },
+        ]]);
+      } else {
+        var prog = [
+          { k: 'progNombre', l: 'Nombre completo del progenitor italiano', h: 'Tal cual figura en el DNI.', t: 'text', ac: 'name' },
+          { k: 'progLugar', l: 'Lugar de nacimiento del progenitor', t: 'text' },
+          { k: 'progFecha', l: 'Fecha de nacimiento del progenitor', t: 'date' }
+        ];
+        if (pas) prog.push(
+          { k: 'hijosProg', l: '¿Cuántos hijos menores tiene el progenitor?', h: 'Solo menores de edad.', t: 'choice', o: ['1', '2', '3 o más'] },
+          { k: 'civil', l: 'Estado civil del progenitor', t: 'choice', o: ['Casado/a', 'Soltero/a', 'Viudo/a', 'Divorciado/a', 'Otro'] },
           { k: 'conyuge', l: 'Nombre completo del cónyuge', h: 'Tal cual figura en su DNI.', t: 'text', req: 1, w: eq('civil', 'Casado/a') },
           { k: 'divInscr', l: '¿Inscribió el divorcio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Divorciado/a') },
-          { k: 'defInscr', l: '¿Inscribió la defunción de su cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') }
-        ]],
-        contacto(true),
-        ['Pasaporte y turno', 'Último paso antes de revisar.', [
-          { k: 'primer', l: '¿Es el primer pasaporte del menor?', t: 'choice', o: SN, req: 1 },
-          { k: 'progTiene', l: '¿El progenitor tiene pasaporte italiano?', h: 'Vigente o vencido.', t: 'choice', o: SN, req: 1, w: eq('primer', 'Sí') },
-          { k: 'progPas', l: 'Número de pasaporte del progenitor', h: 'Si los dos son italianos, el del progenitor que cargaste antes.', t: 'text', req: 1, w: function (d) { return d.primer === 'No' || (d.primer === 'Sí' && d.progTiene === 'Sí'); } },
-          { k: 'servicio', l: '¿Qué modalidad quieren?', h: 'Exprés: turno en hasta 7 días. Común: en hasta 30 días.', t: 'choice', o: ['Exprés', 'Común'], req: 1 },
-          { k: 'noFechas', l: '¿Hay alguna fecha en los próximos 30 días en la que no puedan ir al Consulado?', h: 'Tienen que asistir ambos progenitores y el menor.', t: 'choice', o: SN, req: 1 },
-          { k: 'cuales', l: '¿Qué fechas o días?', h: 'Recordá que los turnos son por la mañana.', t: 'text', req: 1, w: eq('noFechas', 'Sí') }
-        ]]
-      ]
-    };
-    var KIND = { mayor: 'Mayor de edad', menor: 'Menor de edad' };
-    var st = { kind: '', i: -1, d: {} };
-    try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && FLOW[s.kind]) st = s; } catch (e) {}
+          { k: 'defInscr', l: '¿Inscribió la defunción de su cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') });
+        out = [['Datos del menor', 'Tal cual figuran en su DNI.', [
+          { k: 'nombre', l: 'Nombre completo del menor', t: 'text' },
+          { k: 'fechaNac', l: 'Fecha de nacimiento del menor', t: 'date' },
+          { k: 'estatura', l: 'Estatura del menor', h: 'En centímetros.', t: 'number', min: 30, max: 220 },
+          { k: 'ojos', l: 'Color de ojos del menor', t: 'choice', o: OJOS }
+        ]], ['Progenitor italiano', 'Si los dos son italianos, cargá los datos de uno.', prog], contacto];
+      }
+      out.push(fin);
+      return out;
+    }
+    var st = { tram: '', kind: '', i: -1, d: {} };
+    try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.d && TRAM[s.tram] && (!s.kind || KIND[s.kind])) st = s; } catch (e) {}
+    var hash = { '#pasaporte': 'pas', '#cie': 'cie' }[location.hash];
+    if (hash && !(st.kind && st.i >= 0)) { st.tram = hash; st.kind = ''; st.i = -1; }
     function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
     function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
     function btn(cls, txt, fn) { var b = el('button', cls, txt); b.type = 'button'; b.addEventListener('click', fn); return b; }
-    function fmt(f, v) { if (f.t === 'date' && /^\d{4}-\d{2}-\d{2}$/.test(v)) { var p = v.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; } return f.t === 'number' ? v + ' cm' : v; }
+    function fmt(f, v) { if (f.cf) return v.replace(/\s/g, '').toUpperCase(); if (f.t === 'date' && /^\d{4}-\d{2}-\d{2}$/.test(v)) { var p = v.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; } return f.t === 'number' ? v + ' cm' : v; }
     function shown(f) { return !f.w || f.w(st.d); }
-    function steps() { return FLOW[st.kind] || []; }
+    function steps() { return st.kind ? flow(st.tram, st.kind) : []; }
+    function carry() { var keep = {}; SHARED.forEach(function (k) { if (st.d[k]) keep[k] = st.d[k]; }); return keep; }
     function head(title, sub) {
       body.innerHTML = '';
       var h = el('h2', '', title); h.tabIndex = -1; body.appendChild(h);
@@ -343,37 +356,50 @@
       return h;
     }
     function progress(n, total, label) {
-      stepEl.textContent = label; kindEl.textContent = st.kind ? KIND[st.kind] : 'Pasaporte italiano';
+      stepEl.textContent = label; kindEl.textContent = st.tram ? TRAM[st.tram][0] + (st.kind ? ' · ' + KIND[st.kind] : '') : 'Consulado italiano';
       bar.style.width = Math.round(100 * n / total) + '%';
     }
     function go(h, move) { save(); if (move) { h.focus({ preventScroll: true }); document.getElementById('solicitud').scrollIntoView({ block: 'start' }); } }
 
-    function start(move) {
-      st.i = -1; progress(0, 1, 'Inicio');
-      var h = head('¿Para quién es el pasaporte?', 'Son unos 5 minutos. Tené a mano el DNI y, si lo hay, el pasaporte anterior.');
-      var opts = el('div', 'sf-pick');
-      [['mayor', 'Mayor de edad', 'Para vos o para otro adulto.'], ['menor', 'Menor de edad', 'Lo completa el padre o la madre.']].forEach(function (o) {
-        var b = btn('sf-pickb', '', function () { if (st.kind !== o[0]) { var keep = {}; SHARED.forEach(function (k) { if (st.d[k]) keep[k] = st.d[k]; }); st.d = keep; } st.kind = o[0]; st.i = 0; step(true); });
+    function pickers(list, fn) {
+      var opts = el('div', 'sf-pick' + (list.length === 3 ? ' sf-pick3' : ''));
+      list.forEach(function (o) {
+        var b = btn('sf-pickb', '', function () { fn(o[0]); });
         b.appendChild(el('b', '', o[1])); b.appendChild(el('span', '', o[2])); opts.appendChild(b);
       });
-      body.appendChild(opts); go(h, move);
+      return opts;
+    }
+    function start(move) {
+      st.tram = ''; st.kind = ''; st.i = -1; progress(0, 1, 'Inicio');
+      var h = head('¿Qué turno necesitás?', 'Son unos 5 minutos. Tené a mano el DNI y, si lo hay, el pasaporte anterior.');
+      body.appendChild(pickers([['pas', 'Pasaporte', 'Para sacarlo o renovarlo.'], ['cie', 'CIE', 'Carta de identidad italiana.'], ['ambos', 'Los dos', 'Pasaporte y CIE en una sola carga.']], function (v) { st.tram = v; who(true); }));
+      go(h, move);
+    }
+    function who(move) {
+      st.i = -1; progress(0, 1, 'Inicio');
+      var h = head('¿Para quién es?', st.tram === 'pas' ? '' : 'Para la CIE hay que estar inscripto en el AIRE.');
+      body.appendChild(pickers([['mayor', 'Mayor de edad', 'Para vos o para otro adulto.'], ['menor', 'Menor de edad', 'Lo completa el padre o la madre.']], function (v) { if (st.kind !== v) st.d = carry(); st.kind = v; st.i = 0; step(true); }));
+      var nav = el('div', 'sf-nav'); nav.appendChild(btn('sf-back', 'Cambiar el trámite', function () { start(true); })); body.appendChild(nav);
+      go(h, move);
     }
 
+    function star(n) { var s = el('span', 'sf-rq', ' *'); s.setAttribute('aria-hidden', 'true'); n.appendChild(s); }
     function field(f, wrap) {
       var id = 'sf-' + f.k, box, input, err = el('span', 'sf-err'); err.id = id + '-e'; err.hidden = true;
       function set(v) { st.d[f.k] = v; save(); box.removeAttribute('data-bad'); err.hidden = true; refresh(wrap); }
+      if (f.t === 'note') { box = el('p', 'sf-f sf-warn', f.l); box.setAttribute('data-k', f.k); return box; }
       if (f.t === 'choice') {
-        box = el('fieldset', 'sf-f'); box.appendChild(el('legend', '', f.l));
+        box = el('fieldset', 'sf-f'); box.appendChild(el('legend', '', f.l)); if (f.req) star(box.firstChild);
         if (f.h) box.appendChild(el('span', 'hint', f.h));
         var os = el('div', 'sf-opts');
         f.o.forEach(function (o, n) {
-          var lab = el('label', 'sf-opt'), r = el('input'); r.type = 'radio'; r.name = id; r.value = o; r.id = id + '-' + n; r.checked = st.d[f.k] === o;
+          var lab = el('label', 'sf-opt'), r = el('input'); r.type = 'radio'; r.name = id; r.value = o; r.id = id + '-' + n; r.checked = st.d[f.k] === o; if (f.req) r.required = true;
           r.addEventListener('change', function () { set(o); });
           lab.appendChild(r); lab.appendChild(el('span', '', o)); os.appendChild(lab);
         });
         box.appendChild(os);
       } else {
-        box = el('div', 'sf-f'); var lab = el('label', '', f.l); lab.htmlFor = id; box.appendChild(lab);
+        box = el('div', 'sf-f'); var lab = el('label', '', f.l); lab.htmlFor = id; if (f.req) star(lab); box.appendChild(lab);
         if (f.h) { var hint = el('span', 'hint', f.h); hint.id = id + '-h'; box.appendChild(hint); }
         if (f.t === 'select') {
           input = el('select'); input.appendChild(new Option('Elegí una opción', ''));
@@ -384,7 +410,7 @@
           if (f.t === 'number') { input.inputMode = 'numeric'; input.min = f.min; input.max = f.max; }
           if (f.t === 'date') input.max = new Date().toISOString().slice(0, 10);
           if (f.ac) input.autocomplete = f.ac;
-          input.maxLength = 120;
+          input.maxLength = 120; if (f.cf) { input.autocapitalize = 'characters'; input.spellcheck = false; }
         }
         input.id = id; input.value = st.d[f.k] || ''; if (f.req) input.required = true;
         input.setAttribute('aria-describedby', (f.h ? id + '-h ' : '') + id + '-e');
@@ -401,8 +427,10 @@
       });
     }
     function check(f) {
+      if (f.t === 'note') return '';
       var v = (st.d[f.k] || '').trim();
       if (!v) return f.req ? (f.t === 'choice' || f.t === 'select' ? 'Elegí una opción.' : 'Completá este dato.') : '';
+      if (f.cf && !/^[A-Za-z0-9]{16}$/.test(v.replace(/\s/g, ''))) return 'Revisá el código fiscal: tiene 16 letras y números.';
       if (f.t === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'Revisá el correo: tiene que ser como nombre@ejemplo.com.';
       if (f.t === 'tel' && v.replace(/\D/g, '').length < 8) return 'Revisá el número: tiene que incluir el código de área.';
       if (f.t === 'number' && !(+v >= f.min && +v <= f.max)) return 'Ingresá la estatura en centímetros, por ejemplo 170.';
@@ -412,11 +440,11 @@
     function step(move) {
       var all = steps(), s = all[st.i];
       progress(st.i + 1, all.length + 1, 'Paso ' + (st.i + 1) + ' de ' + (all.length + 1));
-      var h = head(s[0], s[1]);
+      var h = head(s[0], s[1] + ' Solo los datos con * son obligatorios.');
       var form = el('form', 'sf-fields'); form.noValidate = true;
       s[2].forEach(function (f) { var b = field(f, form); b.hidden = !shown(f); form.appendChild(b); });
       var nav = el('div', 'sf-nav');
-      nav.appendChild(btn('sf-back', 'Volver', function () { if (st.i === 0) start(true); else { st.i--; step(true); } }));
+      nav.appendChild(btn('sf-back', 'Volver', function () { if (st.i === 0) who(true); else { st.i--; step(true); } }));
       var next = el('button', 'btn btn-primary', st.i === all.length - 1 ? 'Revisar' : 'Siguiente'); next.type = 'submit'; nav.appendChild(next);
       form.appendChild(nav);
       form.addEventListener('submit', function (e) {
@@ -424,6 +452,7 @@
         s[2].forEach(function (f) {
           if (!shown(f)) return;
           var box = form.querySelector('[data-k="' + f.k + '"]'), err = box.querySelector('.sf-err'), msg = check(f);
+          if (!err) return;
           err.textContent = msg; err.hidden = !msg;
           if (msg) { box.setAttribute('data-bad', ''); if (!first) first = box.querySelector('input, select'); } else box.removeAttribute('data-bad');
         });
@@ -437,10 +466,11 @@
       steps().forEach(function (s, n) { s[2].forEach(function (f) { if (shown(f) && st.d[f.k]) out.push([f.l.replace(/^¿|\?$/g, ''), fmt(f, st.d[f.k]), n]); }); });
       return out;
     }
+    function docs() { return st.tram === 'pas' ? 'del pasaporte anterior, si corresponde' : 'del pasaporte italiano, si corresponde'; }
     function message() {
-      var t = ['Solicitud de turno · Pasaporte italiano', 'Para: ' + KIND[st.kind].toLowerCase(), ''];
+      var t = ['Solicitud de turno · ' + TRAM[st.tram][1], 'Para: ' + KIND[st.kind].toLowerCase(), ''];
       rows().forEach(function (r) { t.push('• ' + r[0] + ': ' + r[1]); });
-      t.push('', 'Envío por este chat las fotos del DNI (frente y dorso) y del pasaporte anterior, si corresponde.');
+      t.push('', 'Envío por este chat las fotos del DNI (frente y dorso) y ' + docs() + '.');
       return t.join('\n');
     }
     function review(move) {
@@ -453,7 +483,8 @@
         sec.appendChild(top);
         var dl = el('dl');
         rows().filter(function (r) { return r[2] === n; }).forEach(function (r) { var w = el('div'); w.appendChild(el('dt', '', r[0])); w.appendChild(el('dd', '', r[1])); dl.appendChild(w); });
-        sec.appendChild(dl); body.appendChild(sec);
+        if (dl.firstChild) sec.appendChild(dl); else sec.appendChild(el('p', 'sf-none', 'Sin completar.'));
+        body.appendChild(sec);
       });
       var ok = el('label', 'sf-ok'), cb = el('input'); cb.type = 'checkbox'; cb.id = 'sf-okc';
       ok.appendChild(cb); ok.appendChild(el('span', '', 'Confirmo que los datos son correctos y autorizo a Migratio Gestoría a usarlos para gestionar el turno.'));
@@ -465,7 +496,7 @@
       send.innerHTML = '<svg aria-hidden="true"><use href="#ic-wa"/></svg>'; send.appendChild(document.createTextNode('Enviar por WhatsApp'));
       send.addEventListener('click', function (e) {
         if (!cb.checked) { e.preventDefault(); err.hidden = false; cb.focus(); return; }
-        if (ENDPOINT) { try { fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ tipo: st.kind, fecha: new Date().toISOString(), datos: st.d }) }); } catch (x) {} }
+        if (ENDPOINT) { try { fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ tramite: st.tram, tipo: st.kind, fecha: new Date().toISOString(), datos: st.d }) }); } catch (x) {} }
         setTimeout(function () { done(); }, 400);
       });
       cb.addEventListener('change', function () { err.hidden = true; });
@@ -476,19 +507,18 @@
     function done() {
       progress(1, 1, 'Enviado');
       var link = WA + encodeURIComponent(message());
-      var h = head('¡Gracias! Falta un solo paso', 'Mandanos por el mismo chat de WhatsApp una foto o escaneo del DNI (frente y dorso) y, si corresponde, del pasaporte anterior.');
+      var h = head('¡Gracias! Falta un solo paso', 'Mandanos por el mismo chat de WhatsApp una foto o escaneo del DNI (frente y dorso) y ' + docs() + '.');
       var nav = el('div', 'sf-nav sf-end');
       var again = el('a', 'btn btn-outline', 'No se abrió WhatsApp: reintentar'); again.href = link; again.target = '_blank'; again.rel = 'noopener'; nav.appendChild(again);
-      nav.appendChild(btn('btn btn-primary', 'Cargar otro familiar', function () { var keep = {}; SHARED.forEach(function (k) { if (st.d[k]) keep[k] = st.d[k]; }); st = { kind: '', i: -1, d: keep }; start(true); }));
+      nav.appendChild(btn('btn btn-primary', 'Cargar otro familiar', function () { st = { tram: st.tram, kind: '', i: -1, d: carry() }; who(true); }));
       body.appendChild(nav);
       var ig = el('p', 'sf-note'); ig.appendChild(document.createTextNode('Seguinos en Instagram, donde compartimos información para ciudadanos italianos: '));
       var a = el('a', '', '@migratio.gestoria'); a.href = 'https://instagram.com/migratio.gestoria'; a.target = '_blank'; a.rel = 'noopener'; ig.appendChild(a); ig.appendChild(document.createTextNode('.'));
       body.appendChild(ig);
-      var keep = {}; SHARED.forEach(function (k) { if (st.d[k]) keep[k] = st.d[k]; });
-      try { localStorage.setItem(KEY, JSON.stringify({ kind: '', i: -1, d: keep })); } catch (e) {}
+      try { localStorage.setItem(KEY, JSON.stringify({ tram: st.tram, kind: '', i: -1, d: carry() })); } catch (e) {}
       h.focus({ preventScroll: true });
     }
-    if (st.kind && st.i >= 0) { if (st.i >= steps().length) review(false); else step(false); } else start(false);
+    if (st.kind && st.i >= 0) { if (st.i >= steps().length) review(false); else step(false); } else if (st.tram) who(false); else start(false);
   })();
 </script>
 </body>
