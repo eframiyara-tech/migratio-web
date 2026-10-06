@@ -565,19 +565,25 @@
       body.appendChild(ok);
       var err = el('span', 'sf-err'); err.hidden = true; err.setAttribute('role', 'alert'); body.appendChild(err);
       var nav = el('div', 'sf-nav'), back = btn('sf-back', 'Volver', function () { attach(true); });
+      var sid = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      function fail() {
+        send.disabled = back.disabled = false; send.textContent = 'Enviar solicitud';
+        err.textContent = 'No pudimos enviar la solicitud. Revisá tu conexión y probá de nuevo; si sigue fallando, escribinos a ' + MAIL + '.'; err.hidden = false;
+      }
+      function json(r) { return r.json(); }
+      // Si la respuesta se pierde, pregunta al receptor si la solicitud llegó antes de avisar de un error.
+      function confirm() { fetch(ENDPOINT + '?id=' + sid).then(json).then(function (r) { if (r && r.recibido) done(); else fail(); }).catch(fail); }
       var send = btn('btn btn-primary', 'Enviar solicitud', function () {
         if (!cb.checked) { err.textContent = 'Marcá la casilla para enviar.'; err.hidden = false; cb.focus(); return; }
         err.hidden = true; send.disabled = back.disabled = true; send.textContent = 'Enviando…';
-        var data = { v: 1, id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8), tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', datos: rows().map(function (r) { return [r[0], r[1]]; }), archivos: list.filter(function (s) { return files[s[0]]; }).map(function (s) { var f = files[s[0]]; return { nombre: f.label + '.' + f.ext, tipo: f.type, datos: f.data }; }) };
-        fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data) }).then(function (r) { return r.json(); }).then(function (r) { if (!r || !r.ok) throw 0; done(); }).catch(function () {
-          send.disabled = back.disabled = false; send.textContent = 'Enviar solicitud';
-          err.textContent = 'No pudimos enviar la solicitud. Revisá tu conexión y probá de nuevo; si sigue fallando, escribinos a ' + MAIL + '.'; err.hidden = false;
-        });
+        var data = { v: 1, id: sid, tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', datos: rows().map(function (r) { return [r[0], r[1]]; }), archivos: list.filter(function (s) { return files[s[0]]; }).map(function (s) { var f = files[s[0]]; return { nombre: f.label + '.' + f.ext, tipo: f.type, datos: f.data }; }) };
+        var ac = window.AbortController ? new AbortController() : null, to = setTimeout(function () { if (ac) ac.abort(); }, 90000);
+        fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data), signal: ac ? ac.signal : undefined }).then(json).then(function (r) { clearTimeout(to); if (r && r.ok) done(); else confirm(); }).catch(function () { clearTimeout(to); confirm(); });
       });
       send.id = 'sf-send';
       cb.addEventListener('change', function () { err.hidden = true; });
       nav.appendChild(back); nav.appendChild(send); body.appendChild(nav);
-      body.appendChild(el('p', 'sf-note', 'El envío puede tardar unos segundos: no cierres la página. Usamos estos datos solo para gestionar tu turno; podés pedirnos que los corrijamos o los eliminemos cuando quieras.'));
+      body.appendChild(el('p', 'sf-note', 'El envío puede tardar hasta un minuto: no cierres la página. Usamos estos datos solo para gestionar tu turno; podés pedirnos que los corrijamos o los eliminemos cuando quieras.'));
       go(h, move);
     }
     function done() {
