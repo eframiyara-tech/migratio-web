@@ -72,6 +72,13 @@
   .sf-opt input:focus-visible + span { outline: 3px solid var(--navy); outline-offset: 3px; }
   .sf-f[data-bad] .sf-opt span { border-color: var(--burgundy); }
   p.sf-warn { padding: 12px 16px; border-left: 2px solid var(--burgundy); background: var(--paper); font-size: .95rem; }
+  .sf-up { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; margin-top: 8px; }
+  .sf-file { position: relative; display: inline-flex; cursor: pointer; }
+  .sf-f .sf-file input { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; padding: 0; border: 0; opacity: 0; cursor: pointer; }
+  .sf-file input:focus-visible + .btn { outline: 3px solid var(--navy); outline-offset: 3px; }
+  .sf-f[data-bad] .sf-file .btn { border-color: var(--burgundy); }
+  .sf-fname { color: var(--ink-soft); font-size: .92rem; overflow-wrap: anywhere; min-width: 0; }
+  .sf-nav .btn:disabled { opacity: .6; cursor: progress; }
   .sf-rq { color: var(--burgundy); }
   .sf-none { margin: 6px 0 0; color: var(--ink-soft); font-size: .95rem; }
   .sf-err { color: var(--burgundy); font-size: .88rem; font-weight: 600; }
@@ -212,7 +219,7 @@
         <div class="sf-top"><span class="mono" id="sf-step">Inicio</span><span class="mono" id="sf-kind">Consulado italiano</span></div>
         <div class="sf-bar" aria-hidden="true"><i id="sf-bar"></i></div>
         <div class="sf-body" id="sf-body">
-          <noscript><p class="sf-sub">Este formulario necesita JavaScript. Podés <a href="https://wa.me/5492616530445">enviarnos tus datos por WhatsApp</a>.</p></noscript>
+          <noscript><p class="sf-sub">Este formulario necesita JavaScript. Escribinos a <a href="mailto:migratio.gestoria@gmail.com">migratio.gestoria@gmail.com</a>.</p></noscript>
         </div>
       </div>
     </div>
@@ -255,12 +262,13 @@
   mnav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !mnav.hidden) { setMenu(false); menuBtn.focus(); } });
 
-  // Solicitud de turno (pasaporte y CIE): los datos se arman en el dispositivo y se envían por WhatsApp.
+  // Solicitud de turno (pasaporte y CIE): los datos y las fotos se envían al receptor de la gestoría (ENDPOINT).
   (function () {
     var body = document.getElementById('sf-body'); if (!body) return;
     var stepEl = document.getElementById('sf-step'), kindEl = document.getElementById('sf-kind'), bar = document.getElementById('sf-bar');
-    var WA = 'https://wa.me/5492616530445?text=', MAIL = 'migratio.gestoria@gmail.com';
-    var ENDPOINT = ''; // opcional: URL que recibe la solicitud y la guarda en la planilla
+    var MAIL = 'migratio.gestoria@gmail.com';
+    var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwa4T09p1_f0tFNOzWPgV_vEieeAXlsQqr9HDIGg0OqPt9U1sEmQsPEyN7xbFRwlIKf/exec'; // URL del receptor: guarda la solicitud en la planilla y las fotos en Drive
+    var files = {}; // fotos adjuntas: quedan en memoria hasta enviar
     var KEY = 'mg-solicitud-pasaporte';
     var SN = ['Sí', 'No'];
     var OJOS = ['Marrón', 'Verde', 'Celeste', 'Gris', 'Negro'];
@@ -373,7 +381,7 @@
     }
     function start(move) {
       st.tram = ''; st.kind = ''; st.i = -1; progress(0, 1, 'Inicio');
-      var h = head('¿Qué turno necesitás?', 'Son unos 5 minutos. Tené a mano el DNI y, si lo hay, el pasaporte anterior.');
+      var h = head('¿Qué turno necesitás?', 'Son unos 5 minutos. Tené a mano el DNI y, si lo hay, el pasaporte anterior: al final vas a subir una foto de cada uno.');
       body.appendChild(pickers([['pas', 'Pasaporte', 'Para sacarlo o renovarlo.'], ['cie', 'CIE', 'Carta de identidad italiana.'], ['ambos', 'Los dos', 'Pasaporte y CIE en una sola carga.']], function (v) { st.tram = v; who(true); }));
       go(h, move);
     }
@@ -441,13 +449,13 @@
     }
     function step(move) {
       var all = steps(), s = all[st.i];
-      progress(st.i + 1, all.length + 1, 'Paso ' + (st.i + 1) + ' de ' + (all.length + 1));
+      progress(st.i + 1, all.length + 2, 'Paso ' + (st.i + 1) + ' de ' + (all.length + 2));
       var h = head(s[0], s[1] + ' Solo los datos con * son obligatorios.');
       var form = el('form', 'sf-fields'); form.noValidate = true;
       s[2].forEach(function (f) { var b = field(f, form); b.hidden = !shown(f); form.appendChild(b); });
       var nav = el('div', 'sf-nav');
       nav.appendChild(btn('sf-back', 'Volver', function () { if (st.i === 0) who(true); else { st.i--; step(true); } }));
-      var next = el('button', 'btn btn-primary', st.i === all.length - 1 ? 'Revisar' : 'Siguiente'); next.type = 'submit'; nav.appendChild(next);
+      var next = el('button', 'btn btn-primary', 'Siguiente'); next.type = 'submit'; nav.appendChild(next);
       form.appendChild(nav);
       form.addEventListener('submit', function (e) {
         e.preventDefault(); var first = null;
@@ -459,7 +467,7 @@
           if (msg) { box.setAttribute('data-bad', ''); if (!first) first = box.querySelector('input, select'); } else box.removeAttribute('data-bad');
         });
         if (first) { first.focus(); return; }
-        st.i++; if (st.i >= all.length) review(true); else step(true);
+        st.i++; if (st.i >= all.length) attach(true); else step(true);
       });
       body.appendChild(form); go(h, move);
     }
@@ -468,62 +476,123 @@
       steps().forEach(function (s, n) { s[2].forEach(function (f) { if (shown(f) && st.d[f.k]) out.push([f.l.replace(/^¿|\?$/g, ''), fmt(f, st.d[f.k]), n]); }); });
       return out;
     }
-    function docs() { return st.tram === 'pas' ? 'del pasaporte anterior, si corresponde' : 'del pasaporte italiano, si corresponde'; }
-    function message() {
-      var t = ['Solicitud de turno · ' + TRAM[st.tram][1], 'Para: ' + KIND[st.kind].toLowerCase(), ''];
-      rows().forEach(function (r) { t.push('• ' + r[0] + ': ' + r[1]); });
-      t.push('', 'Envío las fotos del DNI (frente y dorso) y ' + docs() + ', por este chat o por correo.');
-      return t.join('\n');
+    // Documentación: fotos o PDF. Las fotos se achican en el dispositivo antes de enviarlas.
+    function slots() {
+      var men = st.kind === 'menor', out = [
+        ['dniF', men ? 'DNI del menor, frente' : 'DNI, frente', 1],
+        ['dniD', men ? 'DNI del menor, dorso' : 'DNI, dorso', 1],
+        ['pas', st.tram === 'pas' ? 'Pasaporte anterior, si corresponde' : 'Pasaporte italiano, si corresponde', 0, 'La página con la foto y los datos.']
+      ];
+      if (men) out.push(['prog', 'Documento del progenitor italiano', 0, 'DNI o pasaporte.']);
+      return out;
     }
-    function review(move) {
-      var all = steps(); st.i = all.length;
-      progress(all.length + 1, all.length + 1, 'Paso ' + (all.length + 1) + ' de ' + (all.length + 1));
-      var h = head('Revisá tus datos', 'Si algo está mal, volvé al paso y corregilo.');
-      all.forEach(function (s, n) {
-        var sec = el('div', 'sf-rev'), top = el('div', 'sf-revtop');
-        top.appendChild(el('h3', '', s[0])); top.appendChild(btn('sf-edit', 'Editar', function () { st.i = n; step(true); })); top.lastChild.setAttribute('aria-label', 'Editar ' + s[0].toLowerCase());
-        sec.appendChild(top);
-        var dl = el('dl');
-        rows().filter(function (r) { return r[2] === n; }).forEach(function (r) { var w = el('div'); w.appendChild(el('dt', '', r[0])); w.appendChild(el('dd', '', r[1])); dl.appendChild(w); });
-        if (dl.firstChild) sec.appendChild(dl); else sec.appendChild(el('p', 'sf-none', 'Sin completar.'));
-        body.appendChild(sec);
+    function size(n) { return n > 1048576 ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
+    function b64(blob, cb) { var r = new FileReader(); r.onload = function () { cb(String(r.result).split(',')[1] || ''); }; r.onerror = function () { cb(''); }; r.readAsDataURL(blob); }
+    function prep(file, cb) {
+      var MAX = 6291456;
+      function raw(type, ext) { if (file.size > MAX) return cb('El archivo pesa más de 6 MB. Probá con otro.'); b64(file, function (d) { d ? cb('', { ext: ext, type: type, data: d, size: file.size }) : cb('No pudimos leer el archivo. Probá de nuevo.'); }); }
+      if (file.type === 'application/pdf') return raw('application/pdf', 'pdf');
+      if (!/^image\//.test(file.type)) return cb('Subí una foto o un PDF.');
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var k = Math.min(1, 2000 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas');
+        c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        c.toBlob(function (bl) { if (!bl) return raw(file.type, 'jpg'); b64(bl, function (d) { d ? cb('', { ext: 'jpg', type: 'image/jpeg', data: d, size: bl.size }) : cb('No pudimos leer la foto. Probá de nuevo.'); }); }, 'image/jpeg', 0.82);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); cb('No pudimos leer la foto. Probá con otra o con un PDF.'); };
+      img.src = url;
+    }
+    function attach(move) {
+      var all = steps(), list = slots(); st.i = all.length;
+      progress(all.length + 1, all.length + 2, 'Paso ' + (all.length + 1) + ' de ' + (all.length + 2));
+      var h = head('Documentación', 'Subí una foto nítida o un PDF de cada documento. Solo los que tienen * son obligatorios.');
+      var form = el('form', 'sf-fields'); form.noValidate = true;
+      list.forEach(function (s) {
+        var id = 'sf-file-' + s[0], box = el('div', 'sf-f'), lab = el('label', '', s[1]); lab.htmlFor = id; if (s[2]) star(lab); box.appendChild(lab);
+        if (s[3]) box.appendChild(el('span', 'hint', s[3]));
+        var row = el('div', 'sf-up'), pick = el('label', 'sf-file'), input = el('input'), face = el('span', 'btn btn-outline'), name = el('span', 'sf-fname'), err = el('span', 'sf-err');
+        input.type = 'file'; input.id = id; input.accept = 'image/*,application/pdf'; if (s[2]) input.required = true;
+        err.id = id + '-e'; err.hidden = true; input.setAttribute('aria-describedby', id + '-n ' + id + '-e'); name.id = id + '-n';
+        var del = btn('sf-edit', 'Quitar', function () { delete files[s[0]]; paint(); input.focus(); }); del.setAttribute('aria-label', 'Quitar ' + s[1].toLowerCase());
+        function paint() { var f = files[s[0]]; face.textContent = f ? 'Cambiar' : 'Elegir foto o PDF'; name.textContent = f ? f.name + ' · ' + size(f.size) : ''; del.hidden = !f; if (f) { box.removeAttribute('data-bad'); err.hidden = true; } }
+        input.addEventListener('change', function () {
+          var file = input.files && input.files[0]; if (!file) return;
+          name.textContent = 'Preparando…'; err.hidden = true;
+          prep(file, function (msg, f) {
+            input.value = '';
+            if (msg) { err.textContent = msg; err.hidden = false; box.setAttribute('data-bad', ''); paint(); return; }
+            f.slot = s[0]; f.label = s[1].replace(/, si corresponde$/, ''); f.name = file.name; files[s[0]] = f; paint();
+          });
+        });
+        pick.appendChild(input); pick.appendChild(face); row.appendChild(pick); row.appendChild(name); row.appendChild(del);
+        box.appendChild(row); box.appendChild(err); box.setAttribute('data-k', s[0]); form.appendChild(box); paint();
       });
-      var ok = el('label', 'sf-ok'), cb = el('input'); cb.type = 'checkbox'; cb.id = 'sf-okc';
-      ok.appendChild(cb); ok.appendChild(el('span', '', 'Confirmo que los datos son correctos y autorizo a Migratio Gestoría a usarlos para gestionar el turno.'));
-      body.appendChild(ok);
-      var err = el('span', 'sf-err', 'Marcá la casilla para enviar.'); err.hidden = true; body.appendChild(err);
       var nav = el('div', 'sf-nav');
       nav.appendChild(btn('sf-back', 'Volver', function () { st.i = all.length - 1; step(true); }));
-      var send = el('a', 'btn btn-primary'); send.href = WA + encodeURIComponent(message()); send.target = '_blank'; send.rel = 'noopener'; send.id = 'sf-send';
-      send.innerHTML = '<svg aria-hidden="true"><use href="#ic-wa"/></svg>'; send.appendChild(document.createTextNode('Enviar por WhatsApp'));
-      send.addEventListener('click', function (e) {
-        if (!cb.checked) { e.preventDefault(); err.hidden = false; cb.focus(); return; }
-        if (ENDPOINT) { try { fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ tramite: st.tram, tipo: st.kind, fecha: new Date().toISOString(), datos: st.d }) }); } catch (x) {} }
-        setTimeout(function () { done(); }, 400);
+      var next = el('button', 'btn btn-primary', 'Revisar'); next.type = 'submit'; nav.appendChild(next); form.appendChild(nav);
+      form.addEventListener('submit', function (e) {
+        e.preventDefault(); var first = null;
+        list.forEach(function (s) {
+          if (!s[2] || files[s[0]]) return;
+          var box = form.querySelector('[data-k="' + s[0] + '"]'), err = box.querySelector('.sf-err');
+          err.textContent = 'Subí este documento.'; err.hidden = false; box.setAttribute('data-bad', ''); if (!first) first = box.querySelector('input');
+        });
+        if (first) { first.focus(); return; }
+        review(true);
       });
+      body.appendChild(form); go(h, move);
+    }
+    function review(move) {
+      var all = steps(), list = slots(); st.i = all.length;
+      progress(all.length + 2, all.length + 2, 'Paso ' + (all.length + 2) + ' de ' + (all.length + 2));
+      var h = head('Revisá tus datos', 'Si algo está mal, volvé al paso y corregilo.');
+      function section(title, fn) {
+        var sec = el('div', 'sf-rev'), top = el('div', 'sf-revtop'), dl = el('dl');
+        top.appendChild(el('h3', '', title)); top.appendChild(btn('sf-edit', 'Editar', fn)); top.lastChild.setAttribute('aria-label', 'Editar ' + title.toLowerCase());
+        sec.appendChild(top); body.appendChild(sec);
+        return function (k, v) { var w = el('div'); w.appendChild(el('dt', '', k)); w.appendChild(el('dd', '', v)); dl.appendChild(w); if (!dl.parentNode) sec.appendChild(dl); };
+      }
+      all.forEach(function (s, n) {
+        var add = section(s[0], function () { st.i = n; step(true); }), mine = rows().filter(function (r) { return r[2] === n; });
+        mine.forEach(function (r) { add(r[0], r[1]); });
+        if (!mine.length) body.lastChild.appendChild(el('p', 'sf-none', 'Sin completar.'));
+      });
+      var addDoc = section('Documentación', function () { attach(true); });
+      list.forEach(function (s) { if (files[s[0]]) addDoc(files[s[0]].label, files[s[0]].name); });
+      var ok = el('label', 'sf-ok'), cb = el('input'); cb.type = 'checkbox'; cb.id = 'sf-okc';
+      ok.appendChild(cb); ok.appendChild(el('span', '', 'Confirmo que los datos son correctos y autorizo a Migratio Gestoría a usarlos, junto con la documentación adjunta, para gestionar el turno.'));
+      body.appendChild(ok);
+      var err = el('span', 'sf-err'); err.hidden = true; err.setAttribute('role', 'alert'); body.appendChild(err);
+      var nav = el('div', 'sf-nav'), back = btn('sf-back', 'Volver', function () { attach(true); });
+      var send = btn('btn btn-primary', 'Enviar solicitud', function () {
+        if (!cb.checked) { err.textContent = 'Marcá la casilla para enviar.'; err.hidden = false; cb.focus(); return; }
+        err.hidden = true; send.disabled = back.disabled = true; send.textContent = 'Enviando…';
+        var data = { v: 1, id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8), tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', datos: rows().map(function (r) { return [r[0], r[1]]; }), archivos: list.filter(function (s) { return files[s[0]]; }).map(function (s) { var f = files[s[0]]; return { nombre: f.label + '.' + f.ext, tipo: f.type, datos: f.data }; }) };
+        fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data) }).then(function (r) { return r.json(); }).then(function (r) { if (!r || !r.ok) throw 0; done(); }).catch(function () {
+          send.disabled = back.disabled = false; send.textContent = 'Enviar solicitud';
+          err.textContent = 'No pudimos enviar la solicitud. Revisá tu conexión y probá de nuevo; si sigue fallando, escribinos a ' + MAIL + '.'; err.hidden = false;
+        });
+      });
+      send.id = 'sf-send';
       cb.addEventListener('change', function () { err.hidden = true; });
-      nav.appendChild(send); body.appendChild(nav);
-      body.appendChild(el('p', 'sf-note', 'Se abre WhatsApp con tus datos ya escritos: tocá enviar. Usamos estos datos solo para gestionar tu turno; podés pedirnos que los corrijamos o los eliminemos cuando quieras.'));
+      nav.appendChild(back); nav.appendChild(send); body.appendChild(nav);
+      body.appendChild(el('p', 'sf-note', 'El envío puede tardar unos segundos: no cierres la página. Usamos estos datos solo para gestionar tu turno; podés pedirnos que los corrijamos o los eliminemos cuando quieras.'));
       go(h, move);
     }
     function done() {
       progress(1, 1, 'Enviado');
-      var link = WA + encodeURIComponent(message());
-      var h = head('¡Gracias! Falta un solo paso', 'Mandanos una foto o escaneo del DNI (frente y dorso) y ' + docs() + ': por el mismo chat de WhatsApp o por correo.');
+      var h = head('Recibimos tu solicitud', 'Ya tenemos tus datos y tu documentación. Te escribimos cuando esté tu turno.');
       var nav = el('div', 'sf-nav sf-end');
-      var again = el('a', 'btn btn-outline', 'No se abrió WhatsApp: reintentar'); again.href = link; again.target = '_blank'; again.rel = 'noopener'; nav.appendChild(again);
-      nav.appendChild(btn('btn btn-primary', 'Cargar otro familiar', function () { st = { tram: st.tram, kind: '', i: -1, d: carry() }; who(true); }));
+      nav.appendChild(btn('btn btn-primary', 'Cargar otro familiar', function () { files = {}; st = { tram: st.tram, kind: '', i: -1, d: carry() }; who(true); }));
       body.appendChild(nav);
-      var ml = el('p', 'sf-note'); ml.appendChild(document.createTextNode('Si preferís el correo, enviá las fotos a '));
-      var m = el('a', '', MAIL); m.href = 'mailto:' + MAIL + '?subject=' + encodeURIComponent('Documentación para turno · ' + TRAM[st.tram][1] + (st.d.nombre ? ' · ' + st.d.nombre : '')); ml.appendChild(m); ml.appendChild(document.createTextNode('.'));
-      body.appendChild(ml);
       var ig = el('p', 'sf-note'); ig.appendChild(document.createTextNode('Seguinos en Instagram, donde compartimos información para ciudadanos italianos: '));
       var a = el('a', '', '@migratio.gestoria'); a.href = 'https://instagram.com/migratio.gestoria'; a.target = '_blank'; a.rel = 'noopener'; ig.appendChild(a); ig.appendChild(document.createTextNode('.'));
       body.appendChild(ig);
       try { localStorage.setItem(KEY, JSON.stringify({ tram: st.tram, kind: '', i: -1, d: carry() })); } catch (e) {}
-      h.focus({ preventScroll: true });
+      h.focus({ preventScroll: true }); document.getElementById('solicitud').scrollIntoView({ block: 'start' });
     }
-    if (st.kind && st.i >= 0) { if (st.i >= steps().length) review(false); else step(false); } else if (st.tram) who(false); else start(false);
+    if (st.kind && st.i >= 0) { if (st.i >= steps().length) attach(false); else step(false); } else if (st.tram) who(false); else start(false);
   })();
 </script>
 </body>
