@@ -592,9 +592,6 @@
       var nav = el('div', 'sf-nav sf-end');
       nav.appendChild(btn('btn btn-primary', 'Cargar otro familiar', function () { files = {}; st = { tram: st.tram, kind: '', i: -1, d: carry() }; who(true); }));
       body.appendChild(nav);
-      var ig = el('p', 'sf-note'); ig.appendChild(document.createTextNode('Seguinos en Instagram, donde compartimos información para ciudadanos italianos: '));
-      var a = el('a', '', '@migratio.gestoria'); a.href = 'https://instagram.com/migratio.gestoria'; a.target = '_blank'; a.rel = 'noopener'; ig.appendChild(a); ig.appendChild(document.createTextNode('.'));
-      body.appendChild(ig);
       try { localStorage.setItem(KEY, JSON.stringify({ tram: st.tram, kind: '', i: -1, d: carry() })); } catch (e) {}
       h.focus({ preventScroll: true }); document.getElementById('solicitud').scrollIntoView({ block: 'start' });
     }
