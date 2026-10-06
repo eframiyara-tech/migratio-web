@@ -156,11 +156,13 @@
   .mnav .wrap { display: flex; flex-direction: column; padding-block: 8px 16px; }
   .mnav a { text-decoration: none; font-weight: 600; padding: 12px 0; min-height: 44px; border-bottom: 1px solid var(--line); }
   .mnav a:last-child { border-bottom: none; }
-  @media (max-width: 900px) {
+  nav.links { gap: 20px; font-size: .86rem; }
+  nav.links a { white-space: nowrap; }
+  @media (max-width: 1200px) {
     nav.links { display: none; }
     .menu-btn { display: grid; }
   }
-  @media (min-width: 901px) { .mnav { display: none !important; } }
+  @media (min-width: 1201px) { .mnav { display: none !important; } }
 
   .skip {
     position: absolute;
@@ -860,11 +862,13 @@
   <div class="wrap nav-row">
     <a href="#top" class="brand" aria-label="Migratio Gestoría, inicio"><img src="logo-v2.png" alt="Migratio Gestoría"></a>
     <nav class="links" aria-label="Secciones">
-      <a href="#porque">Por qué elegirnos</a>
-      <a href="#tramites">Trámites</a>
-      <a href="#juicios">Juicios en Italia</a>
-      <a href="#proceso">Cómo trabajamos</a>
-      <a href="#faq">Preguntas</a>
+      <a href="ciudadania-italiana/">Ciudadanía italiana</a>
+      <a href="juicio-ciudadania-italiana/">Juicio en Italia</a>
+      <a href="turnos-consulado-italiano/">Turnos</a>
+      <a href="ciudadania-espanola/">Ciudadanía española</a>
+      <a href="visa-estados-unidos/">Visa EEUU</a>
+      <a href="visas-oceania/">Oceanía</a>
+      <a href="#tramites">Todos los trámites</a>
     </nav>
     <div class="nav-actions">
       <a class="btn btn-primary nav-cta" href="#contacto">Contacto</a>
@@ -875,9 +879,13 @@
   </div>
   <nav class="mnav" id="mnav" aria-label="Secciones" hidden>
     <div class="wrap">
-      <a href="#porque">Por qué elegirnos</a>
-      <a href="#tramites">Trámites</a>
-      <a href="#juicios">Juicios en Italia</a>
+      <a href="#tramites">Todos los trámites</a>
+      <a href="ciudadania-italiana/">Ciudadanía italiana (vía consular)</a>
+      <a href="juicio-ciudadania-italiana/">Juicio de ciudadanía italiana</a>
+      <a href="turnos-consulado-italiano/">Turnos de pasaporte, CIE y ciudadanía italiana</a>
+      <a href="ciudadania-espanola/">Ciudadanía española</a>
+      <a href="visa-estados-unidos/">Visa de turista EEUU</a>
+      <a href="visas-oceania/">Visas para Australia, Nueva Zelanda y Bali</a>
       <a href="#proceso">Cómo trabajamos</a>
       <a href="#faq">Preguntas frecuentes</a>
       <a href="#contacto">Contacto</a>
@@ -938,6 +946,46 @@
     </div>
   </div>
 
+  <section id="turnos" class="block" style="border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <div class="head">
+        <span class="mono kicker">Consulado italiano · Turnos</span>
+        <h2>Turnos de pasaporte, CIE y ciudadanía italiana</h2>
+        <p>Conseguimos el turno rápido, en casos urgentes incluso de un día para el otro, a tu nombre y con tu documentación revisada. Vos solo vas al consulado el día indicado.</p>
+      </div>
+      <div class="req-grid">
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-passport"/></svg>
+          <span class="mono">Exprés: hasta 7 días</span>
+          <h3>Pasaporte italiano</h3>
+          <p>Turno para sacarlo o renovarlo. En modalidad común, hasta 30 días.</p>
+        </div>
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg>
+          <span class="mono">Exprés: hasta 7 días</span>
+          <h3>Carta de identidad (CIE)</h3>
+          <p>Turno para la carta d’identità elettronica. En modalidad común, hasta 20 días.</p>
+        </div>
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-calendar"/></svg>
+          <span class="mono">Turno en unos 10 días</span>
+          <h3>Turno de ciudadanía</h3>
+          <p>Para presentar tu carpeta, con la documentación revisada antes.</p>
+        </div>
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg>
+          <span class="mono">Carpeta completa</span>
+          <h3>Hijos menores</h3>
+          <p>Ciudadanía italiana para hijos menores: actas, traducción y turno.</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px">
+        <a class="btn btn-primary" href="turnos-consulado-italiano/">Ver turnos y plazos</a>
+        <a class="btn btn-outline" href="https://wa.me/5492616530445?text=Hola%2C%20Migratio.%20Quiero%20consultar%20por%20un%20turno%20en%20el%20consulado%20italiano." target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg>Consultar por un turno</a>
+      </div>
+    </div>
+  </section>
+
   <section id="porque" class="block">
     <div class="wrap">
       <div class="head">
@@ -995,10 +1043,10 @@
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-search"/></svg><h4>Búsqueda de actas y genealogía</h4><p>Investigación genealógica y localización de partidas.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-rings"/></svg><h4>Ciudadanía por matrimonio</h4><p>3 años de matrimonio (2 si viven en Italia, la mitad con hijos) y certificado B1.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg><h4>Inscripción al AIRE</h4><p>Registro obligatorio para italianos residentes en el exterior. Lo tramitamos en Fast It, el portal consular.</p></article>
-          <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg><h4>Carta de identidad electrónica (CIE)</h4><p>Turno en Prenot@mi y documentación lista. Requiere estar en el AIRE y presentarte en el consulado.</p></article>
-          <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-calendar"/></svg><h4>Turnos en Prenot@mi</h4><p>Pasaporte, CIE y demás servicios consulares que se piden con turno.</p></article>
+          <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg><h4>Carta de identidad electrónica (CIE)</h4><p>Turno en Prenot@mi y documentación lista. Requiere estar en el AIRE y presentarte en el consulado. <a class="more" href="turnos-consulado-italiano/#cie">Ver turnos de CIE →</a></p></article>
+          <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-calendar"/></svg><h4>Turnos en Prenot@mi</h4><p>Pasaporte, CIE y ciudadanía, con modalidad exprés. <a class="more" href="turnos-consulado-italiano/">Ver plazos y cómo trabajamos →</a></p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-search"/></svg><h4>Código fiscal italiano</h4><p>Atribución o validación en Fast It. El certificado también sirve para pedir el SPID.</p></article>
-          <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg><h4>Inscripción de menores</h4><p>Inscripción de hijos e hijas ante el consulado.</p></article>
+          <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg><h4>Inscripción y ciudadanía de menores</h4><p>Inscripción de hijos e hijas ante el consulado, y ciudadanía por declaración de los padres. <a class="more" href="turnos-consulado-italiano/#menores">Ver requisitos y plazos →</a></p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-home"/></svg><h4>Actualización de domicilio y estado civil</h4><p>Tus datos al día ante el consulado, con los cambios de domicilio por Fast It.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-globe"/></svg><h4>Traducciones al italiano</h4><p>Simples y públicas, para organismos italianos.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-stamp"/></svg><h4>Asseverazioni y doble apostilla</h4><p>Legalización jurada y doble apostillado, cuando se requiere.</p></article>
@@ -1139,10 +1187,12 @@
 
       <div class="juicios-cta">
         <p>Contamos con profesionales matriculados en Italia para llevar adelante el juicio, y te acompañamos en los trámites previos y posteriores hasta obtener la ciudadanía.</p>
-        <a class="btn btn-primary" href="https://wa.me/5492616530445" target="_blank" rel="noopener">Consultar tu caso</a>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <a class="btn btn-primary" href="juicio-ciudadania-italiana/">Ver la guía completa del juicio</a>
+          <a class="btn btn-outline" href="https://wa.me/5492616530445" target="_blank" rel="noopener">Consultar tu caso</a>
+        </div>
       </div>
       <p class="fine">Estos elementos no son excepciones previstas en la ley: sirven para evaluar si hay argumentos para un juicio, sin garantía de resultado. La jurisprudencia varía según el tribunal; analizamos cada caso antes de avanzar y te decimos si no conviene iniciarlo. Fuentes oficiales: <a href="https://consmendoza.esteri.it/es/servizi-consolari-e-visti/servizi-per-il-cittadino-straniero/ciudadania-y-adopcion/" target="_blank" rel="noopener">Consulado de Italia en Mendoza</a> · <a href="https://www.cortecostituzionale.it/scheda-pronuncia/2026/63" target="_blank" rel="noopener">Corte Costituzionale, sentenza 63/2026</a>. Verificado el 29/09/2026.</p>
-      <p class="guide-link"><a class="more" href="juicio-ciudadania-italiana/">Guía completa del juicio: documentación, pasos y preguntas frecuentes →</a></p>
     </div>
   </section>
 
@@ -1211,6 +1261,7 @@
               <option value="">Elegí un trámite</option>
               <option value="italiana">Ciudadanía italiana</option>
               <option value="juicio">Juicio de ciudadanía italiana</option>
+              <option value="turnos">Turno en el consulado italiano</option>
               <option value="espanola">Ciudadanía española</option>
               <option value="argentina">Ciudadanía argentina</option>
               <option value="eeuu">Visa para Estados Unidos</option>
@@ -1281,9 +1332,12 @@
       <p>Gestoría migratoria y consular. Atención 100% remota desde Mendoza, Argentina, para todo el mundo.</p>
     </div>
     <nav class="f-links" aria-label="Pie de página">
-      <a href="#tramites">Trámites</a>
-      <a href="#juicios">Juicios en Italia</a>
-      <a href="#proceso">Cómo trabajamos</a>
+      <a href="ciudadania-italiana/">Ciudadanía italiana</a>
+      <a href="juicio-ciudadania-italiana/">Juicio de ciudadanía italiana</a>
+      <a href="turnos-consulado-italiano/">Turnos consulado italiano</a>
+      <a href="ciudadania-espanola/">Ciudadanía española</a>
+      <a href="visa-estados-unidos/">Visa EEUU</a>
+      <a href="visas-oceania/">Visas Oceanía</a>
       <a href="#faq">Preguntas</a>
       <a href="#contacto">Contacto</a>
     </nav>
@@ -1399,11 +1453,15 @@
       pas: ['Pasaporte', [['Argentino', 'Viajaría con pasaporte argentino.'], ['Italiano', 'Viajaría con pasaporte italiano.'], ['Español', 'Viajaría con pasaporte español.']]],
       doc: ['Qué necesitás', [['Búsqueda de actas', 'Necesito una búsqueda de actas.'], ['Rectificación de actas', 'Necesito rectificar un acta.'], ['Apostilla', 'Necesito apostillar documentos.'], ['Traducción', 'Necesito una traducción.']]],
       pais: ['País de los documentos', [['Argentina', 'Los documentos son de Argentina.'], ['Italia', 'Los documentos son de Italia.'], ['España', 'Los documentos son de España.'], ['Otro país', 'Los documentos son de otro país.']]],
+      turnoTipo: ['Trámite', [['Pasaporte italiano', 'Necesito un turno para el pasaporte italiano.'], ['Carta de identidad (CIE)', 'Necesito un turno para la carta de identidad italiana (CIE).'], ['Ciudadanía italiana', 'Necesito un turno para presentar la carpeta de ciudadanía italiana.'], ['Ciudadanía para hijos menores', 'Quiero tramitar la ciudadanía italiana de mis hijos menores.']]],
+      urg: ['Para cuándo lo necesitás', [['Lo antes posible', 'Lo necesito lo antes posible.'], ['En las próximas semanas', 'Lo necesito en las próximas semanas.'], ['No tengo apuro', 'No tengo apuro.']]],
+      consul: ['Tu consulado', null, 'Mi consulado es el de '],
       otro: ['Contanos en una línea', null]
     };
     var T = {
       italiana: ['ciudadanía italiana', ['antIt', 'actas']],
       juicio: ['un juicio de ciudadanía italiana', ['antIt', 'actas']],
+      turnos: ['un turno en el consulado italiano', ['turnoTipo', 'urg', 'consul']],
       espanola: ['ciudadanía española', ['antEs', 'actas']],
       argentina: ['ciudadanía argentina', ['sitAr']],
       eeuu: ['una visa para Estados Unidos', ['eeuu', 'cuando']],
@@ -1438,7 +1496,7 @@
       extra.querySelectorAll('[data-f]').forEach(function (el) {
         var f = F[el.getAttribute('data-f')];
         if (f[1]) { if (el.value !== '') { var s = f[1][+el.value][1]; if (s) parts.push(s); } }
-        else { var v = clean(el.value); if (v) parts.push(/[.!?]$/.test(v) ? v : v + '.'); }
+        else { var v = clean(el.value); if (v) parts.push((f[2] || '') + (/[.!?]$/.test(v) ? v : v + '.')); }
       });
       if (l) parts.push('Escribo desde ' + l + '.');
       var msg = parts.join(' ');
