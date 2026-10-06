@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Solicitud de turno · Pasaporte italiano · Migratio</title>
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="Formulario para clientes de Migratio Gestoría: datos para gestionar el turno de pasaporte italiano.">
+<meta name="theme-color" content="#efe6d3">
+<link rel="icon" href="../favicon.ico?v=2" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png?v=2">
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png?v=2">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<link rel="canonical" href="https://migratiogestoria.com/solicitud-pasaporte/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Migratio Gestoría">
+<meta property="og:title" content="Solicitud de turno · Pasaporte italiano">
+<meta property="og:description" content="Formulario para clientes de Migratio Gestoría: datos para gestionar el turno de pasaporte italiano.">
+<meta property="og:url" content="https://migratiogestoria.com/solicitud-pasaporte/">
+<meta property="og:image" content="https://migratiogestoria.com/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../site.css">
+<style>
+  .sf-hero .wrap { padding-block: clamp(28px, 5vw, 52px); grid-template-columns: 1fr; }
+  .sf-hero h1 { font-size: clamp(2rem, 4.6vw, 3rem); line-height: 1.08; margin-bottom: 14px; max-width: 18ch; }
+  .sf-hero .lead { margin-bottom: 0; max-width: 58ch; }
+  .sf-sec { padding-block: clamp(32px, 5vw, 56px) clamp(64px, 9vw, 112px); scroll-margin-top: 96px; }
+  .sf-wrap { max-width: 780px; }
+  .sf-card { background: var(--white); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: clamp(22px, 4vw, 40px); box-shadow: 0 18px 40px -28px rgba(38, 36, 61, .45); }
+  .sf-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-bottom: 14px; }
+  .sf-top .mono { color: var(--ink-soft); }
+  .sf-top #sf-step { color: var(--burgundy); }
+  .sf-bar { height: 4px; background: var(--line); border-radius: 2px; margin-bottom: 28px; overflow: hidden; }
+  .sf-bar i { display: block; height: 100%; width: 0; background: var(--navy); border-radius: 2px; transition: width .35s cubic-bezier(0.23, 1, 0.32, 1); }
+  .sf-body > * { animation: rise 280ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+  .sf-body h2 { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.15; margin-bottom: 8px; }
+  .sf-body h2:focus { outline: none; }
+  .sf-sub { color: var(--ink-soft); margin-bottom: 24px; max-width: 56ch; }
+  .sf-fields { display: grid; gap: 24px; }
+  .sf-f { display: flex; flex-direction: column; gap: 4px; min-width: 0; margin: 0; padding: 0; border: 0; }
+  .sf-f[hidden] { display: none; }
+  .sf-f:not([hidden]) { animation: rise 260ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+  .sf-f > label, .sf-f > legend { padding: 0; font-weight: 700; font-size: 1rem; }
+  .sf-f .hint { color: var(--ink-soft); font-size: .88rem; }
+  .sf-f input:not([type=radio]), .sf-f select {
+    width: 100%; min-height: 48px; padding: 8px 0; font: inherit; font-size: 1rem; color: var(--ink);
+    background: transparent; border: 0; border-bottom: 1.5px solid var(--line-strong); border-radius: 0;
+    -webkit-appearance: none; appearance: none; transition: border-color .2s ease;
+  }
+  .sf-f input[type=date] { min-width: 0; max-width: 240px; }
+  .sf-f input[type=number] { max-width: 160px; -moz-appearance: textfield; }
+  .sf-f input[type=number]::-webkit-outer-spin-button, .sf-f input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .sf-f select {
+    padding-right: 28px; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' fill='none' stroke='%2326243d' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 4px center; background-size: 12px;
+  }
+  .sf-f input:not([type=radio]):hover, .sf-f select:hover { border-bottom-color: var(--ink-soft); }
+  .sf-f input:not([type=radio]):focus, .sf-f select:focus { border-bottom-color: var(--navy); }
+  .sf-f[data-bad] input:not([type=radio]), .sf-f[data-bad] select { border-bottom-color: var(--burgundy); }
+  .sf-opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .sf-opt { position: relative; display: inline-flex; }
+  .sf-opt input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+  .sf-opt span { display: inline-flex; align-items: center; min-height: 46px; padding: 8px 20px; font-weight: 600; background: var(--paper); border: 1.5px solid var(--line-strong); border-radius: 999px; transition: background-color .2s ease, border-color .2s ease, color .2s ease; }
+  @media (hover: hover) and (pointer: fine) { .sf-opt:hover span { border-color: var(--navy); } }
+  .sf-opt input:checked + span { background: var(--navy); border-color: var(--navy); color: var(--white); }
+  .sf-opt input:focus-visible + span { outline: 3px solid var(--navy); outline-offset: 3px; }
+  .sf-f[data-bad] .sf-opt span { border-color: var(--burgundy); }
+  .sf-err { color: var(--burgundy); font-size: .88rem; font-weight: 600; }
+  .sf-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+  .sf-back, .sf-edit { min-height: 44px; padding: 0 4px; background: none; border: 0; font: inherit; font-size: .92rem; font-weight: 700; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .sf-back:hover, .sf-edit:hover { color: var(--ink); }
+  .sf-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .sf-pickb { display: flex; flex-direction: column; gap: 6px; min-height: 110px; padding: 22px; text-align: left; font: inherit; color: var(--ink); background: var(--paper); border: 1.5px solid var(--line-strong); border-radius: var(--radius); cursor: pointer; transition: border-color .2s ease, background-color .2s ease, transform .16s cubic-bezier(0.23, 1, 0.32, 1); }
+  .sf-pickb b { font-family: var(--f-display); font-weight: 500; font-size: 1.45rem; }
+  .sf-pickb span { color: var(--ink-soft); font-size: .93rem; }
+  @media (hover: hover) and (pointer: fine) { .sf-pickb:hover { border-color: var(--navy); background: var(--white); } }
+  .sf-pickb:active { transform: scale(.98); }
+  .sf-rev { padding-block: 16px; border-top: 1px solid var(--line); }
+  .sf-revtop { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .sf-rev h3 { font-size: 1.02rem; }
+  .sf-rev dl { margin: 6px 0 0; display: grid; gap: 8px; }
+  .sf-rev dl > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; font-size: .95rem; }
+  .sf-rev dt { color: var(--ink-soft); }
+  .sf-rev dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+  .sf-ok { display: flex; gap: 12px; align-items: flex-start; margin-top: 20px; padding: 16px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; font-size: .95rem; cursor: pointer; }
+  .sf-ok input { flex: none; width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--navy); }
+  .sf-note { margin-top: 18px; color: var(--ink-soft); font-size: .86rem; max-width: 62ch; }
+  .sf-note a { color: var(--ink); }
+  .sf-end { justify-content: flex-start; margin-top: 4px; }
+  @media (max-width: 560px) {
+    .sf-pick { grid-template-columns: 1fr; }
+    .sf-rev dl > div { grid-template-columns: 1fr; gap: 0; }
+    .sf-nav .btn { flex: 1 1 auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sf-body > *, .sf-f:not([hidden]) { animation-name: fade; }
+    .sf-bar i { transition: none; }
+    .sf-pickb:active { transform: none; }
+  }
+</style>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LXLH3B2WEY"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LXLH3B2WEY');
+  // Clics de contacto: WhatsApp es la conversión del sitio.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var evento = /wa\.me|api\.whatsapp\.com/.test(href) ? 'whatsapp_click'
+               : href.indexOf('mailto:') === 0 ? 'email_click' : null;
+    if (!evento) return;
+    var sec = a.closest('section[id], header, footer, nav') || a.closest('[id]') || a.closest('section, div[class]');
+    gtag('event', evento, {
+      link_text: (a.textContent || a.getAttribute('aria-label') || '').trim().slice(0, 60),
+      link_id: a.id || '',
+      seccion: sec ? (sec.id || (sec.className || '').toString().split(' ')[0] || sec.tagName.toLowerCase()) : ''
+    });
+  }, true);
+</script>
+</head>
+<body>
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ic-passport" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="9" r="2.3"/><path d="M8 14h8M8 17h8"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l5.5 5.5"/></symbol>
+  <symbol id="ic-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4"/><path d="M8 13h8M8 16.5h8"/></symbol>
+  <symbol id="ic-stamp" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5.5"/><path d="M9.5 9l1.8 1.8L14.8 7"/><path d="M8.5 19l1-4.5M15.5 19l-1-4.5"/></symbol>
+  <symbol id="ic-scale" viewBox="0 0 24 24"><path d="M12 3v3"/><path d="M4 6h16"/><path d="M6 6l-3 6a3 3 0 0 0 6 0l-3-6z"/><path d="M18 6l-3 6a3 3 0 0 0 6 0l-3-6z"/><path d="M12 9v10M8 21h8"/></symbol>
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M4 11.5L12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="ic-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.8 2.6 2.8 14.4 0 17M12 3.5c-2.8 2.6-2.8 14.4 0 17"/></symbol>
+  <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4.5"/></symbol>
+  <symbol id="ic-plane" viewBox="0 0 24 24"><path d="M21 3L3 10.5l6.5 2.5L12 20l3-6 6-11z"/></symbol>
+  <symbol id="ic-briefcase" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="11" rx="1.5"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></symbol>
+  <symbol id="ic-rings" viewBox="0 0 24 24"><circle cx="9" cy="13" r="4"/><circle cx="15" cy="13" r="4"/></symbol>
+  <symbol id="ic-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z"/><path d="M8 9h8M8 12.5h5"/></symbol>
+  <symbol id="ic-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="M8.5 14l1.8 1.8L14 12"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="ic-alert" viewBox="0 0 24 24"><path d="M12 3.5l9 16H3l9-16z"/><path d="M12 10v4.5M12 17.2v.1"/></symbol>
+  <symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="ic-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></symbol>
+  <symbol id="ic-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17 7h.01"/></symbol>
+  <symbol id="ic-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="ic-wa" viewBox="0 0 24 24"><path d="M4 20l1.2-4.2A8 8 0 1 1 8.4 19z"/><path d="M9.2 8.6c.3 2.4 2 4.6 4.6 5.6l1-1.1 1.8.8-.4 1.6c-3.6.2-7.2-3.2-7.4-7l1.5-.5.8 1.8z"/></symbol>
+</svg>
+
+<a class="skip" href="#top">Saltar al contenido</a>
+
+<header class="site">
+  <div class="wrap nav-row">
+    <a href="../" class="brand" aria-label="Migratio Gestoría, inicio"><img src="../logo-v2.png" alt="Migratio Gestoría"></a>
+    <nav class="links" aria-label="Secciones">
+      <a href="../ciudadania-italiana/">Ciudadanía italiana</a>
+      <a href="../juicio-ciudadania-italiana/">Juicio en Italia</a>
+      <a href="../turnos-consulado-italiano/">Turnos</a>
+      <a href="../ciudadania-espanola/">Ciudadanía española</a>
+      <a href="../visa-estados-unidos/">Visa EEUU</a>
+      <a href="../visas-oceania/">Oceanía</a>
+      <a href="../#tramites">Todos los trámites</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-primary nav-cta" href="../#contacto">Contacto</a>
+      <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="mnav" aria-label="Abrir menú">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Secciones" hidden>
+    <div class="wrap">
+      <a href="../">Inicio</a>
+      <a href="../#tramites">Todos los trámites</a>
+      <a href="../ciudadania-italiana/">Ciudadanía italiana (vía consular)</a>
+      <a href="../juicio-ciudadania-italiana/">Juicio de ciudadanía italiana</a>
+      <a href="../turnos-consulado-italiano/">Turnos de pasaporte, CIE y ciudadanía italiana</a>
+      <a href="../ciudadania-espanola/">Ciudadanía española</a>
+      <a href="../visa-estados-unidos/">Visa de turista EEUU</a>
+      <a href="../visas-oceania/">Visas para Australia, Nueva Zelanda y Bali</a>
+      <a href="../#contacto">Contacto</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="page-hero sf-hero">
+    <div class="wrap">
+      <div>
+        <nav class="crumbs" aria-label="Ruta"><a href="../">Inicio</a><span aria-hidden="true">›</span><a href="../turnos-consulado-italiano/">Turnos consulado italiano</a><span aria-hidden="true">›</span><span>Solicitud de pasaporte</span></nav>
+        <span class="mono kicker">Pasaporte italiano · Solicitud de turno</span>
+        <h1>Tus datos para pedir el turno</h1>
+        <p class="lead">Completá este formulario una sola vez y con cuidado: con estos datos gestionamos tu turno en el Consulado. Si son varios en la familia, al final podés cargar a otra persona sin repetir el domicilio.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="solicitud" class="sf-sec">
+    <div class="wrap sf-wrap">
+      <div class="sf-card">
+        <div class="sf-top"><span class="mono" id="sf-step">Inicio</span><span class="mono" id="sf-kind">Pasaporte italiano</span></div>
+        <div class="sf-bar" aria-hidden="true"><i id="sf-bar"></i></div>
+        <div class="sf-body" id="sf-body">
+          <noscript><p class="sf-sub">Este formulario necesita JavaScript. Podés <a href="https://wa.me/5492616530445">enviarnos tus datos por WhatsApp</a>.</p></noscript>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap f-top">
+    <div class="f-brand">
+      <img src="../logo-v2.png" alt="Migratio Gestoría" width="96" height="64">
+      <p>Gestoría migratoria y consular. Atención 100% remota desde Mendoza, Argentina, para todo el mundo.</p>
+    </div>
+    <nav class="f-links" aria-label="Pie de página">
+      <a href="../">Inicio</a>
+      <a href="../ciudadania-italiana/">Ciudadanía italiana</a>
+      <a href="../juicio-ciudadania-italiana/">Juicio de ciudadanía italiana</a>
+      <a href="../turnos-consulado-italiano/">Turnos consulado italiano</a>
+      <a href="../ciudadania-espanola/">Ciudadanía española</a>
+      <a href="../visa-estados-unidos/">Visa EEUU</a>
+      <a href="../visas-oceania/">Visas Oceanía</a>
+      <a href="../#contacto">Contacto</a>
+    </nav>
+  </div>
+  <div class="wrap f-legal">
+    <span>© <span id="year">2026</span> Migratio Gestoría. Todos los derechos reservados.</span>
+    <span>migratio.gestoria@gmail.com · +54 9 2616 53-0445</span>
+  </div>
+</footer>
+
+<script>
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  document.getElementById('year').textContent = new Date().getFullYear();
+  var menuBtn = document.getElementById('menu-btn'), mnav = document.getElementById('mnav');
+  function setMenu(open) {
+    mnav.hidden = !open;
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuBtn.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+  }
+  menuBtn.addEventListener('click', function () { setMenu(mnav.hidden); });
+  mnav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !mnav.hidden) { setMenu(false); menuBtn.focus(); } });
+
+  // Solicitud de turno de pasaporte: los datos se arman en el dispositivo y se envían por WhatsApp.
+  (function () {
+    var body = document.getElementById('sf-body'); if (!body) return;
+    var stepEl = document.getElementById('sf-step'), kindEl = document.getElementById('sf-kind'), bar = document.getElementById('sf-bar');
+    var WA = 'https://wa.me/5492616530445?text=';
+    var ENDPOINT = ''; // opcional: URL que recibe la solicitud y la guarda en la planilla
+    var KEY = 'mg-solicitud-pasaporte';
+    var SN = ['Sí', 'No'];
+    var OJOS = ['Marrón', 'Verde', 'Celeste', 'Gris', 'Negro'];
+    var CONS = ['Mendoza', 'Córdoba', 'Rosario', 'Buenos Aires', 'La Plata', 'Lomas de Zamora', 'Morón', 'Mar del Plata', 'Bahía Blanca', 'Otro o no lo sé'];
+    var SHARED = ['domicilio', 'cp', 'cambioDom', 'consulado', 'celular', 'email', 'servicio'];
+    function eq(k, v) { return function (d) { return d[k] === v; }; }
+    function contacto(plural) {
+      return ['Domicilio y contacto', 'El domicilio, tal cual figura en el DNI.', [
+        { k: 'domicilio', l: 'Domicilio completo', t: 'text', req: 1, ac: 'street-address' },
+        { k: 'cp', l: 'Código postal', t: 'text', req: 1, im: 'numeric', ac: 'postal-code' },
+        { k: 'cambioDom', l: plural ? '¿Cambiaron de domicilio recientemente?' : '¿Cambiaste de domicilio recientemente?', t: 'choice', o: SN, req: 1 },
+        { k: 'consulado', l: plural ? 'Consulado que les corresponde' : 'Consulado que te corresponde', t: 'select', o: CONS, req: 1 },
+        { k: 'celular', l: 'Celular', h: 'Con código de área.', t: 'tel', req: 1, ac: 'tel' },
+        { k: 'email', l: 'Correo electrónico', t: 'email', req: 1, ac: 'email' }
+      ]];
+    }
+    var FLOW = {
+      mayor: [
+        ['Tus datos', 'Tal cual figuran en tu DNI.', [
+          { k: 'nombre', l: 'Nombre completo', t: 'text', req: 1, ac: 'name' },
+          { k: 'lugarNac', l: 'Lugar de nacimiento', t: 'text', req: 1 },
+          { k: 'fechaNac', l: 'Fecha de nacimiento', t: 'date', req: 1, ac: 'bday' },
+          { k: 'estatura', l: 'Estatura', h: 'En centímetros.', t: 'number', req: 1, min: 50, max: 250 },
+          { k: 'ojos', l: 'Color de ojos', t: 'choice', o: OJOS, req: 1 }
+        ]],
+        contacto(false),
+        ['Familia', 'Necesitamos saber si tu estado civil y tus hijos están inscriptos en el Consulado.', [
+          { k: 'hijos', l: '¿Tenés hijos menores de edad?', t: 'choice', o: ['No', '1', '2', '3 o más'], req: 1 },
+          { k: 'hijosInscr', l: '¿Inscribiste a todos tus hijos en el Consulado?', t: 'choice', o: SN, req: 1, w: function (d) { return d.hijos && d.hijos !== 'No'; } },
+          { k: 'civil', l: 'Estado civil', t: 'choice', o: ['Casado/a', 'Soltero/a', 'Viudo/a', 'Divorciado/a'], req: 1 },
+          { k: 'matInscr', l: '¿Inscribiste el matrimonio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Casado/a') },
+          { k: 'conyuge', l: 'Nombre completo de tu cónyuge', h: 'Tal cual figura en su DNI.', t: 'text', req: 1, w: eq('civil', 'Casado/a') },
+          { k: 'divInscr', l: '¿Inscribiste el divorcio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Divorciado/a') },
+          { k: 'defInscr', l: '¿Inscribiste la defunción de tu cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') }
+        ]],
+        ['Pasaporte y turno', 'Último paso antes de revisar.', [
+          { k: 'primer', l: '¿Es tu primer pasaporte italiano?', t: 'choice', o: SN, req: 1 },
+          { k: 'pasAnt', l: 'Número del pasaporte anterior', h: 'Si lo tenés a mano.', t: 'text', w: eq('primer', 'No') },
+          { k: 'servicio', l: '¿Qué modalidad querés?', h: 'Exprés: turno en hasta 7 días. Común: en hasta 30 días.', t: 'choice', o: ['Exprés', 'Común'], req: 1 },
+          { k: 'noFechas', l: '¿Hay alguna fecha en la que no puedas ir al Consulado?', h: 'A corto plazo: por un viaje, una enfermedad, etc.', t: 'choice', o: SN, req: 1 },
+          { k: 'cuales', l: '¿Qué fechas o días?', h: 'Recordá que los turnos son por la mañana.', t: 'text', req: 1, w: eq('noFechas', 'Sí') }
+        ]]
+      ],
+      menor: [
+        ['Datos del menor', 'Tal cual figuran en su DNI.', [
+          { k: 'nombre', l: 'Nombre completo del menor', t: 'text', req: 1 },
+          { k: 'fechaNac', l: 'Fecha de nacimiento del menor', t: 'date', req: 1 },
+          { k: 'estatura', l: 'Estatura del menor', h: 'En centímetros.', t: 'number', min: 30, max: 220 },
+          { k: 'ojos', l: 'Color de ojos del menor', t: 'choice', o: OJOS }
+        ]],
+        ['Progenitor italiano', 'Si los dos son italianos, cargá los datos de uno.', [
+          { k: 'progNombre', l: 'Nombre completo del progenitor italiano', h: 'Tal cual figura en el DNI.', t: 'text', req: 1, ac: 'name' },
+          { k: 'progLugar', l: 'Lugar de nacimiento del progenitor', t: 'text', req: 1 },
+          { k: 'progFecha', l: 'Fecha de nacimiento del progenitor', t: 'date', req: 1 },
+          { k: 'hijosProg', l: '¿Cuántos hijos menores tiene el progenitor?', h: 'Solo menores de edad.', t: 'choice', o: ['1', '2', '3 o más'], req: 1 },
+          { k: 'civil', l: 'Estado civil del progenitor', t: 'choice', o: ['Casado/a', 'Soltero/a', 'Viudo/a', 'Divorciado/a', 'Otro'], req: 1 },
+          { k: 'conyuge', l: 'Nombre completo del cónyuge', h: 'Tal cual figura en su DNI.', t: 'text', req: 1, w: eq('civil', 'Casado/a') },
+          { k: 'divInscr', l: '¿Inscribió el divorcio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Divorciado/a') },
+          { k: 'defInscr', l: '¿Inscribió la defunción de su cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') }
+        ]],
+        contacto(true),
+        ['Pasaporte y turno', 'Último paso antes de revisar.', [
+          { k: 'primer', l: '¿Es el primer pasaporte del menor?', t: 'choice', o: SN, req: 1 },
+          { k: 'progTiene', l: '¿El progenitor tiene pasaporte italiano?', h: 'Vigente o vencido.', t: 'choice', o: SN, req: 1, w: eq('primer', 'Sí') },
+          { k: 'progPas', l: 'Número de pasaporte del progenitor', h: 'Si los dos son italianos, el del progenitor que cargaste antes.', t: 'text', req: 1, w: function (d) { return d.primer === 'No' || (d.primer === 'Sí' && d.progTiene === 'Sí'); } },
+          { k: 'servicio', l: '¿Qué modalidad quieren?', h: 'Exprés: turno en hasta 7 días. Común: en hasta 30 días.', t: 'choice', o: ['Exprés', 'Común'], req: 1 },
+          { k: 'noFechas', l: '¿Hay alguna fecha en los próximos 30 días en la que no puedan ir al Consulado?', h: 'Tienen que asistir ambos progenitores y el menor.', t: 'choice', o: SN, req: 1 },
+          { k: 'cuales', l: '¿Qué fechas o días?', h: 'Recordá que los turnos son por la mañana.', t: 'text', req: 1, w: eq('noFechas', 'Sí') }
+        ]]
+      ]
+    };
+    var KIND = { mayor: 'Mayor de edad', menor: 'Menor de edad' };
+    var st = { kind: '', i: -1, d: {} };
+    try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && FLOW[s.kind]) st = s; } catch (e) {}
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+    function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+    function btn(cls, txt, fn) { var b = el('button', cls, txt); b.type = 'button'; b.addEventListener('click', fn); return b; }
+    function fmt(f, v) { if (f.t === 'date' && /^\d{4}-\d{2}-\d{2}$/.test(v)) { var p = v.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; } return f.t === 'number' ? v + ' cm' : v; }
+    function shown(f) { return !f.w || f.w(st.d); }
+    function steps() { return FLOW[st.kind] || []; }
+    function head(title, sub) {
+      body.innerHTML = '';
+      var h = el('h2', '', title); h.tabIndex = -1; body.appendChild(h);
+      if (sub) body.appendChild(el('p', 'sf-sub', sub));
+      return h;
+    }
+    function progress(n, total, label) {
+      stepEl.textContent = label; kindEl.textContent = st.kind ? KIND[st.kind] : 'Pasaporte italiano';
+      bar.style.width = Math.round(100 * n / total) + '%';
+    }
+    function go(h, move) { save(); if (move) { h.focus({ preventScroll: true }); document.getElementById('solicitud').scrollIntoView({ block: 'start' }); } }
+
+    function start(move) {
+      st.i = -1; progress(0, 1, 'Inicio');
+      var h = head('¿Para quién es el pasaporte?', 'Son unos 5 minutos. Tené a mano el DNI y, si lo hay, el pasaporte anterior.');
+      var opts = el('div', 'sf-pick');
+      [['mayor', 'Mayor de edad', 'Para vos o para otro adulto.'], ['menor', 'Menor de edad', 'Lo completa el padre o la madre.']].forEach(function (o) {
+        var b = btn('sf-pickb', '', function () { if (st.kind !== o[0]) { var keep = {}; SHARED.forEach(function (k) { if (st.d[k]) keep[k] = st.d[k]; }); st.d = keep; } st.kind = o[0]; st.i = 0; step(true); });
+        b.appendChild(el('b', '', o[1])); b.appendChild(el('span', '', o[2])); opts.appendChild(b);
+      });
+      body.appendChild(opts); go(h, move);
+    }
+
+    function field(f, wrap) {
+      var id = 'sf-' + f.k, box, input, err = el('span', 'sf-err'); err.id = id + '-e'; err.hidden = true;
+      function set(v) { st.d[f.k] = v; save(); box.removeAttribute('data-bad'); err.hidden = true; refresh(wrap); }
+      if (f.t === 'choice') {
+        box = el('fieldset', 'sf-f'); box.appendChild(el('legend', '', f.l));
+        if (f.h) box.appendChild(el('span', 'hint', f.h));
+        var os = el('div', 'sf-opts');
+        f.o.forEach(function (o, n) {
+          var lab = el('label', 'sf-opt'), r = el('input'); r.type = 'radio'; r.name = id; r.value = o; r.id = id + '-' + n; r.checked = st.d[f.k] === o;
+          r.addEventListener('change', function () { set(o); });
+          lab.appendChild(r); lab.appendChild(el('span', '', o)); os.appendChild(lab);
+        });
+        box.appendChild(os);
+      } else {
+        box = el('div', 'sf-f'); var lab = el('label', '', f.l); lab.htmlFor = id; box.appendChild(lab);
+        if (f.h) { var hint = el('span', 'hint', f.h); hint.id = id + '-h'; box.appendChild(hint); }
+        if (f.t === 'select') {
+          input = el('select'); input.appendChild(new Option('Elegí una opción', ''));
+          f.o.forEach(function (o) { input.appendChild(new Option(o, o)); });
+        } else {
+          input = el('input'); input.type = f.t;
+          if (f.im) input.inputMode = f.im;
+          if (f.t === 'number') { input.inputMode = 'numeric'; input.min = f.min; input.max = f.max; }
+          if (f.t === 'date') input.max = new Date().toISOString().slice(0, 10);
+          if (f.ac) input.autocomplete = f.ac;
+          input.maxLength = 120;
+        }
+        input.id = id; input.value = st.d[f.k] || ''; if (f.req) input.required = true;
+        input.setAttribute('aria-describedby', (f.h ? id + '-h ' : '') + id + '-e');
+        input.addEventListener(f.t === 'select' ? 'change' : 'input', function () { set(input.value.replace(/\s+/g, ' ').replace(/^ /, '')); });
+        box.appendChild(input);
+      }
+      box.appendChild(err); box.setAttribute('data-k', f.k);
+      return box;
+    }
+    function refresh(wrap) {
+      steps()[st.i][2].forEach(function (f) {
+        var box = wrap.querySelector('[data-k="' + f.k + '"]'), on = shown(f);
+        if (box.hidden === on) { box.hidden = !on; if (!on) { delete st.d[f.k]; var i = box.querySelector('input:not([type=radio]), select'); if (i) i.value = ''; box.querySelectorAll('input[type=radio]').forEach(function (r) { r.checked = false; }); } }
+      });
+    }
+    function check(f) {
+      var v = (st.d[f.k] || '').trim();
+      if (!v) return f.req ? (f.t === 'choice' || f.t === 'select' ? 'Elegí una opción.' : 'Completá este dato.') : '';
+      if (f.t === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'Revisá el correo: tiene que ser como nombre@ejemplo.com.';
+      if (f.t === 'tel' && v.replace(/\D/g, '').length < 8) return 'Revisá el número: tiene que incluir el código de área.';
+      if (f.t === 'number' && !(+v >= f.min && +v <= f.max)) return 'Ingresá la estatura en centímetros, por ejemplo 170.';
+      if (f.t === 'date' && !(/^\d{4}-\d{2}-\d{2}$/.test(v) && v <= new Date().toISOString().slice(0, 10) && v >= '1900-01-01')) return 'Revisá la fecha.';
+      return '';
+    }
+    function step(move) {
+      var all = steps(), s = all[st.i];
+      progress(st.i + 1, all.length + 1, 'Paso ' + (st.i + 1) + ' de ' + (all.length + 1));
+      var h = head(s[0], s[1]);
+      var form = el('form', 'sf-fields'); form.noValidate = true;
+      s[2].forEach(function (f) { var b = field(f, form); b.hidden = !shown(f); form.appendChild(b); });
+      var nav = el('div', 'sf-nav');
+      nav.appendChild(btn('sf-back', 'Volver', function () { if (st.i === 0) start(true); else { st.i--; step(true); } }));
+      var next = el('button', 'btn btn-primary', st.i === all.length - 1 ? 'Revisar' : 'Siguiente'); next.type = 'submit'; nav.appendChild(next);
+      form.appendChild(nav);
+      form.addEventListener('submit', function (e) {
+        e.preventDefault(); var first = null;
+        s[2].forEach(function (f) {
+          if (!shown(f)) return;
+          var box = form.querySelector('[data-k="' + f.k + '"]'), err = box.querySelector('.sf-err'), msg = check(f);
+          err.textContent = msg; err.hidden = !msg;
+          if (msg) { box.setAttribute('data-bad', ''); if (!first) first = box.querySelector('input, select'); } else box.removeAttribute('data-bad');
+        });
+        if (first) { first.focus(); return; }
+        st.i++; if (st.i >= all.length) review(true); else step(true);
+      });
+      body.appendChild(form); go(h, move);
+    }
+    function rows() {
+      var out = [];
+      steps().forEach(function (s, n) { s[2].forEach(function (f) { if (shown(f) && st.d[f.k]) out.push([f.l.replace(/^¿|\?$/g, ''), fmt(f, st.d[f.k]), n]); }); });
+      return out;
+    }
+    function message() {
+      var t = ['Solicitud de turno · Pasaporte italiano', 'Para: ' + KIND[st.kind].toLowerCase(), ''];
+      rows().forEach(function (r) { t.push('• ' + r[0] + ': ' + r[1]); });
+      t.push('', 'Envío por este chat las fotos del DNI (frente y dorso) y del pasaporte anterior, si corresponde.');
+      return t.join('\n');
+    }
+    function review(move) {
+      var all = steps(); st.i = all.length;
+      progress(all.length + 1, all.length + 1, 'Paso ' + (all.length + 1) + ' de ' + (all.length + 1));
+      var h = head('Revisá tus datos', 'Si algo está mal, volvé al paso y corregilo.');
+      all.forEach(function (s, n) {
+        var sec = el('div', 'sf-rev'), top = el('div', 'sf-revtop');
+        top.appendChild(el('h3', '', s[0])); top.appendChild(btn('sf-edit', 'Editar', function () { st.i = n; step(true); })); top.lastChild.setAttribute('aria-label', 'Editar ' + s[0].toLowerCase());
+        sec.appendChild(top);
+        var dl = el('dl');
+        rows().filter(function (r) { return r[2] === n; }).forEach(function (r) { var w = el('div'); w.appendChild(el('dt', '', r[0])); w.appendChild(el('dd', '', r[1])); dl.appendChild(w); });
+        sec.appendChild(dl); body.appendChild(sec);
+      });
+      var ok = el('label', 'sf-ok'), cb = el('input'); cb.type = 'checkbox'; cb.id = 'sf-okc';
+      ok.appendChild(cb); ok.appendChild(el('span', '', 'Confirmo que los datos son correctos y autorizo a Migratio Gestoría a usarlos para gestionar el turno.'));
+      body.appendChild(ok);
+      var err = el('span', 'sf-err', 'Marcá la casilla para enviar.'); err.hidden = true; body.appendChild(err);
+      var nav = el('div', 'sf-nav');
+      nav.appendChild(btn('sf-back', 'Volver', function () { st.i = all.length - 1; step(true); }));
+      var send = el('a', 'btn btn-primary'); send.href = WA + encodeURIComponent(message()); send.target = '_blank'; send.rel = 'noopener'; send.id = 'sf-send';
+      send.innerHTML = '<svg aria-hidden="true"><use href="#ic-wa"/></svg>'; send.appendChild(document.createTextNode('Enviar por WhatsApp'));
+      send.addEventListener('click', function (e) {
+        if (!cb.checked) { e.preventDefault(); err.hidden = false; cb.focus(); return; }
+        if (ENDPOINT) { try { fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ tipo: st.kind, fecha: new Date().toISOString(), datos: st.d }) }); } catch (x) {} }
+        setTimeout(function () { done(); }, 400);
+      });
+      cb.addEventListener('change', function () { err.hidden = true; });
+      nav.appendChild(send); body.appendChild(nav);
+      body.appendChild(el('p', 'sf-note', 'Se abre WhatsApp con tus datos ya escritos: tocá enviar. Usamos estos datos solo para gestionar tu turno; podés pedirnos que los corrijamos o los eliminemos cuando quieras.'));
+      go(h, move);
+    }
+    function done() {
+      progress(1, 1, 'Enviado');
+      var link = WA + encodeURIComponent(message());
+      var h = head('¡Gracias! Falta un solo paso', 'Mandanos por el mismo chat de WhatsApp una foto o escaneo del DNI (frente y dorso) y, si corresponde, del pasaporte anterior.');
+      var nav = el('div', 'sf-nav sf-end');
+      var again = el('a', 'btn btn-outline', 'No se abrió WhatsApp: reintentar'); again.href = link; again.target = '_blank'; again.rel = 'noopener'; nav.appendChild(again);
+      nav.appendChild(btn('btn btn-primary', 'Cargar otro familiar', function () { var keep = {}; SHARED.forEach(function (k) { if (st.d[k]) keep[k] = st.d[k]; }); st = { kind: '', i: -1, d: keep }; start(true); }));
+      body.appendChild(nav);
+      var ig = el('p', 'sf-note'); ig.appendChild(document.createTextNode('Seguinos en Instagram, donde compartimos información para ciudadanos italianos: '));
+      var a = el('a', '', '@migratio.gestoria'); a.href = 'https://instagram.com/migratio.gestoria'; a.target = '_blank'; a.rel = 'noopener'; ig.appendChild(a); ig.appendChild(document.createTextNode('.'));
+      body.appendChild(ig);
+      var keep = {}; SHARED.forEach(function (k) { if (st.d[k]) keep[k] = st.d[k]; });
+      try { localStorage.setItem(KEY, JSON.stringify({ kind: '', i: -1, d: keep })); } catch (e) {}
+      h.focus({ preventScroll: true });
+    }
+    if (st.kind && st.i >= 0) { if (st.i >= steps().length) review(false); else step(false); } else start(false);
+  })();
+</script>
+</body>
+</html>
