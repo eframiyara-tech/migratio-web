@@ -208,7 +208,7 @@
         <nav class="crumbs" aria-label="Ruta"><a href="../">Inicio</a><span aria-hidden="true">›</span><a href="../turnos-consulado-italiano/">Turnos consulado italiano</a><span aria-hidden="true">›</span><span>Solicitud de turno</span></nav>
         <span class="mono kicker">Pasaporte y CIE · Solicitud de turno</span>
         <h1>Tus datos para pedir el turno</h1>
-        <p class="lead">Completá este formulario una sola vez y con cuidado: con estos datos gestionamos tu turno en el Consulado. Si son varios en la familia, al final podés cargar a otra persona sin repetir el domicilio.</p>
+        <p class="lead">Completá este formulario una sola vez y con cuidado: con estos datos gestionamos tu turno en el Consulado. Si todavía no hablaste con nosotros, al recibirlo te escribimos para confirmarte los honorarios antes de pedir el turno; se abonan después de obtenerlo.</p>
       </div>
     </div>
   </section>
@@ -285,7 +285,7 @@
         { k: 'cp', l: 'Código postal', t: 'text', im: 'numeric', ac: 'postal-code' },
         { k: 'cambioDom', l: men ? '¿Cambiaron de domicilio recientemente?' : '¿Cambiaste de domicilio recientemente?', t: 'choice', o: SN },
         { k: 'consulado', l: men ? 'Consulado que les corresponde' : 'Consulado que te corresponde', t: 'select', o: CONS },
-        { k: 'celular', l: 'Celular', h: 'Con código de área.', t: 'tel', ac: 'tel' },
+        { k: 'celular', l: 'Celular', h: 'Con código de área. Te escribimos a este número.', t: 'tel', req: 1, ac: 'tel' },
         { k: 'email', l: 'Correo electrónico', t: 'email', ac: 'email' }
       ]];
       if (pas && !men) fin.push(
@@ -390,6 +390,7 @@
       var h = head('¿Para quién es?', st.tram === 'pas' ? '' : 'Para la CIE hay que estar inscripto en el AIRE.' + (st.tram === 'ambos' ? ' El pasaporte y la CIE van en turnos separados; en el Consulado de Mendoza, en días distintos.' : ''));
       body.appendChild(pickers([['mayor', 'Mayor de edad', 'Para vos o para otro adulto.'], ['menor', 'Menor de edad', 'Lo completa el padre o la madre.']], function (v) { if (st.kind !== v) st.d = carry(); st.kind = v; st.i = 0; step(true); }));
       var nav = el('div', 'sf-nav'); nav.appendChild(btn('sf-back', 'Cambiar el trámite', function () { start(true); })); body.appendChild(nav);
+      body.appendChild(el('p', 'sf-note', 'Si son varios en la familia, al final podés cargar a otra persona sin repetir el domicilio.'));
       go(h, move);
     }
 
@@ -588,7 +589,7 @@
     }
     function done() {
       progress(1, 1, 'Enviado');
-      var h = head('Recibimos tu solicitud', 'Ya tenemos tus datos y tu documentación. Te escribimos cuando esté tu turno.');
+      var h = head('Recibimos tu solicitud', 'Ya tenemos tus datos y tu documentación. Te escribimos para confirmar los detalles antes de pedir el turno.');
       var nav = el('div', 'sf-nav sf-end');
       nav.appendChild(btn('btn btn-primary', 'Cargar otro familiar', function () { files = {}; st = { tram: st.tram, kind: '', i: -1, d: carry() }; who(true); }));
       body.appendChild(nav);
