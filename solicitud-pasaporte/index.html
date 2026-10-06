@@ -259,7 +259,7 @@
   (function () {
     var body = document.getElementById('sf-body'); if (!body) return;
     var stepEl = document.getElementById('sf-step'), kindEl = document.getElementById('sf-kind'), bar = document.getElementById('sf-bar');
-    var WA = 'https://wa.me/5492616530445?text=';
+    var WA = 'https://wa.me/5492616530445?text=', MAIL = 'migratio.gestoria@gmail.com';
     var ENDPOINT = ''; // opcional: URL que recibe la solicitud y la guarda en la planilla
     var KEY = 'mg-solicitud-pasaporte';
     var SN = ['Sí', 'No'];
@@ -472,7 +472,7 @@
     function message() {
       var t = ['Solicitud de turno · ' + TRAM[st.tram][1], 'Para: ' + KIND[st.kind].toLowerCase(), ''];
       rows().forEach(function (r) { t.push('• ' + r[0] + ': ' + r[1]); });
-      t.push('', 'Envío por este chat las fotos del DNI (frente y dorso) y ' + docs() + '.');
+      t.push('', 'Envío las fotos del DNI (frente y dorso) y ' + docs() + ', por este chat o por correo.');
       return t.join('\n');
     }
     function review(move) {
@@ -509,11 +509,14 @@
     function done() {
       progress(1, 1, 'Enviado');
       var link = WA + encodeURIComponent(message());
-      var h = head('¡Gracias! Falta un solo paso', 'Mandanos por el mismo chat de WhatsApp una foto o escaneo del DNI (frente y dorso) y ' + docs() + '.');
+      var h = head('¡Gracias! Falta un solo paso', 'Mandanos una foto o escaneo del DNI (frente y dorso) y ' + docs() + ': por el mismo chat de WhatsApp o por correo.');
       var nav = el('div', 'sf-nav sf-end');
       var again = el('a', 'btn btn-outline', 'No se abrió WhatsApp: reintentar'); again.href = link; again.target = '_blank'; again.rel = 'noopener'; nav.appendChild(again);
       nav.appendChild(btn('btn btn-primary', 'Cargar otro familiar', function () { st = { tram: st.tram, kind: '', i: -1, d: carry() }; who(true); }));
       body.appendChild(nav);
+      var ml = el('p', 'sf-note'); ml.appendChild(document.createTextNode('Si preferís el correo, enviá las fotos a '));
+      var m = el('a', '', MAIL); m.href = 'mailto:' + MAIL + '?subject=' + encodeURIComponent('Documentación para turno · ' + TRAM[st.tram][1] + (st.d.nombre ? ' · ' + st.d.nombre : '')); ml.appendChild(m); ml.appendChild(document.createTextNode('.'));
+      body.appendChild(ml);
       var ig = el('p', 'sf-note'); ig.appendChild(document.createTextNode('Seguinos en Instagram, donde compartimos información para ciudadanos italianos: '));
       var a = el('a', '', '@migratio.gestoria'); a.href = 'https://instagram.com/migratio.gestoria'; a.target = '_blank'; a.rel = 'noopener'; ig.appendChild(a); ig.appendChild(document.createTextNode('.'));
       body.appendChild(ig);
