@@ -85,6 +85,11 @@
   .sf-link { align-self: flex-start; font-size: .9rem; font-weight: 700; color: var(--ink); text-underline-offset: 3px; }
   .sf-later { padding-top: 20px; border-top: 1px solid var(--line); }
   .sf-later .sf-na { margin-top: 0; }
+  .sf-cta { gap: 8px; padding: 14px 16px; background: var(--paper); border: 1px solid var(--line); border-left: 2px solid var(--burgundy); border-radius: 10px; }
+  .sf-ctam { font-size: .97rem; font-weight: 600; }
+  .sf-cta .sf-na { margin-top: 4px; }
+  .sf-cta .sf-opt span { background: var(--white); }
+  .sf-cta .sf-opt input:checked + span { background: var(--navy); }
   .sf-rq { color: var(--burgundy); }
   .sf-none { margin: 6px 0 0; color: var(--ink-soft); font-size: .95rem; }
   .sf-err { color: var(--burgundy); font-size: .88rem; font-weight: 600; }
@@ -348,15 +353,15 @@
           { k: 'hijos', l: '¿Tenés hijos menores de edad?', t: 'choice', o: ['No', '1', '2', '3 o más'] },
           { k: 'hijosCant', l: '¿Cuántos hijos menores son?', t: 'number', u: '', e: 'Ingresá la cantidad, por ejemplo 3.', req: 1, min: 3, max: 20, w: eq('hijos', '3 o más') },
           { k: 'hijosInscr', l: '¿Inscribiste a todos tus hijos en el Consulado?', t: 'choice', o: SN, req: 1, w: function (d) { return d.hijos && d.hijos !== 'No'; } },
-          { k: 'hijosTram', l: '¿Querés que los inscribamos nosotros?', a: ['Ver el trámite para hijos menores', '../turnos-consulado-italiano/#menores'], h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('hijosInscr', 'No') },
+          { k: 'hijosTram', l: 'Sumar la inscripción de los hijos', m: 'Podemos inscribirlos en el Consulado por vos.', a: ['Ver el trámite para hijos menores', '../turnos-consulado-italiano/#menores'], t: 'cta', c: 'Sumarla a mi solicitud', w: eq('hijosInscr', 'No') },
           { k: 'civil', l: 'Estado civil', t: 'choice', o: ['Casado/a', 'Soltero/a', 'Viudo/a', 'Divorciado/a'] },
           { k: 'matInscr', l: '¿Inscribiste el matrimonio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Casado/a') },
-          { k: 'matTram', l: '¿Querés que inscribamos el matrimonio nosotros?', h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('matInscr', 'No') },
+          { k: 'matTram', l: 'Sumar la inscripción del matrimonio', m: 'Podemos inscribir el matrimonio en el Consulado por vos.', t: 'cta', c: 'Sumarla a mi solicitud', w: eq('matInscr', 'No') },
           { k: 'conyuge', l: 'Nombre completo de tu cónyuge', h: 'Tal cual figura en su DNI.', t: 'text', req: 1, w: eq('civil', 'Casado/a') },
           { k: 'divInscr', l: '¿Inscribiste el divorcio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Divorciado/a') },
-          { k: 'divTram', l: '¿Querés que inscribamos el divorcio nosotros?', h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('divInscr', 'No') },
+          { k: 'divTram', l: 'Sumar la inscripción del divorcio', m: 'Podemos inscribir el divorcio en el Consulado por vos.', t: 'cta', c: 'Sumarla a mi solicitud', w: eq('divInscr', 'No') },
           { k: 'defInscr', l: '¿Inscribiste la defunción de tu cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') },
-          { k: 'defTram', l: '¿Querés que inscribamos la defunción nosotros?', h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('defInscr', 'No') }
+          { k: 'defTram', l: 'Sumar la inscripción de la defunción', m: 'Podemos inscribir la defunción en el Consulado por vos.', t: 'cta', c: 'Sumarla a mi solicitud', w: eq('defInscr', 'No') }
         ]]);
       } else {
         var prog = [
@@ -370,9 +375,9 @@
           { k: 'civil', l: 'Estado civil del progenitor', t: 'choice', o: ['Casado/a', 'Soltero/a', 'Viudo/a', 'Divorciado/a', 'Otro'] },
           { k: 'conyuge', l: 'Nombre completo del cónyuge', h: 'Tal cual figura en su DNI.', t: 'text', req: 1, w: eq('civil', 'Casado/a') },
           { k: 'divInscr', l: '¿Inscribió el divorcio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Divorciado/a') },
-          { k: 'divTram', l: '¿Quieren que inscribamos el divorcio nosotros?', h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('divInscr', 'No') },
+          { k: 'divTram', l: 'Sumar la inscripción del divorcio', m: 'Podemos inscribir el divorcio en el Consulado por ustedes.', t: 'cta', c: 'Sumarla a mi solicitud', w: eq('divInscr', 'No') },
           { k: 'defInscr', l: '¿Inscribió la defunción de su cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') },
-          { k: 'defTram', l: '¿Quieren que inscribamos la defunción nosotros?', h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('defInscr', 'No') });
+          { k: 'defTram', l: 'Sumar la inscripción de la defunción', m: 'Podemos inscribir la defunción en el Consulado por ustedes.', t: 'cta', c: 'Sumarla a mi solicitud', w: eq('defInscr', 'No') });
         out = [['Datos del menor', 'Tal cual figuran en su DNI.', [
           { k: 'nombre', l: 'Nombre completo del menor', t: 'text' },
           { k: 'fechaNac', l: 'Fecha de nacimiento del menor', t: 'date' },
@@ -436,6 +441,13 @@
       var id = 'sf-' + f.k, box, input, err = el('span', 'sf-err'); err.id = id + '-e'; err.hidden = true;
       function set(v) { st.d[f.k] = v; save(); box.removeAttribute('data-bad'); err.hidden = true; refresh(wrap); }
       if (f.t === 'note') { box = el('p', 'sf-f sf-warn', f.l); box.setAttribute('data-k', f.k); return box; }
+      if (f.t === 'cta') {
+        box = el('div', 'sf-f sf-cta'); box.appendChild(el('span', 'sf-ctam', f.m));
+        if (f.a) { var go2 = el('a', 'sf-link', f.a[0]); go2.href = f.a[1]; go2.target = '_blank'; go2.rel = 'noopener'; box.appendChild(go2); }
+        var cl = el('label', 'sf-opt sf-na'), cc = el('input'); cc.type = 'checkbox'; cc.id = id; cc.checked = st.d[f.k] === 'Sí';
+        cc.addEventListener('change', function () { if (cc.checked) st.d[f.k] = 'Sí'; else delete st.d[f.k]; save(); });
+        cl.appendChild(cc); cl.appendChild(el('span', '', f.c)); box.appendChild(cl); box.setAttribute('data-k', f.k); return box;
+      }
       if (f.t === 'choice') {
         box = el('fieldset', 'sf-f'); box.appendChild(el('legend', '', f.l)); if (f.req) star(box.firstChild);
         if (f.h) box.appendChild(el('span', 'hint', f.h));
@@ -482,7 +494,7 @@
       });
     }
     function check(f) {
-      if (f.t === 'note') return '';
+      if (f.t === 'note' || f.t === 'cta') return '';
       var v = (st.d[f.k] || '').trim();
       if (!v) return f.req ? (f.t === 'choice' || f.t === 'select' ? 'Elegí una opción.' : 'Completá este dato.') : '';
       if (f.cf && !/^[A-Za-z0-9]{16}$/.test(v.replace(/\s/g, ''))) return 'Revisá el código fiscal: tiene 16 letras y números.';
