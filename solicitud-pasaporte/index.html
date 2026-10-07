@@ -79,6 +79,12 @@
   .sf-f[data-bad] .sf-file .btn { border-color: var(--burgundy); }
   .sf-fname { color: var(--ink-soft); font-size: .92rem; overflow-wrap: anywhere; min-width: 0; }
   .sf-nav .btn:disabled { opacity: .6; cursor: progress; }
+  .sf-na { align-self: flex-start; margin-top: 10px; }
+  .sf-na span { min-height: 44px; font-size: .95rem; }
+  .sf-f input:disabled { opacity: .45; }
+  .sf-link { align-self: flex-start; font-size: .9rem; font-weight: 700; color: var(--ink); text-underline-offset: 3px; }
+  .sf-later { padding-top: 20px; border-top: 1px solid var(--line); }
+  .sf-later .sf-na { margin-top: 0; }
   .sf-rq { color: var(--burgundy); }
   .sf-none { margin: 6px 0 0; color: var(--ink-soft); font-size: .95rem; }
   .sf-err { color: var(--burgundy); font-size: .88rem; font-weight: 600; }
@@ -266,7 +272,7 @@
   (function () {
     var body = document.getElementById('sf-body'); if (!body) return;
     var stepEl = document.getElementById('sf-step'), kindEl = document.getElementById('sf-kind'), bar = document.getElementById('sf-bar');
-    var MAIL = 'migratio.gestoria@gmail.com';
+    var MAIL = 'migratio.gestoria@gmail.com', WA = 'https://wa.me/5492616530445?text=';
     var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwa4T09p1_f0tFNOzWPgV_vEieeAXlsQqr9HDIGg0OqPt9U1sEmQsPEyN7xbFRwlIKf/exec'; // URL del receptor: guarda la solicitud en la planilla y las fotos en Drive
     var files = {}; // fotos adjuntas: quedan en memoria hasta enviar
     var KEY = 'mg-solicitud-pasaporte';
@@ -311,11 +317,11 @@
       ]];
       if (pas && !men) fin.push(
         { k: 'primer', l: '¿Es tu primer pasaporte italiano?', t: 'choice', o: SN, req: 1 },
-        { k: 'pasAnt', l: 'Número del pasaporte anterior', h: 'Si ahora no lo encontrás, escribí «no lo tengo a mano».', t: 'text', req: 1, w: eq('primer', 'No') });
+        { k: 'pasAnt', l: 'Número del pasaporte anterior', t: 'text', req: 1, na: 'No lo tengo a mano', w: eq('primer', 'No') });
       if (pas && men) fin.push(
         { k: 'primer', l: '¿Es el primer pasaporte del menor?', t: 'choice', o: SN, req: 1 },
         { k: 'progTiene', l: '¿El progenitor tiene pasaporte italiano?', h: 'Vigente o vencido.', t: 'choice', o: SN, req: 1, w: eq('primer', 'Sí') },
-        { k: 'progPas', l: 'Número de pasaporte del progenitor', h: 'Si los dos son italianos, el del progenitor que cargaste antes.', t: 'text', req: 1, w: function (d) { return d.primer === 'No' || (d.primer === 'Sí' && d.progTiene === 'Sí'); } });
+        { k: 'progPas', l: 'Número de pasaporte del progenitor', h: 'Si los dos son italianos, el del progenitor que cargaste antes.', t: 'text', req: 1, na: 'No lo tengo a mano', w: function (d) { return d.primer === 'No' || (d.primer === 'Sí' && d.progTiene === 'Sí'); } });
       if (cie) fin.push(
         { k: 'aire', l: men ? '¿El menor está inscripto en el AIRE?' : '¿Estás inscripto en el AIRE?', h: 'El consulado solo emite la CIE a quienes están inscriptos en el AIRE.', t: 'choice', o: ['Sí', 'No', 'No lo sé'], req: 1 },
         { k: 'aireNo', t: 'note', l: 'Sin la inscripción en el AIRE el consulado no emite la CIE. Podemos tramitarla nosotros antes de pedir el turno.', w: eq('aire', 'No') },
@@ -340,12 +346,17 @@
         ]], contacto];
         if (pas) out.push(['Familia', 'Necesitamos saber si tu estado civil y tus hijos están inscriptos en el Consulado.', [
           { k: 'hijos', l: '¿Tenés hijos menores de edad?', t: 'choice', o: ['No', '1', '2', '3 o más'] },
+          { k: 'hijosCant', l: '¿Cuántos hijos menores son?', t: 'number', u: '', e: 'Ingresá la cantidad, por ejemplo 3.', req: 1, min: 3, max: 20, w: eq('hijos', '3 o más') },
           { k: 'hijosInscr', l: '¿Inscribiste a todos tus hijos en el Consulado?', t: 'choice', o: SN, req: 1, w: function (d) { return d.hijos && d.hijos !== 'No'; } },
+          { k: 'hijosTram', l: '¿Querés que los inscribamos nosotros?', a: ['Ver el trámite para hijos menores', '../turnos-consulado-italiano/#menores'], h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('hijosInscr', 'No') },
           { k: 'civil', l: 'Estado civil', t: 'choice', o: ['Casado/a', 'Soltero/a', 'Viudo/a', 'Divorciado/a'] },
           { k: 'matInscr', l: '¿Inscribiste el matrimonio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Casado/a') },
+          { k: 'matTram', l: '¿Querés que inscribamos el matrimonio nosotros?', h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('matInscr', 'No') },
           { k: 'conyuge', l: 'Nombre completo de tu cónyuge', h: 'Tal cual figura en su DNI.', t: 'text', req: 1, w: eq('civil', 'Casado/a') },
           { k: 'divInscr', l: '¿Inscribiste el divorcio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Divorciado/a') },
-          { k: 'defInscr', l: '¿Inscribiste la defunción de tu cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') }
+          { k: 'divTram', l: '¿Querés que inscribamos el divorcio nosotros?', h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('divInscr', 'No') },
+          { k: 'defInscr', l: '¿Inscribiste la defunción de tu cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') },
+          { k: 'defTram', l: '¿Querés que inscribamos la defunción nosotros?', h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('defInscr', 'No') }
         ]]);
       } else {
         var prog = [
@@ -355,10 +366,13 @@
         ];
         if (pas) prog.push(
           { k: 'hijosProg', l: '¿Cuántos hijos menores tiene el progenitor?', h: 'Solo menores de edad.', t: 'choice', o: ['1', '2', '3 o más'] },
+          { k: 'hijosCant', l: '¿Cuántos hijos menores son?', t: 'number', u: '', e: 'Ingresá la cantidad, por ejemplo 3.', req: 1, min: 3, max: 20, w: eq('hijosProg', '3 o más') },
           { k: 'civil', l: 'Estado civil del progenitor', t: 'choice', o: ['Casado/a', 'Soltero/a', 'Viudo/a', 'Divorciado/a', 'Otro'] },
           { k: 'conyuge', l: 'Nombre completo del cónyuge', h: 'Tal cual figura en su DNI.', t: 'text', req: 1, w: eq('civil', 'Casado/a') },
           { k: 'divInscr', l: '¿Inscribió el divorcio en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Divorciado/a') },
-          { k: 'defInscr', l: '¿Inscribió la defunción de su cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') });
+          { k: 'divTram', l: '¿Quieren que inscribamos el divorcio nosotros?', h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('divInscr', 'No') },
+          { k: 'defInscr', l: '¿Inscribió la defunción de su cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') },
+          { k: 'defTram', l: '¿Quieren que inscribamos la defunción nosotros?', h: 'Nos ocupamos del trámite ante el Consulado.', t: 'choice', o: SN, req: 1, w: eq('defInscr', 'No') });
         out = [['Datos del menor', 'Tal cual figuran en su DNI.', [
           { k: 'nombre', l: 'Nombre completo del menor', t: 'text' },
           { k: 'fechaNac', l: 'Fecha de nacimiento del menor', t: 'date' },
@@ -376,7 +390,7 @@
     function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
     function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
     function btn(cls, txt, fn) { var b = el('button', cls, txt); b.type = 'button'; b.addEventListener('click', fn); return b; }
-    function fmt(f, v) { if (f.cf) return v.replace(/\s/g, '').toUpperCase(); if (f.t === 'date' && /^\d{4}-\d{2}-\d{2}$/.test(v)) { var p = v.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; } return f.t === 'number' ? v + ' cm' : v; }
+    function fmt(f, v) { if (f.cf) return v.replace(/\s/g, '').toUpperCase(); if (f.t === 'date' && /^\d{4}-\d{2}-\d{2}$/.test(v)) { var p = v.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; } return f.t === 'number' ? v + (f.u == null ? ' cm' : f.u) : v; }
     function shown(f) { return !f.w || f.w(st.d); }
     function steps() { return st.kind ? flow(st.tram, st.kind) : []; }
     function carry() { var keep = {}; SHARED.forEach(function (k) { if (st.d[k]) keep[k] = st.d[k]; }); return keep; }
@@ -425,6 +439,7 @@
       if (f.t === 'choice') {
         box = el('fieldset', 'sf-f'); box.appendChild(el('legend', '', f.l)); if (f.req) star(box.firstChild);
         if (f.h) box.appendChild(el('span', 'hint', f.h));
+        if (f.a) { var more = el('a', 'sf-link', f.a[0]); more.href = f.a[1]; more.target = '_blank'; more.rel = 'noopener'; box.appendChild(more); }
         var os = el('div', 'sf-opts');
         f.o.forEach(function (o, n) {
           var lab = el('label', 'sf-opt'), r = el('input'); r.type = 'radio'; r.name = id; r.value = o; r.id = id + '-' + n; r.checked = st.d[f.k] === o; if (f.req) r.required = true;
@@ -450,6 +465,12 @@
         input.setAttribute('aria-describedby', (f.h ? id + '-h ' : '') + id + '-e');
         input.addEventListener(f.t === 'select' ? 'change' : 'input', function () { set(input.value.replace(/\s+/g, ' ').replace(/^ /, '')); });
         box.appendChild(input);
+        if (f.na) {
+          var nl = el('label', 'sf-opt sf-na'), nc = el('input'); nc.type = 'checkbox'; nc.id = id + '-na'; nc.checked = st.d[f.k] === f.na;
+          if (nc.checked) { input.value = ''; input.disabled = true; }
+          nc.addEventListener('change', function () { input.disabled = nc.checked; if (nc.checked) input.value = ''; set(nc.checked ? f.na : ''); if (!nc.checked) input.focus(); });
+          nl.appendChild(nc); nl.appendChild(el('span', '', f.na)); box.appendChild(nl);
+        }
       }
       box.appendChild(err); box.setAttribute('data-k', f.k);
       return box;
@@ -457,7 +478,7 @@
     function refresh(wrap) {
       steps()[st.i][2].forEach(function (f) {
         var box = wrap.querySelector('[data-k="' + f.k + '"]'), on = shown(f);
-        if (box.hidden === on) { box.hidden = !on; if (!on) { delete st.d[f.k]; var i = box.querySelector('input:not([type=radio]), select'); if (i) i.value = ''; box.querySelectorAll('input[type=radio]').forEach(function (r) { r.checked = false; }); } }
+        if (box.hidden === on) { box.hidden = !on; if (!on) { delete st.d[f.k]; box.querySelectorAll('input, select').forEach(function (x) { if (x.type === 'radio' || x.type === 'checkbox') x.checked = false; else { x.value = ''; x.disabled = false; } }); } }
       });
     }
     function check(f) {
@@ -467,7 +488,7 @@
       if (f.cf && !/^[A-Za-z0-9]{16}$/.test(v.replace(/\s/g, ''))) return 'Revisá el código fiscal: tiene 16 letras y números.';
       if (f.t === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'Revisá el correo: tiene que ser como nombre@ejemplo.com.';
       if (f.t === 'tel' && v.replace(/\D/g, '').length < 8) return 'Revisá el número: tiene que incluir el código de área.';
-      if (f.t === 'number' && !(+v >= f.min && +v <= f.max)) return 'Ingresá la estatura en centímetros, por ejemplo 170.';
+      if (f.t === 'number' && !(+v >= f.min && +v <= f.max)) return f.e || 'Ingresá la estatura en centímetros, por ejemplo 170.';
       if (f.t === 'date' && !(/^\d{4}-\d{2}-\d{2}$/.test(v) && v <= new Date().toISOString().slice(0, 10) && v >= '1900-01-01')) return 'Revisá la fecha.';
       return '';
     }
@@ -488,7 +509,7 @@
           var box = form.querySelector('[data-k="' + f.k + '"]'), err = box.querySelector('.sf-err'), msg = check(f);
           if (!err) return;
           err.textContent = msg; err.hidden = !msg;
-          if (msg) { box.setAttribute('data-bad', ''); if (!first) first = box.querySelector('input, select'); } else box.removeAttribute('data-bad');
+          if (msg) { box.setAttribute('data-bad', ''); if (!first) first = box.querySelector('input:not([disabled]), select'); } else box.removeAttribute('data-bad');
         });
         if (first) { first.focus(); return; }
         st.i++; if (st.i >= all.length) attach(true); else step(true);
@@ -528,6 +549,7 @@
       img.onerror = function () { URL.revokeObjectURL(url); cb('No pudimos leer la foto. Probá con otra o con un PDF.'); };
       img.src = url;
     }
+    function flabel(f) { return f.slot === 'dniF' && files.both ? f.label.replace('frente', 'frente y dorso') : f.label; }
     function attach(move) {
       var all = steps(), list = slots(); st.i = all.length;
       progress(all.length + 1, all.length + 2, 'Paso ' + (all.length + 1) + ' de ' + (all.length + 2));
@@ -551,15 +573,26 @@
           });
         });
         pick.appendChild(input); pick.appendChild(face); row.appendChild(pick); row.appendChild(name); row.appendChild(del);
-        box.appendChild(row); box.appendChild(err); box.setAttribute('data-k', s[0]); form.appendChild(box); paint();
+        box.appendChild(row);
+        if (s[0] === 'dniF') {
+          var bl = el('label', 'sf-opt sf-na'), bc = el('input'); bc.type = 'checkbox'; bc.id = 'sf-both'; bc.checked = !!files.both;
+          bc.addEventListener('change', function () { files.both = bc.checked; if (bc.checked) delete files.dniD; var d = form.querySelector('[data-k="dniD"]'); d.hidden = bc.checked; d.removeAttribute('data-bad'); });
+          bl.appendChild(bc); bl.appendChild(el('span', '', 'Este archivo tiene las dos caras')); box.appendChild(bl);
+        }
+        box.appendChild(err); box.setAttribute('data-k', s[0]); if (s[0] === 'dniD') box.hidden = !!files.both; form.appendChild(box); paint();
       });
+      var lt = el('div', 'sf-f sf-later'), ll = el('label', 'sf-opt sf-na'), lc = el('input'); lc.type = 'checkbox'; lc.id = 'sf-later'; lc.checked = !!files.later;
+      function later() { list.forEach(function (s) { var b = form.querySelector('[data-k="' + s[0] + '"]'); b.hidden = lc.checked || (s[0] === 'dniD' && !!files.both); b.removeAttribute('data-bad'); b.querySelector('.sf-err').hidden = true; }); }
+      lc.addEventListener('change', function () { files.later = lc.checked; later(); });
+      ll.appendChild(lc); ll.appendChild(el('span', '', 'Los mando después por WhatsApp o correo')); lt.appendChild(ll);
+      lt.appendChild(el('span', 'hint', 'Si ahora no podés subirlos. Al terminar te damos el botón para enviarlos.')); form.appendChild(lt); later();
       var nav = el('div', 'sf-nav');
       nav.appendChild(btn('sf-back', 'Volver', function () { st.i = all.length - 1; step(true); }));
       var next = el('button', 'btn btn-primary', 'Revisar'); next.type = 'submit'; nav.appendChild(next); form.appendChild(nav);
       form.addEventListener('submit', function (e) {
         e.preventDefault(); var first = null;
         list.forEach(function (s) {
-          if (!s[2] || files[s[0]]) return;
+          if (!s[2] || files[s[0]] || files.later || (s[0] === 'dniD' && files.both)) return;
           var box = form.querySelector('[data-k="' + s[0] + '"]'), err = box.querySelector('.sf-err');
           err.textContent = 'Subí este documento.'; err.hidden = false; box.setAttribute('data-bad', ''); if (!first) first = box.querySelector('input');
         });
@@ -584,7 +617,7 @@
         if (!mine.length) body.lastChild.appendChild(el('p', 'sf-none', 'Sin completar.'));
       });
       var addDoc = section('Documentación', function () { attach(true); });
-      list.forEach(function (s) { if (files[s[0]]) addDoc(files[s[0]].label, files[s[0]].name); });
+      if (files.later) addDoc('Envío', 'Después, por WhatsApp o correo'); else list.forEach(function (s) { if (files[s[0]]) addDoc(flabel(files[s[0]]), files[s[0]].name); });
       var ok = el('label', 'sf-ok'), cb = el('input'); cb.type = 'checkbox'; cb.id = 'sf-okc';
       ok.appendChild(cb); ok.appendChild(el('span', '', 'Confirmo que los datos son correctos y autorizo a Migratio Gestoría a usarlos, junto con la documentación adjunta, para gestionar el turno.'));
       body.appendChild(ok);
@@ -601,7 +634,7 @@
       var send = btn('btn btn-primary', 'Enviar solicitud', function () {
         if (!cb.checked) { err.textContent = 'Marcá la casilla para enviar.'; err.hidden = false; cb.focus(); return; }
         err.hidden = true; send.disabled = back.disabled = true; send.textContent = 'Enviando…';
-        var data = { v: 1, id: sid, tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', datos: rows().map(function (r) { return [r[0], r[1]]; }), archivos: list.filter(function (s) { return files[s[0]]; }).map(function (s) { var f = files[s[0]]; return { nombre: f.label + '.' + f.ext, tipo: f.type, datos: f.data }; }) };
+        var data = { v: 1, id: sid, tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', datos: rows().map(function (r) { return [r[0], r[1]]; }).concat(files.later ? [['Documentación', 'La envía después, por WhatsApp o correo']] : []), archivos: files.later ? [] : list.filter(function (s) { return files[s[0]]; }).map(function (s) { var f = files[s[0]]; return { nombre: flabel(f) + '.' + f.ext, tipo: f.type, datos: f.data }; }) };
         var ac = window.AbortController ? new AbortController() : null, to = setTimeout(function () { if (ac) ac.abort(); }, 90000);
         fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data), signal: ac ? ac.signal : undefined }).then(json).then(function (r) { clearTimeout(to); if (r && r.ok) done(); else confirm(); }).catch(function () { clearTimeout(to); confirm(); });
       });
@@ -613,10 +646,19 @@
     }
     function done() {
       progress(1, 1, 'Enviado');
-      var h = head('Recibimos tu solicitud', 'Ya tenemos tus datos y tu documentación. Te escribimos para confirmar los detalles antes de pedir el turno.');
-      var nav = el('div', 'sf-nav sf-end');
-      nav.appendChild(btn('btn btn-primary', 'Cargar otro familiar', function () { files = {}; st = { tram: st.tram, kind: '', i: -1, d: carry() }; enter(true); }));
-      body.appendChild(nav);
+      var otro = function () { files = {}; st = { tram: st.tram, kind: '', i: -1, d: carry() }; enter(true); }, nav = el('div', 'sf-nav sf-end'), h;
+      if (files.later) {
+        h = head('Recibimos tu solicitud', 'Falta la documentación: mandanos una foto o un PDF del DNI, frente y dorso' + (st.tram === 'ciu' ? '' : ', y del pasaporte anterior si corresponde') + '.');
+        var quien = st.d.nombre ? ' Soy ' + st.d.nombre + '.' : '', asunto = 'Documentación · ' + TRAM[st.tram][1] + (st.d.nombre ? ' · ' + st.d.nombre : '');
+        var w = el('a', 'btn btn-primary'); w.href = WA + encodeURIComponent('Hola, Migratio.' + quien + ' Les envío la documentación de mi solicitud: ' + TRAM[st.tram][1].toLowerCase() + '.'); w.target = '_blank'; w.rel = 'noopener';
+        w.innerHTML = '<svg aria-hidden="true"><use href="#ic-wa"/></svg>'; w.appendChild(document.createTextNode('Enviar por WhatsApp')); nav.appendChild(w);
+        var m = el('a', 'btn btn-outline', 'Enviar por correo'); m.href = 'mailto:' + MAIL + '?subject=' + encodeURIComponent(asunto); nav.appendChild(m);
+        body.appendChild(nav);
+        var more = el('div', 'sf-nav sf-end'); more.appendChild(btn('sf-back', 'Cargar otro familiar', otro)); body.appendChild(more);
+      } else {
+        h = head('Recibimos tu solicitud', 'Ya tenemos tus datos y tu documentación. Te escribimos para confirmar los detalles antes de pedir el turno.');
+        nav.appendChild(btn('btn btn-primary', 'Cargar otro familiar', otro)); body.appendChild(nav);
+      }
       try { localStorage.setItem(KEY, JSON.stringify({ tram: st.tram, kind: '', i: -1, d: carry() })); } catch (e) {}
       h.focus({ preventScroll: true }); document.getElementById('solicitud').scrollIntoView({ block: 'start' });
     }
