@@ -658,6 +658,8 @@
     }
     function done() {
       progress(1, 1, 'Enviado');
+      // Analytics: cuenta la solicitud enviada. Solo el tipo de trámite, sin datos personales.
+      try { if (window.gtag) gtag('event', 'solicitud_turno', { tramite: TRAM[st.tram][1], para: KIND[st.kind] || '', documentacion: files.later ? 'despues' : 'adjunta' }); } catch (e) {}
       var otro = function () { files = {}; st = { tram: st.tram, kind: '', i: -1, d: carry() }; enter(true); }, nav = el('div', 'sf-nav sf-end'), h;
       if (files.later) {
         h = head('Recibimos tu solicitud', 'Falta la documentación: mandanos una foto o un PDF del DNI, frente y dorso' + (st.tram === 'ciu' ? '' : ', y del pasaporte anterior si corresponde') + '.');
