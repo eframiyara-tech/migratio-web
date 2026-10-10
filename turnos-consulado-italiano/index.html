@@ -75,7 +75,7 @@
     "name": "¿Cuándo se pagan los honorarios?",
     "acceptedAnswer": {
      "@type": "Answer",
-     "text": "En los turnos de pasaporte, CIE y ciudadanía, después de obtener el turno. La tasa consular se paga aparte, al consulado."
+     "text": "En los turnos de pasaporte, CIE y ciudadanía, recién cuando el turno está confirmado a tu nombre. Antes no te pedimos ningún pago."
     }
    },
    {
@@ -91,7 +91,7 @@
     "name": "¿Tengo que ir al consulado?",
     "acceptedAnswer": {
      "@type": "Answer",
-     "text": "Sí, el trámite se hace en persona. Para la CIE, el consulado toma las huellas y la firma el día del turno."
+     "text": "Sí, el trámite se hace en persona, el día del turno."
     }
    },
    {
@@ -195,15 +195,26 @@
 
 <header class="site">
   <div class="wrap nav-row">
-    <a href="../" class="brand" aria-label="Migratio Gestoría, inicio"><img src="../logo-v2.png" alt="Migratio Gestoría"></a>
+    <a href="../" class="brand" aria-label="Migratio Gestoría, inicio"><img src="../logo-v3.png" alt="Migratio Gestoría"></a>
     <nav class="links" aria-label="Secciones">
-      <a href="../ciudadania-italiana/">Ciudadanía italiana</a>
-      <a href="../juicio-ciudadania-italiana/">Juicio en Italia</a>
-      <a href="../turnos-consulado-italiano/">Turnos</a>
-      <a href="../ciudadania-espanola/">Ciudadanía española</a>
-      <a href="../visa-estados-unidos/">Visa EEUU</a>
-      <a href="../visas-oceania/">Oceanía</a>
-      <a href="../#tramites">Todos los trámites</a>
+      <div class="dd">
+        <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-italia">Italia<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
+        <div class="dd-menu" id="dd-italia">
+          <a href="../ciudadania-italiana/">Ciudadanía italiana</a>
+          <a href="../juicio-ciudadania-italiana/">Juicio de ciudadanía</a>
+          <a href="../turnos-consulado-italiano/">Turnos en el consulado</a>
+        </div>
+      </div>
+      <div class="dd">
+        <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-otros">Otros servicios<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
+        <div class="dd-menu" id="dd-otros">
+          <a href="../ciudadania-espanola/">Ciudadanía española</a>
+          <a href="../visa-estados-unidos/">Visa de turista EE. UU.</a>
+          <a href="../visas-oceania/">Visas Oceanía y Bali</a>
+          <a href="../#genealogia">Genealogía</a>
+          <a href="../#tramites">Todos los trámites</a>
+        </div>
+      </div>
     </nav>
     <div class="nav-actions">
       <a class="btn btn-primary nav-cta" href="#contacto">Contacto</a>
@@ -215,13 +226,16 @@
   <nav class="mnav" id="mnav" aria-label="Secciones" hidden>
     <div class="wrap">
       <a href="../">Inicio</a>
-      <a href="../#tramites">Todos los trámites</a>
-      <a href="../ciudadania-italiana/">Ciudadanía italiana (vía consular)</a>
-      <a href="../juicio-ciudadania-italiana/">Juicio de ciudadanía italiana</a>
-      <a href="../turnos-consulado-italiano/">Turnos de pasaporte, CIE y ciudadanía italiana</a>
-      <a href="../ciudadania-espanola/">Ciudadanía española</a>
-      <a href="../visa-estados-unidos/">Visa de turista EEUU</a>
-      <a href="../visas-oceania/">Visas para Australia, Nueva Zelanda y Bali</a>
+      <span class="mnav-h mono">Italia</span>
+      <a class="sub" href="../ciudadania-italiana/">Ciudadanía italiana</a>
+      <a class="sub" href="../juicio-ciudadania-italiana/">Juicio de ciudadanía</a>
+      <a class="sub" href="../turnos-consulado-italiano/">Turnos en el consulado</a>
+      <span class="mnav-h mono">Otros servicios</span>
+      <a class="sub" href="../ciudadania-espanola/">Ciudadanía española</a>
+      <a class="sub" href="../visa-estados-unidos/">Visa de turista EE. UU.</a>
+      <a class="sub" href="../visas-oceania/">Visas Oceanía y Bali</a>
+      <a class="sub" href="../#genealogia">Genealogía</a>
+      <a class="sub" href="../#tramites">Todos los trámites</a>
       <a href="#contacto">Contacto</a>
     </div>
   </nav>
@@ -309,7 +323,7 @@
           <p>Seguimos el trámite por vos y te avisamos por WhatsApp en cada paso. Vos solo vas al consulado.</p>
         </div>
       </div>
-      <p class="fine" style="margin-top:28px">En los turnos de pasaporte, CIE y ciudadanía, los honorarios se abonan después de obtener el turno. La tasa consular se paga aparte, al consulado.</p>
+      <p class="fine" style="margin-top:28px"><b>Pagás cuando tenés el turno.</b> En los turnos de pasaporte, CIE y ciudadanía, los honorarios se cobran recién una vez confirmado el turno a tu nombre.</p>
     </div>
   </section>
 
@@ -324,9 +338,8 @@
       <ul class="check-list">
         <li><svg class="ico" aria-hidden="true"><use href="#ic-check"/></svg><span><b>Qué incluye:</b> asesoramiento integral sobre el procedimiento, la gestión del turno a tu nombre y la revisión de lo que tenés que presentar.</span></li>
         <li><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg><span><b>Qué necesitamos:</b> un formulario con tus datos y una foto o escaneo de tu DNI y de tu pasaporte italiano vencido, si lo tenés.</span></li>
-        <li><svg class="ico" aria-hidden="true"><use href="#ic-plane"/></svg><span><b>Si tenés un viaje:</b> no compres el pasaje antes de tener el pasaporte. El consulado no considera un pasaje emitido como motivo para una emisión de urgencia.</span></li>
         <li><svg class="ico" aria-hidden="true"><use href="#ic-home"/></svg><span><b>Familias:</b> para 2 personas o más hay descuento.</span></li>
-        <li><svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg><span><b>Honorarios:</b> se abonan después de obtener el turno. No incluyen la tasa consular.</span></li>
+        <li><svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg><span><b>Pagás cuando tenés el turno:</b> los honorarios se cobran recién una vez confirmado el turno a tu nombre. Antes no te pedimos ningún pago.</span></li>
       </ul>
     </div>
   </section>
@@ -342,11 +355,11 @@
       <ul class="check-list">
         <li><svg class="ico" aria-hidden="true"><use href="#ic-check"/></svg><span><b>Qué incluye:</b> asesoramiento integral sobre el procedimiento y la gestión del turno a tu nombre.</span></li>
         <li><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg><span><b>Qué necesitamos:</b> una foto o escaneo de tu DNI, de tu pasaporte italiano y de tu codice fiscale, si lo tenés.</span></li>
-        <li><svg class="ico" aria-hidden="true"><use href="#ic-alert"/></svg><span><b>Qué pide el consulado:</b> estar inscripto en el AIRE, porque sin esa inscripción no emite la CIE, y presentarte en persona, porque toman las huellas y la firma. La tarjeta llega después por correo.</span></li>
+        <li><svg class="ico" aria-hidden="true"><use href="#ic-alert"/></svg><span><b>Qué pide el consulado:</b> estar inscripto en el AIRE, porque sin esa inscripción no emite la CIE, y presentarte en persona el día del turno. La tarjeta llega después por correo.</span></li>
         <li><svg class="ico" aria-hidden="true"><use href="#ic-calendar"/></svg><span><b>Pasaporte y CIE, en días distintos:</b> el Consulado de Mendoza no emite la CIE el mismo día del turno de pasaporte. Si necesitás los dos, gestionamos un turno para cada trámite.</span></li>
         <li><svg class="ico" aria-hidden="true"><use href="#ic-clock"/></svg><span><b>Validez:</b> 10 años para mayores de edad, 5 años de los 3 a los 18 y 3 años para menores de 3.</span></li>
         <li><svg class="ico" aria-hidden="true"><use href="#ic-home"/></svg><span><b>Familias:</b> para 2 personas o más hay descuento.</span></li>
-        <li><svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg><span><b>Honorarios:</b> se abonan después de obtener el turno. No incluyen la tasa consular.</span></li>
+        <li><svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg><span><b>Pagás cuando tenés el turno:</b> los honorarios se cobran recién una vez confirmado el turno a tu nombre. Antes no te pedimos ningún pago.</span></li>
       </ul>
     </div>
   </section>
@@ -363,7 +376,7 @@
         <li><svg class="ico" aria-hidden="true"><use href="#ic-check"/></svg><span><b>Qué incluye:</b> la revisión preliminar de tu documentación, para verificar que cumpla con lo que pide el consulado, y el asesoramiento sobre formularios y documentación complementaria.</span></li>
         <li><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg><span><b>Qué necesitamos:</b> tu DNI y el nombre de tu antepasado nacido en Italia, o del progenitor ya inscripto en el consulado.</span></li>
         <li><svg class="ico" aria-hidden="true"><use href="#ic-scale"/></svg><span><b>Antes de pedirlo:</b> desde la Legge 74/2025 no todos los casos van por consulado. <a class="more" href="../ciudadania-italiana/">Ver qué vía te corresponde</a></span></li>
-        <li><svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg><span><b>Honorarios:</b> se abonan después de obtener el turno. Corresponden a la gestión del turno: no incluyen la tasa consular ni garantizan el reconocimiento de la ciudadanía.</span></li>
+        <li><svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg><span><b>Pagás cuando tenés el turno:</b> los honorarios se cobran recién una vez confirmado el turno a tu nombre. Antes no te pedimos ningún pago.</span></li>
       </ul>
     </div>
   </section>
@@ -377,7 +390,7 @@
       </div>
       <ul class="check-list">
         <li><svg class="ico" aria-hidden="true"><use href="#ic-passport"/></svg><span><b>Para quiénes:</b> hijos menores nacidos fuera de Italia, de padre o madre con ciudadanía italiana que no la transmite de forma automática.</span></li>
-        <li><svg class="ico" aria-hidden="true"><use href="#ic-calendar"/></svg><span><b>Plazos:</b> dentro de los 3 años desde el nacimiento. Si tu hijo era menor de 18 años el 24/05/2025, hay tiempo hasta el 31/05/2029; después de esa fecha ya no se puede hacer la declaración.</span></li>
+        <li><svg class="ico" aria-hidden="true"><use href="#ic-calendar"/></svg><span><b>Plazos:</b> dentro de los 3 años desde el nacimiento. Si tu hijo era menor de 18 años el 24/05/2025, hay tiempo hasta el 31/05/2029; después de esa fecha se pierde el derecho a la ciudadanía italiana por esta vía.</span></li>
         <li><svg class="ico" aria-hidden="true"><use href="#ic-check"/></svg><span><b>Qué incluye:</b> la preparación de la carpeta; la emisión, revisión y traducción de las actas; el turno y el envío postal de la documentación al consulado.</span></li>
         <li><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg><span><b>Qué necesitamos:</b> el formulario de solicitud en papel, con firma ológrafa de ambos progenitores. Además, una foto o escaneo de la partida de nacimiento del menor y de los DNI del grupo familiar.</span></li>
         <li><svg class="ico" aria-hidden="true"><use href="#ic-rings"/></svg><span><b>Después del envío:</b> el consulado se contacta con el progenitor italiano y le asigna un turno. Ese día, ambos progenitores se presentan en el consulado y hacen la declaración de voluntad. El menor adquiere la ciudadanía desde el día siguiente.</span></li>
@@ -405,7 +418,7 @@
     <div class="wrap">
       <div class="note" style="background:var(--paper)">
         <svg class="ico" aria-hidden="true"><use href="#ic-alert"/></svg>
-        <span><b>Somos un servicio privado e independiente.</b> No somos el consulado ni tenemos vínculo con él. El turno en Prenot@mi es gratuito y podés pedirlo por tu cuenta; nuestros honorarios corresponden al asesoramiento y a la gestión. Fuentes oficiales, Consulado de Italia en Mendoza: <a href="https://consmendoza.esteri.it/es/servizi-consolari-e-visti/servizi-per-il-cittadino-italiano/passaporti/" target="_blank" rel="noopener">pasaportes</a> · <a href="https://consmendoza.esteri.it/it/servizi-consolari-e-visti/servizi-per-il-cittadino-italiano/carta-didentita-elettronica-cie/" target="_blank" rel="noopener">CIE</a> · <a href="https://consmendoza.esteri.it/es/servizi-consolari-e-visti/servizi-per-il-cittadino-straniero/adquisicion-de-la-ciudadania-por-beneficio-de-ley-hijos-menores-nacidos-en-el-exterior/" target="_blank" rel="noopener">hijos menores</a>. Verificado el 06/10/2026.</span>
+        <span><b>Somos un servicio privado e independiente.</b> No somos el consulado ni tenemos vínculo con él. El turno en Prenot@mi es gratuito y podés pedirlo por tu cuenta; nuestros honorarios corresponden al asesoramiento y a la gestión.</span>
       </div>
     </div>
   </section>
@@ -423,7 +436,7 @@
         </details>
         <details>
           <summary>¿Cuándo se pagan los honorarios?<span class="pm" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M6 1v10M1 6h10"/></svg></span></summary>
-          <p>En los turnos de pasaporte, CIE y ciudadanía, después de obtener el turno. La tasa consular se paga aparte, al consulado.</p>
+          <p>En los turnos de pasaporte, CIE y ciudadanía, recién cuando el turno está confirmado a tu nombre. Antes no te pedimos ningún pago.</p>
         </details>
         <details>
           <summary>¿El turno queda a mi nombre?<span class="pm" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M6 1v10M1 6h10"/></svg></span></summary>
@@ -431,7 +444,7 @@
         </details>
         <details>
           <summary>¿Tengo que ir al consulado?<span class="pm" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M6 1v10M1 6h10"/></svg></span></summary>
-          <p>Sí, el trámite se hace en persona. Para la CIE, el consulado toma las huellas y la firma el día del turno.</p>
+          <p>Sí, el trámite se hace en persona, el día del turno.</p>
         </details>
         <details>
           <summary>¿Qué pasa si mi AIRE o mi domicilio no están actualizados?<span class="pm" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M6 1v10M1 6h10"/></svg></span></summary>
@@ -490,7 +503,7 @@
           </div>
         </div>
         <div class="pc-card">
-          <img class="pc-stamp" src="../logo-v2.png" alt="" width="96" height="64">
+          <img class="pc-stamp" src="../logo-v3.png" alt="" width="96" height="64">
           <svg class="pc-mark" viewBox="6 6 108 108" aria-hidden="true">
             <defs><path id="pc-ring" d="M60,60 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs>
             <circle cx="60" cy="60" r="48" fill="none" stroke="#8c2f45" stroke-width="2"/>
@@ -541,7 +554,7 @@
 <footer>
   <div class="wrap f-top">
     <div class="f-brand">
-      <img src="../logo-v2.png" alt="Migratio Gestoría" width="96" height="64">
+      <img src="../logo-v3.png" alt="Migratio Gestoría" width="96" height="64">
       <p>Gestoría migratoria y consular. Atención 100% remota desde Mendoza, Argentina, para todo el mundo.</p>
     </div>
     <nav class="f-links" aria-label="Pie de página">
@@ -552,6 +565,7 @@
       <a href="../ciudadania-espanola/">Ciudadanía española</a>
       <a href="../visa-estados-unidos/">Visa EEUU</a>
       <a href="../visas-oceania/">Visas Oceanía</a>
+      <a href="../#genealogia">Genealogía</a>
       <a href="#contacto">Contacto</a>
     </nav>
   </div>
@@ -688,6 +702,15 @@
     var md = document.getElementById('pc-date'); if (md) md.textContent = d.getDate() + ' ' + meses[d.getMonth()] + ' ' + d.getFullYear();
     send.addEventListener('click', function () { root.classList.remove('sent'); void root.offsetWidth; root.classList.add('sent'); });
   })();
+</script>
+<script>
+(function () {
+  var bs = document.querySelectorAll('.dd-btn');
+  function close(x) { bs.forEach(function (b) { if (b !== x) b.setAttribute('aria-expanded', 'false'); }); }
+  bs.forEach(function (b) { b.addEventListener('click', function () { close(b); b.setAttribute('aria-expanded', b.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'); }); });
+  document.addEventListener('click', function (e) { if (!e.target.closest('.dd')) close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+})();
 </script>
 </body>
 </html>
