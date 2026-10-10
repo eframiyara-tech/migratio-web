@@ -180,15 +180,26 @@
 
 <header class="site">
   <div class="wrap nav-row">
-    <a href="../" class="brand" aria-label="Migratio Gestoría, inicio"><img src="../logo-v2.png" alt="Migratio Gestoría"></a>
+    <a href="../" class="brand" aria-label="Migratio Gestoría, inicio"><img src="../logo-v3.png" alt="Migratio Gestoría"></a>
     <nav class="links" aria-label="Secciones">
-      <a href="../ciudadania-italiana/">Ciudadanía italiana</a>
-      <a href="../juicio-ciudadania-italiana/">Juicio en Italia</a>
-      <a href="../turnos-consulado-italiano/">Turnos</a>
-      <a href="../ciudadania-espanola/">Ciudadanía española</a>
-      <a href="../visa-estados-unidos/">Visa EEUU</a>
-      <a href="../visas-oceania/">Oceanía</a>
-      <a href="../#tramites">Todos los trámites</a>
+      <div class="dd">
+        <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-italia">Italia<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
+        <div class="dd-menu" id="dd-italia">
+          <a href="../ciudadania-italiana/">Ciudadanía italiana</a>
+          <a href="../juicio-ciudadania-italiana/">Juicio de ciudadanía</a>
+          <a href="../turnos-consulado-italiano/">Turnos en el consulado</a>
+        </div>
+      </div>
+      <div class="dd">
+        <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-otros">Otros servicios<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
+        <div class="dd-menu" id="dd-otros">
+          <a href="../ciudadania-espanola/">Ciudadanía española</a>
+          <a href="../visa-estados-unidos/">Visa de turista EE. UU.</a>
+          <a href="../visas-oceania/">Visas Oceanía y Bali</a>
+          <a href="../#genealogia">Genealogía</a>
+          <a href="../#tramites">Todos los trámites</a>
+        </div>
+      </div>
     </nav>
     <div class="nav-actions">
       <a class="btn btn-primary nav-cta" href="../#contacto">Contacto</a>
@@ -200,13 +211,16 @@
   <nav class="mnav" id="mnav" aria-label="Secciones" hidden>
     <div class="wrap">
       <a href="../">Inicio</a>
-      <a href="../#tramites">Todos los trámites</a>
-      <a href="../ciudadania-italiana/">Ciudadanía italiana (vía consular)</a>
-      <a href="../juicio-ciudadania-italiana/">Juicio de ciudadanía italiana</a>
-      <a href="../turnos-consulado-italiano/">Turnos de pasaporte, CIE y ciudadanía italiana</a>
-      <a href="../ciudadania-espanola/">Ciudadanía española</a>
-      <a href="../visa-estados-unidos/">Visa de turista EEUU</a>
-      <a href="../visas-oceania/">Visas para Australia, Nueva Zelanda y Bali</a>
+      <span class="mnav-h mono">Italia</span>
+      <a class="sub" href="../ciudadania-italiana/">Ciudadanía italiana</a>
+      <a class="sub" href="../juicio-ciudadania-italiana/">Juicio de ciudadanía</a>
+      <a class="sub" href="../turnos-consulado-italiano/">Turnos en el consulado</a>
+      <span class="mnav-h mono">Otros servicios</span>
+      <a class="sub" href="../ciudadania-espanola/">Ciudadanía española</a>
+      <a class="sub" href="../visa-estados-unidos/">Visa de turista EE. UU.</a>
+      <a class="sub" href="../visas-oceania/">Visas Oceanía y Bali</a>
+      <a class="sub" href="../#genealogia">Genealogía</a>
+      <a class="sub" href="../#tramites">Todos los trámites</a>
       <a href="../#contacto">Contacto</a>
     </div>
   </nav>
@@ -240,7 +254,7 @@
 <footer>
   <div class="wrap f-top">
     <div class="f-brand">
-      <img src="../logo-v2.png" alt="Migratio Gestoría" width="96" height="64">
+      <img src="../logo-v3.png" alt="Migratio Gestoría" width="96" height="64">
       <p>Gestoría migratoria y consular. Atención 100% remota desde Mendoza, Argentina, para todo el mundo.</p>
     </div>
     <nav class="f-links" aria-label="Pie de página">
@@ -251,6 +265,7 @@
       <a href="../ciudadania-espanola/">Ciudadanía española</a>
       <a href="../visa-estados-unidos/">Visa EEUU</a>
       <a href="../visas-oceania/">Visas Oceanía</a>
+      <a href="../#genealogia">Genealogía</a>
       <a href="../#contacto">Contacto</a>
     </nav>
   </div>
@@ -678,6 +693,15 @@
     }
     if (st.kind && st.i >= 0) { if (st.i >= steps().length) attach(false); else step(false); } else if (st.tram) enter(false); else start(false);
   })();
+</script>
+<script>
+(function () {
+  var bs = document.querySelectorAll('.dd-btn');
+  function close(x) { bs.forEach(function (b) { if (b !== x) b.setAttribute('aria-expanded', 'false'); }); }
+  bs.forEach(function (b) { b.addEventListener('click', function () { close(b); b.setAttribute('aria-expanded', b.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'); }); });
+  document.addEventListener('click', function (e) { if (!e.target.closest('.dd')) close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+})();
 </script>
 </body>
 </html>
