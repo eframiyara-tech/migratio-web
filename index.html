@@ -152,17 +152,27 @@
   .menu-btn svg { width: 20px; height: 20px; stroke: var(--navy); stroke-width: 1.8; fill: none; stroke-linecap: round; }
   .menu-btn[aria-expanded="true"] { background: var(--navy); }
   .menu-btn[aria-expanded="true"] svg { stroke: var(--white); }
+  .dd { position: relative; }
+  .dd-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
+  .dd-btn:hover, .dd-btn[aria-expanded="true"] { color: var(--navy); }
+  .dd-chev { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+  .dd-btn[aria-expanded="true"] .dd-chev { transform: rotate(180deg); }
+  .dd-menu { display: none; position: absolute; top: 100%; left: -16px; min-width: 240px; padding: 8px; background: var(--white); border: 1px solid var(--line-strong); border-radius: 10px; box-shadow: 0 12px 32px rgba(38, 36, 61, .14); z-index: 60; }
+  .dd-menu a { display: block; padding: 10px 12px; border-radius: 6px; white-space: nowrap; color: var(--ink); }
+  .dd-menu a:hover { background: var(--paper); color: var(--navy); }
+  .dd-btn[aria-expanded="true"] + .dd-menu { display: block; }
+  @media (hover: hover) and (pointer: fine) { .dd:hover .dd-menu { display: block; } }
+  .mnav-h { display: block; padding: 16px 0 4px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .mnav a.sub { padding-left: 14px; }
   .mnav { border-top: 1px solid var(--line-strong); }
   .mnav .wrap { display: flex; flex-direction: column; padding-block: 8px 16px; }
   .mnav a { text-decoration: none; font-weight: 600; padding: 12px 0; min-height: 44px; border-bottom: 1px solid var(--line); }
   .mnav a:last-child { border-bottom: none; }
-  nav.links { gap: 20px; font-size: .86rem; }
-  nav.links a { white-space: nowrap; }
-  @media (max-width: 1200px) {
+  @media (max-width: 900px) {
     nav.links { display: none; }
     .menu-btn { display: grid; }
   }
-  @media (min-width: 1201px) { .mnav { display: none !important; } }
+  @media (min-width: 901px) { .mnav { display: none !important; } }
 
   .skip {
     position: absolute;
@@ -196,7 +206,7 @@
   @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } }
   .hero .kicker { color: var(--navy); }
   .hero h1 { font-size: clamp(2.5rem, 5.6vw, 4.3rem); line-height: 1.02; margin-bottom: 22px; }
-  .hero h1 em { font-style: italic; color: var(--burgundy); }
+  .hero h1 em { font-style: normal; color: var(--burgundy); }
   .hero .lead { font-size: 1.1rem; color: var(--ink-soft); max-width: 46ch; margin-bottom: 32px; }
   .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
 
@@ -266,24 +276,6 @@
   .env-rule { height: 1px; background: var(--line-strong); margin-block: 4px; }
   .env-line { font-size: clamp(.72rem, 1.4vw, .86rem); color: var(--ink-soft); font-weight: 600; }
 
-  /* ---------- destinos ---------- */
-  .destinos { border-bottom: 1px solid var(--line); background: var(--paper); }
-  .destinos .wrap { display: flex; align-items: center; gap: clamp(18px, 4vw, 44px); flex-wrap: wrap; padding-block: 26px; }
-  .destinos .mono { color: var(--ink-soft); }
-  .dest-list { display: flex; flex-wrap: wrap; gap: clamp(14px, 3vw, 32px); align-items: center; }
-  .dest {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: .92rem;
-    color: var(--ink);
-    padding: 6px 4px;
-  }
-  .dest img { height: 38px; width: auto; transition: transform .25s ease; }
-  @media (hover: hover) and (pointer: fine) { .dest:hover img { transform: rotate(-6deg) scale(1.06); } }
-  .dest-more { color: var(--ink-soft); font-weight: 600; }
 
   /* ---------- section shell ---------- */
   section.block { padding-block: clamp(64px, 9vw, 112px); }
@@ -340,6 +332,8 @@
     .tab { flex-shrink: 0; }
   }
   .tab img { height: 28px; width: auto; }
+  .gen-grid .req { background: var(--white); }
+  .tab img.pass { height: 36px; border-radius: 3px; box-shadow: 0 1px 3px rgba(38, 36, 61, .25); }
   .tab .globe { width: 28px; height: 28px; display: grid; place-items: center; }
   .tab .count { font-family: var(--f-mono); font-size: .7rem; color: var(--ink-soft); font-weight: 500; }
   .tab:hover { border-color: var(--navy); }
@@ -639,7 +633,6 @@
     html { scroll-behavior: auto; }
     .envelope, .env-stamp, .postmark, .panel:not([hidden]) .panel-intro, .panel:not([hidden]) .svc, .panel:not([hidden]) .panel-foot > *, .faq-list details[open] p, .mnav:not([hidden]) .wrap { animation-name: fade; animation-delay: 0ms; }
     .btn:active, .chip-btn:active, .copy-link:active, .tab:active, a.jump:active, .menu-btn:active { transform: none; }
-    .dest img { transition: none; }
   }
 
   /* ---------- postal de consulta ---------- */
@@ -860,15 +853,26 @@
 
 <header class="site">
   <div class="wrap nav-row">
-    <a href="#top" class="brand" aria-label="Migratio Gestoría, inicio"><img src="logo-v2.png" alt="Migratio Gestoría"></a>
+    <a href="#top" class="brand" aria-label="Migratio Gestoría, inicio"><img src="logo-v3.png" alt="Migratio Gestoría"></a>
     <nav class="links" aria-label="Secciones">
-      <a href="ciudadania-italiana/">Ciudadanía italiana</a>
-      <a href="juicio-ciudadania-italiana/">Juicio en Italia</a>
-      <a href="turnos-consulado-italiano/">Turnos</a>
-      <a href="ciudadania-espanola/">Ciudadanía española</a>
-      <a href="visa-estados-unidos/">Visa EEUU</a>
-      <a href="visas-oceania/">Oceanía</a>
-      <a href="#tramites">Todos los trámites</a>
+      <div class="dd">
+        <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-italia">Italia<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
+        <div class="dd-menu" id="dd-italia">
+          <a href="ciudadania-italiana/">Ciudadanía italiana</a>
+          <a href="juicio-ciudadania-italiana/">Juicio de ciudadanía</a>
+          <a href="turnos-consulado-italiano/">Turnos en el consulado</a>
+        </div>
+      </div>
+      <div class="dd">
+        <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-otros">Otros servicios<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
+        <div class="dd-menu" id="dd-otros">
+          <a href="ciudadania-espanola/">Ciudadanía española</a>
+          <a href="visa-estados-unidos/">Visa de turista EE. UU.</a>
+          <a href="visas-oceania/">Visas Oceanía y Bali</a>
+          <a href="#genealogia">Genealogía</a>
+          <a href="#tramites">Todos los trámites</a>
+        </div>
+      </div>
     </nav>
     <div class="nav-actions">
       <a class="btn btn-primary nav-cta" href="#contacto">Contacto</a>
@@ -879,13 +883,16 @@
   </div>
   <nav class="mnav" id="mnav" aria-label="Secciones" hidden>
     <div class="wrap">
-      <a href="#tramites">Todos los trámites</a>
-      <a href="ciudadania-italiana/">Ciudadanía italiana (vía consular)</a>
-      <a href="juicio-ciudadania-italiana/">Juicio de ciudadanía italiana</a>
-      <a href="turnos-consulado-italiano/">Turnos de pasaporte, CIE y ciudadanía italiana</a>
-      <a href="ciudadania-espanola/">Ciudadanía española</a>
-      <a href="visa-estados-unidos/">Visa de turista EEUU</a>
-      <a href="visas-oceania/">Visas para Australia, Nueva Zelanda y Bali</a>
+      <span class="mnav-h mono">Italia</span>
+      <a class="sub" href="ciudadania-italiana/">Ciudadanía italiana</a>
+      <a class="sub" href="juicio-ciudadania-italiana/">Juicio de ciudadanía</a>
+      <a class="sub" href="turnos-consulado-italiano/">Turnos en el consulado</a>
+      <span class="mnav-h mono">Otros servicios</span>
+      <a class="sub" href="ciudadania-espanola/">Ciudadanía española</a>
+      <a class="sub" href="visa-estados-unidos/">Visa de turista EE. UU.</a>
+      <a class="sub" href="visas-oceania/">Visas Oceanía y Bali</a>
+      <a class="sub" href="#genealogia">Genealogía</a>
+      <a class="sub" href="#tramites">Todos los trámites</a>
       <a href="#proceso">Cómo trabajamos</a>
       <a href="#faq">Preguntas frecuentes</a>
       <a href="#contacto">Contacto</a>
@@ -905,14 +912,13 @@
           <a class="btn btn-primary" href="https://wa.me/5492616530445" target="_blank" rel="noopener">
             <svg aria-hidden="true"><use href="#ic-wa"/></svg>Consultar por WhatsApp
           </a>
-          <a class="btn btn-outline" href="#tramites">Ver trámites</a>
         </div>
       </div>
 
       <div class="envelope" aria-hidden="true">
         <div class="env-inner">
           <div class="par-avion mono">Por avión<span>Par avion</span></div>
-          <img class="env-stamp" src="logo-v2.png" alt="">
+          <img class="env-stamp" src="logo-v3.png" alt="">
           <svg class="postmark" viewBox="6 6 108 108">
             <defs><path id="pm-ring" d="M60,60 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs>
             <circle cx="60" cy="60" r="48" fill="none" stroke="#26243d" stroke-width="2"/>
@@ -932,92 +938,6 @@
     </div>
   </section>
 
-  <div class="destinos">
-    <div class="wrap">
-      <span class="mono">Destinos</span>
-      <div class="dest-list">
-        <a class="dest" href="#italia" data-tab="italia"><img src="stamp-italia.svg" alt="">Italia</a>
-        <a class="dest" href="#espana" data-tab="espana"><img src="stamp-espana-v3.png" alt="">España</a>
-        <a class="dest" href="#argentina" data-tab="argentina"><img src="stamp-argentina.svg" alt="">Argentina</a>
-        <a class="dest" href="#otros" data-tab="otros"><img src="stamp-eeuu.png" alt="">EEUU y Europa</a>
-        <a class="dest" href="#otros" data-tab="otros"><img src="stamp-australia.svg" alt="">Oceanía y Bali</a>
-        <a class="dest dest-more" href="#otros" data-tab="otros">+ cualquier otro país</a>
-      </div>
-    </div>
-  </div>
-
-  <section id="turnos" class="block" style="border-bottom:1px solid var(--line)">
-    <div class="wrap">
-      <div class="head">
-        <span class="mono kicker">Consulado italiano · Turnos</span>
-        <h2>Turnos de pasaporte, CIE y ciudadanía italiana</h2>
-        <p>Conseguimos el turno desde 24 horas en modalidad exprés, a tu nombre y con tu documentación revisada. Vos solo vas al consulado el día indicado.</p>
-      </div>
-      <div class="req-grid">
-        <div class="req">
-          <svg class="ico" aria-hidden="true"><use href="#ic-passport"/></svg>
-          <span class="mono">Exprés: desde 24 horas</span>
-          <h3>Pasaporte italiano</h3>
-          <p>Turno para sacarlo o renovarlo. En modalidad común, hasta 10 días.</p>
-        </div>
-        <div class="req">
-          <svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg>
-          <span class="mono">Exprés: desde 24 horas</span>
-          <h3>Carta de identidad (CIE)</h3>
-          <p>Turno para la carta d’identità elettronica; requiere estar en el AIRE. En modalidad común, hasta 10 días.</p>
-        </div>
-        <div class="req">
-          <svg class="ico" aria-hidden="true"><use href="#ic-calendar"/></svg>
-          <span class="mono">Exprés: desde 24 horas</span>
-          <h3>Turno de ciudadanía</h3>
-          <p>Para presentar tu carpeta, con la documentación revisada antes. En modalidad común, hasta 10 días.</p>
-        </div>
-        <div class="req">
-          <svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg>
-          <span class="mono">Carpeta completa</span>
-          <h3>Hijos menores</h3>
-          <p>Ciudadanía italiana para hijos menores: actas, traducción y turno.</p>
-        </div>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px">
-        <a class="btn btn-primary" href="turnos-consulado-italiano/">Ver turnos y plazos</a>
-        <a class="btn btn-outline" href="https://wa.me/5492616530445?text=Hola%2C%20Migratio.%20Quiero%20consultar%20por%20un%20turno%20en%20el%20consulado%20italiano." target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg>Consultar por un turno</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="porque" class="block">
-    <div class="wrap">
-      <div class="head">
-        <span class="mono kicker">Por qué elegirnos</span>
-        <h2>Tu trámite, en manos de un solo equipo</h2>
-        <p>Somos un equipo de profesionales especializados en materia migratoria y consular.</p>
-      </div>
-      <div class="why-grid">
-        <div class="why">
-          <svg class="ico" aria-hidden="true"><use href="#ic-briefcase"/></svg>
-          <h3>Seguimiento directo</h3>
-          <p>Tu caso siempre lo llevamos nosotros. Nunca pasa a un call center ni a un tercero.</p>
-        </div>
-        <div class="why">
-          <svg class="ico" aria-hidden="true"><use href="#ic-globe"/></svg>
-          <h3>Alcance internacional</h3>
-          <p>Consulados de toda Argentina y del mundo, no solo italianos.</p>
-        </div>
-        <div class="why">
-          <svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg>
-          <h3>Carpeta en condiciones</h3>
-          <p>Revisamos cada documento antes de presentarlo, para evitar demoras y rechazos.</p>
-        </div>
-        <div class="why">
-          <svg class="ico" aria-hidden="true"><use href="#ic-chat"/></svg>
-          <h3>Atención remota</h3>
-          <p>Por WhatsApp o videollamada, estés donde estés.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section id="tramites" class="block tramites">
     <div class="wrap">
       <div class="head">
@@ -1027,9 +947,9 @@
       </div>
 
       <div class="tablist" role="tablist" aria-label="Destinos">
-        <button class="tab" role="tab" id="tab-italia" aria-controls="italia" aria-selected="true"><img src="stamp-italia.svg" alt="">Italia</button>
-        <button class="tab" role="tab" id="tab-espana" aria-controls="espana" aria-selected="false" tabindex="-1"><img src="stamp-espana-v3.png" alt="">España</button>
-        <button class="tab" role="tab" id="tab-argentina" aria-controls="argentina" aria-selected="false" tabindex="-1"><img src="stamp-argentina.svg" alt="">Argentina</button>
+        <button class="tab" role="tab" id="tab-italia" aria-controls="italia" aria-selected="true"><img class="pass" src="pasaporte-it.webp" alt="" width="101" height="144">Italia</button>
+        <button class="tab" role="tab" id="tab-espana" aria-controls="espana" aria-selected="false" tabindex="-1"><img class="pass" src="pasaporte-es.webp" alt="" width="101" height="144">España</button>
+        <button class="tab" role="tab" id="tab-argentina" aria-controls="argentina" aria-selected="false" tabindex="-1"><img class="pass" src="pasaporte-ar.webp" alt="" width="101" height="144">Argentina</button>
         <button class="tab" role="tab" id="tab-otros" aria-controls="otros" aria-selected="false" tabindex="-1"><span class="globe"><svg class="ico" aria-hidden="true"><use href="#ic-globe"/></svg></span>Otros destinos</button>
       </div>
 
@@ -1119,18 +1039,128 @@
     </div>
   </section>
 
-  <section id="orientador" class="block orientador">
-    <div class="wrap or-wrap">
+  <section id="turnos" class="block" style="border-bottom:1px solid var(--line)">
+    <div class="wrap">
       <div class="head">
-        <span class="mono kicker">Orientador de ciudadanías</span>
-        <h2>¿Qué vía te corresponde?</h2>
-        <p>Dos o tres preguntas sobre tu familia y tu situación. Te mostramos la vía que suele aplicar según la norma vigente y la fuente oficial en la que se basa.</p>
-        <p class="or-note">Es una orientación general, no un dictamen. Cada caso se confirma con la documentación.</p>
+        <span class="mono kicker">Consulado italiano · Turnos</span>
+        <h2>Turnos de pasaporte, CIE y ciudadanía italiana</h2>
+        <p>Conseguimos el turno desde 24 horas en modalidad exprés, a tu nombre y con tu documentación revisada. Vos solo vas al consulado el día indicado. <b>Pagás recién cuando tenés el turno.</b></p>
       </div>
-      <div class="or-card">
-        <div class="or-top"><span class="mono" id="or-step">Pregunta 1</span><span class="mono" id="or-path">Italia · España · Argentina</span></div>
-        <div class="or-body" id="or-body">
-          <noscript><p class="or-hint">El orientador necesita JavaScript. Podés <a href="https://wa.me/5492616530445">consultarnos por WhatsApp</a>.</p></noscript>
+      <div class="req-grid">
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-passport"/></svg>
+          <span class="mono">Exprés: desde 24 horas</span>
+          <h3>Pasaporte italiano</h3>
+          <p>Turno para sacarlo o renovarlo. En modalidad común, hasta 10 días.</p>
+        </div>
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg>
+          <span class="mono">Exprés: desde 24 horas</span>
+          <h3>Carta de identidad (CIE)</h3>
+          <p>Turno para la carta d’identità elettronica; requiere estar en el AIRE. En modalidad común, hasta 10 días.</p>
+        </div>
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-calendar"/></svg>
+          <span class="mono">Exprés: desde 24 horas</span>
+          <h3>Turno de ciudadanía</h3>
+          <p>Para presentar tu carpeta, con la documentación revisada antes. En modalidad común, hasta 10 días.</p>
+        </div>
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg>
+          <span class="mono">Carpeta completa</span>
+          <h3>Hijos menores</h3>
+          <p>Ciudadanía italiana para hijos menores: actas, traducción y turno.</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px">
+        <a class="btn btn-primary" href="turnos-consulado-italiano/">Ver turnos y plazos</a>
+        <a class="btn btn-outline" href="solicitud-pasaporte/">Solicitar turno en línea</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="genealogia" class="block" style="background:var(--sand);border-block:1px solid var(--line-strong)">
+    <div class="wrap">
+      <div class="head">
+        <span class="mono kicker">Genealogía profesional</span>
+        <h2>Reconstruimos la historia de tu familia</h2>
+        <p>Somos genealogistas profesionales. Buscamos los documentos que cuentan de dónde viene tu familia y los reunimos en un legado ordenado para las próximas generaciones.</p>
+      </div>
+      <div class="req-grid gen-grid">
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-search"/></svg>
+          <span class="mono">Archivos</span>
+          <h3>Búsqueda de actas</h3>
+          <p>Partidas de nacimiento, matrimonio y defunción en registros civiles, parroquias y archivos de Argentina, Italia, España y otros países.</p>
+        </div>
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-home"/></svg>
+          <span class="mono">Árbol familiar</span>
+          <h3>Historia familiar</h3>
+          <p>Reconstruimos tu línea generación por generación, con la fuente de cada dato.</p>
+        </div>
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg>
+          <span class="mono">Servicio militar</span>
+          <h3>Informes militares</h3>
+          <p>Localizamos los registros del servicio militar de tus antepasados y los volcamos en un informe.</p>
+        </div>
+        <div class="req">
+          <svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg>
+          <span class="mono">Legado</span>
+          <h3>Tu legado, documentado</h3>
+          <p>Un relato del origen y el recorrido de tu familia, con las actas y los documentos reunidos.</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px">
+        <a class="btn btn-primary" href="https://wa.me/5492616530445?text=Hola%2C%20Migratio.%20Quiero%20consultar%20por%20una%20investigaci%C3%B3n%20geneal%C3%B3gica." target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ic-wa"/></svg>Consultar por genealogía</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="proceso" class="block">
+    <div class="wrap">
+      <div class="head">
+        <span class="mono kicker">Cómo trabajamos</span>
+        <h2>Un trámite, cuatro etapas claras</h2>
+        <p>Sabés en qué punto está tu gestión en todo momento.</p>
+      </div>
+      <ol class="steps">
+        <li class="step"><span class="num">01</span><h3>Consulta inicial</h3><p>Relevamos tu caso por WhatsApp o videollamada y definimos qué trámite corresponde.</p></li>
+        <li class="step"><span class="num">02</span><h3>Relevamiento documental</h3><p>Búsqueda y verificación de actas, partidas y demás documentación requerida.</p></li>
+        <li class="step"><span class="num">03</span><h3>Gestión y seguimiento</h3><p>Presentación ante los organismos correspondientes, con seguimiento activo del expediente.</p></li>
+        <li class="step"><span class="num">04</span><h3>Entrega y cierre</h3><p>Coordinamos la entrega de la documentación resuelta, donde estés.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="porque" class="block" style="border-top:1px solid var(--line)">
+    <div class="wrap">
+      <div class="head">
+        <span class="mono kicker">Por qué elegirnos</span>
+        <h2>Tu trámite, en manos de un solo equipo</h2>
+        <p>Somos un equipo de profesionales especializados en materia migratoria y consular.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why">
+          <svg class="ico" aria-hidden="true"><use href="#ic-briefcase"/></svg>
+          <h3>Seguimiento directo</h3>
+          <p>Tu caso siempre lo llevamos nosotros. Nunca pasa a un call center ni a un tercero.</p>
+        </div>
+        <div class="why">
+          <svg class="ico" aria-hidden="true"><use href="#ic-globe"/></svg>
+          <h3>Alcance internacional</h3>
+          <p>Consulados de toda Argentina y del mundo, no solo italianos.</p>
+        </div>
+        <div class="why">
+          <svg class="ico" aria-hidden="true"><use href="#ic-shield"/></svg>
+          <h3>Carpeta en condiciones</h3>
+          <p>Revisamos cada documento antes de presentarlo, para evitar demoras y rechazos.</p>
+        </div>
+        <div class="why">
+          <svg class="ico" aria-hidden="true"><use href="#ic-chat"/></svg>
+          <h3>Atención remota</h3>
+          <p>Por WhatsApp o videollamada, estés donde estés.</p>
         </div>
       </div>
     </div>
@@ -1189,26 +1219,26 @@
         <p>Contamos con profesionales matriculados en Italia para llevar adelante el juicio, y te acompañamos en los trámites previos y posteriores hasta obtener la ciudadanía.</p>
         <div style="display:flex;flex-wrap:wrap;gap:12px">
           <a class="btn btn-primary" href="juicio-ciudadania-italiana/">Ver la guía completa del juicio</a>
-          <a class="btn btn-outline" href="https://wa.me/5492616530445" target="_blank" rel="noopener">Consultar tu caso</a>
         </div>
       </div>
-      <p class="fine">Estos elementos no son excepciones previstas en la ley: sirven para evaluar si hay argumentos para un juicio, sin garantía de resultado. La jurisprudencia varía según el tribunal; analizamos cada caso antes de avanzar y te decimos si no conviene iniciarlo. Fuentes oficiales: <a href="https://consmendoza.esteri.it/es/servizi-consolari-e-visti/servizi-per-il-cittadino-straniero/ciudadania-y-adopcion/" target="_blank" rel="noopener">Consulado de Italia en Mendoza</a> · <a href="https://www.cortecostituzionale.it/scheda-pronuncia/2026/63" target="_blank" rel="noopener">Corte Costituzionale, sentenza 63/2026</a>. Verificado el 29/09/2026.</p>
+      <p class="fine">Estos elementos no son excepciones previstas en la ley: sirven para evaluar si hay argumentos para un juicio, sin garantía de resultado. La jurisprudencia varía según el tribunal; analizamos cada caso antes de avanzar y te decimos si no conviene iniciarlo. Fuentes oficiales: <a href="https://www.cortecostituzionale.it/scheda-pronuncia/2026/63" target="_blank" rel="noopener">Corte Costituzionale, sentenza 63/2026</a>. Verificado el 29/09/2026.</p>
     </div>
   </section>
 
-  <section id="proceso" class="block">
-    <div class="wrap">
+  <section id="orientador" class="block orientador">
+    <div class="wrap or-wrap">
       <div class="head">
-        <span class="mono kicker">Cómo trabajamos</span>
-        <h2>Un trámite, cuatro etapas claras</h2>
-        <p>Sabés en qué punto está tu gestión en todo momento.</p>
+        <span class="mono kicker">Orientador de ciudadanías</span>
+        <h2>¿Qué vía te corresponde?</h2>
+        <p>Dos o tres preguntas sobre tu familia y tu situación. Te mostramos la vía que suele aplicar según la norma vigente y la fuente oficial en la que se basa.</p>
+        <p class="or-note">Es una orientación general, no un dictamen. Cada caso se confirma con la documentación.</p>
       </div>
-      <ol class="steps">
-        <li class="step"><span class="num">01</span><h3>Consulta inicial</h3><p>Relevamos tu caso por WhatsApp o videollamada y definimos qué trámite corresponde.</p></li>
-        <li class="step"><span class="num">02</span><h3>Relevamiento documental</h3><p>Búsqueda y verificación de actas, partidas y demás documentación requerida.</p></li>
-        <li class="step"><span class="num">03</span><h3>Gestión y seguimiento</h3><p>Presentación ante los organismos correspondientes, con seguimiento activo del expediente.</p></li>
-        <li class="step"><span class="num">04</span><h3>Entrega y cierre</h3><p>Coordinamos la entrega de la documentación resuelta, donde estés.</p></li>
-      </ol>
+      <div class="or-card">
+        <div class="or-top"><span class="mono" id="or-step">Pregunta 1</span><span class="mono" id="or-path">Italia · España · Argentina</span></div>
+        <div class="or-body" id="or-body">
+          <noscript><p class="or-hint">El orientador necesita JavaScript. Podés <a href="https://wa.me/5492616530445">consultarnos por WhatsApp</a>.</p></noscript>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1277,7 +1307,7 @@
           </div>
         </div>
         <div class="pc-card">
-          <img class="pc-stamp" src="logo-v2.png" alt="" width="96" height="64">
+          <img class="pc-stamp" src="logo-v3.png" alt="" width="96" height="64">
           <svg class="pc-mark" viewBox="6 6 108 108" aria-hidden="true">
             <defs><path id="pc-ring" d="M60,60 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs>
             <circle cx="60" cy="60" r="48" fill="none" stroke="#8c2f45" stroke-width="2"/>
@@ -1328,7 +1358,7 @@
 <footer>
   <div class="wrap f-top">
     <div class="f-brand">
-      <img src="logo-v2.png" alt="Migratio Gestoría" width="96" height="64">
+      <img src="logo-v3.png" alt="Migratio Gestoría" width="96" height="64">
       <p>Gestoría migratoria y consular. Atención 100% remota desde Mendoza, Argentina, para todo el mundo.</p>
     </div>
     <nav class="f-links" aria-label="Pie de página">
@@ -1338,6 +1368,7 @@
       <a href="ciudadania-espanola/">Ciudadanía española</a>
       <a href="visa-estados-unidos/">Visa EEUU</a>
       <a href="visas-oceania/">Visas Oceanía</a>
+      <a href="#genealogia">Genealogía</a>
       <a href="#faq">Preguntas</a>
       <a href="#contacto">Contacto</a>
     </nav>
@@ -1520,7 +1551,6 @@
     var stepEl = document.getElementById('or-step'), pathEl = document.getElementById('or-path');
     var WA = 'https://wa.me/5492616530445?text=', VER = 'Verificado el 28/09/2026';
     var S = {
-      it: ['Consulado de Italia en Mendoza: ciudadanía', 'https://consmendoza.esteri.it/es/servizi-consolari-e-visti/servizi-per-il-cittadino-straniero/ciudadania-y-adopcion/'],
       cc: ['Corte Costituzionale, sentenza 63/2026', 'https://www.cortecostituzionale.it/scheda-pronuncia/2026/63'],
       cc147: ['ordinanza 147/2026', 'https://www.cortecostituzionale.it/scheda-pronuncia/2026/147'],
       escc: ['Código Civil español, arts. 17 a 28', 'https://www.mjusticia.gob.es/es/Ciudadano/Nacionalidad/Documents/1292428740202-Real_Decreto_de_24_de_julio_de_1889_Arts._17_a_28_Gaceta_de_Madrid_de_25_07_1889.PDF'],
@@ -1546,13 +1576,13 @@
       ar2: ['¿Hace cuánto residís en Argentina?', 'Residencia continua en el país.', [['Menos de 2 años', '=ar_menos'], ['2 años o más', '=ar_nat']]]
     };
     var R = {
-      it_cons: ['ok', 'Vía consular probable', 'Reconocimiento ante el consulado', 'La Legge 74/2025 mantiene el reconocimiento por descendencia cuando tu padre, madre, abuelo o abuela tiene, o tenía al morir, solo la ciudadanía italiana. Se tramita ante el consulado de tu circunscripción.', ['Actas de nacimiento, matrimonio y defunción de toda la línea', 'Certificado de no naturalización de tu antepasado', 'Apostilla y traducción al italiano de las actas argentinas'], ['it'], 'it'],
-      it_nat: ['rev', 'Requiere revisión', 'Hay que revisar la ciudadanía de tu antepasado', 'La ley exige que tu padre, madre, abuelo o abuela tenga, o haya tenido al morir, solo la ciudadanía italiana. Si tuvo otra, esa vía no aplica. La norma prevé otra alternativa: que tu padre o tu madre, ya siendo italiano/a, haya residido 2 años seguidos en Italia antes de tu nacimiento.', ['Si hubo naturalización, en qué fecha', 'Si otro de tus padres o abuelos tuvo solo la ciudadanía italiana', 'Residencia de tu padre o madre en Italia antes de tu nacimiento'], ['it'], 'it'],
-      it_natq: ['info', 'Primero, un certificado', 'Confirmar si tu antepasado se naturalizó', 'La vía depende de que tu antepasado haya tenido solo la ciudadanía italiana. Eso se acredita con un certificado de no naturalización. Con ese dato, la vía queda definida.', ['Nombre completo y fecha aproximada de llegada a Argentina', 'Acta de defunción, si falleció', 'Datos de sus hijos para ubicar la línea'], ['it'], 'it'],
-      it_prev: ['ok', 'Reglas anteriores', 'Tu solicitud quedó a salvo de la reforma', 'La ley conserva las reglas previas para quien presentó la solicitud, o recibió turno del consulado, hasta las 23:59 (hora de Roma) del 27/03/2025. Lo mismo rige para las demandas judiciales presentadas hasta ese momento.', ['Comprobante de la solicitud, del turno asignado o de la demanda', 'Carpeta de actas completa y apostillada', 'Traducciones al italiano'], ['it'], 'it'],
-      it_jud: ['rev', 'Vía judicial, a evaluar', 'Un intento de turno no equivale a un turno asignado', 'La excepción alcanza a solicitudes presentadas o turnos comunicados antes del 27/03/2025. En 2026 la Corte Constitucional italiana confirmó la reforma (sentencia 63/2026). La Corte también le consultó al Tribunal de Justicia de la Unión Europea si el derecho europeo admite estas restricciones (ordinanza 147/2026); esa respuesta está pendiente. El margen para un juicio es estrecho: antes de recomendarlo, revisamos qué documentación de ese intento tenés.', ['Correos o comunicaciones con el consulado anteriores al 27/03/2025', 'Registros de tu cuenta de Prenot@mi', 'Familiares ya reconocidos por el mismo antepasado'], ['cc', 'cc147', 'it'], 'jud', 'Verificado el 05/10/2026'],
-      it_no: ['no', 'Vía muy restringida', 'Por descendencia, la ley ya no lo permite', 'Sin solicitud ni turno anteriores al 27/03/2025, y sin padre, madre, abuelo o abuela con solo la ciudadanía italiana, la Legge 74/2025 no permite el reconocimiento por descendencia. La Corte Constitucional confirmó la reforma en 2026 (sentencia 63/2026). La Corte también le consultó al Tribunal de Justicia de la Unión Europea si el derecho europeo admite estas restricciones (ordinanza 147/2026); esa respuesta está pendiente. Quedan otras vías, como el matrimonio con un ciudadano italiano o la residencia en Italia.', ['Revisar si otra rama de tu familia tiene un antepasado italiano más cercano', 'Evaluar la vía por matrimonio o por residencia'], ['cc', 'cc147', 'it'], 'it', 'Verificado el 05/10/2026'],
-      it_nose: ['info', 'Primero, la genealogía', 'Reconstruir la línea', 'Antes de definir la vía hay que saber quién emigró, en qué generación está y si se naturalizó. Buscamos actas en registros civiles, libros físicos, archivos y cementerios.', ['Nombres y fechas aproximadas que conozcas', 'Actas o documentos familiares que tengas a mano', 'Lugar de origen en Italia, aunque sea aproximado'], ['it'], 'it'],
+      it_cons: ['ok', 'Vía consular probable', 'Reconocimiento ante el consulado', 'La Legge 74/2025 mantiene el reconocimiento por descendencia cuando tu padre, madre, abuelo o abuela tiene, o tenía al morir, solo la ciudadanía italiana. Se tramita ante el consulado de tu circunscripción.', ['Actas de nacimiento, matrimonio y defunción de toda la línea', 'Certificado de no naturalización de tu antepasado', 'Apostilla y traducción al italiano de las actas argentinas'], ['cc'], 'it'],
+      it_nat: ['rev', 'Requiere revisión', 'Hay que revisar la ciudadanía de tu antepasado', 'La ley exige que tu padre, madre, abuelo o abuela tenga, o haya tenido al morir, solo la ciudadanía italiana. Si tuvo otra, esa vía no aplica. La norma prevé otra alternativa: que tu padre o tu madre, ya siendo italiano/a, haya residido 2 años seguidos en Italia antes de tu nacimiento.', ['Si hubo naturalización, en qué fecha', 'Si otro de tus padres o abuelos tuvo solo la ciudadanía italiana', 'Residencia de tu padre o madre en Italia antes de tu nacimiento'], ['cc'], 'it'],
+      it_natq: ['info', 'Primero, un certificado', 'Confirmar si tu antepasado se naturalizó', 'La vía depende de que tu antepasado haya tenido solo la ciudadanía italiana. Eso se acredita con un certificado de no naturalización. Con ese dato, la vía queda definida.', ['Nombre completo y fecha aproximada de llegada a Argentina', 'Acta de defunción, si falleció', 'Datos de sus hijos para ubicar la línea'], [], 'it'],
+      it_prev: ['ok', 'Reglas anteriores', 'Tu solicitud quedó a salvo de la reforma', 'La ley conserva las reglas previas para quien presentó la solicitud, o recibió turno del consulado, hasta las 23:59 (hora de Roma) del 27/03/2025. Lo mismo rige para las demandas judiciales presentadas hasta ese momento.', ['Comprobante de la solicitud, del turno asignado o de la demanda', 'Carpeta de actas completa y apostillada', 'Traducciones al italiano'], ['cc'], 'it'],
+      it_jud: ['rev', 'Vía judicial, a evaluar', 'Un intento de turno no equivale a un turno asignado', 'La excepción alcanza a solicitudes presentadas o turnos comunicados antes del 27/03/2025. En 2026 la Corte Constitucional italiana confirmó la reforma (sentencia 63/2026). La Corte también le consultó al Tribunal de Justicia de la Unión Europea si el derecho europeo admite estas restricciones (ordinanza 147/2026); esa respuesta está pendiente. El margen para un juicio es estrecho: antes de recomendarlo, revisamos qué documentación de ese intento tenés.', ['Correos o comunicaciones con el consulado anteriores al 27/03/2025', 'Registros de tu cuenta de Prenot@mi', 'Familiares ya reconocidos por el mismo antepasado'], ['cc', 'cc147'], 'jud', 'Verificado el 05/10/2026'],
+      it_no: ['no', 'Vía muy restringida', 'Por descendencia, la ley ya no lo permite', 'Sin solicitud ni turno anteriores al 27/03/2025, y sin padre, madre, abuelo o abuela con solo la ciudadanía italiana, la Legge 74/2025 no permite el reconocimiento por descendencia. La Corte Constitucional confirmó la reforma en 2026 (sentencia 63/2026). La Corte también le consultó al Tribunal de Justicia de la Unión Europea si el derecho europeo admite estas restricciones (ordinanza 147/2026); esa respuesta está pendiente. Quedan otras vías, como el matrimonio con un ciudadano italiano o la residencia en Italia.', ['Revisar si otra rama de tu familia tiene un antepasado italiano más cercano', 'Evaluar la vía por matrimonio o por residencia'], ['cc', 'cc147'], 'it', 'Verificado el 05/10/2026'],
+      it_nose: ['info', 'Primero, la genealogía', 'Reconstruir la línea', 'Antes de definir la vía hay que saber quién emigró, en qué generación está y si se naturalizó. Buscamos actas en registros civiles, libros físicos, archivos y cementerios.', ['Nombres y fechas aproximadas que conozcas', 'Actas o documentos familiares que tengas a mano', 'Lugar de origen en Italia, aunque sea aproximado'], [], 'it'],
       es_origen: ['ok', 'Español/a de origen', 'Corresponde inscribir tu nacimiento', 'Si tu padre o tu madre era español/a cuando naciste, sos español/a de origen (art. 17 del Código Civil). El paso es inscribir tu nacimiento en el Registro Civil consular.', ['Tu partida de nacimiento, apostillada', 'Documentación española de tu padre o madre', 'Si tu padre o madre también nació fuera de España y pasaron más de 3 años desde tu mayoría de edad, hay que revisar si se conservó la nacionalidad (art. 24)'], ['escc'], 'es'],
       es_20b: ['ok', 'Opción de nacionalidad', 'Podés optar, sin límite de edad', 'Si tu padre o tu madre nació en España siendo español/a, podés optar por la nacionalidad española aunque la haya perdido antes de tu nacimiento. Esta opción no tiene límite de edad (art. 20 del Código Civil).', ['Partida de nacimiento española de tu padre o madre', 'Tu partida de nacimiento, apostillada', 'Presentación ante el Registro Civil consular'], ['escc'], 'es'],
       es_20a: ['rev', 'Depende de tu edad', 'Opción por patria potestad', 'Si tu padre o tu madre obtuvo la nacionalidad española cuando eras menor de edad, podés optar hasta los 20 años (art. 20 del Código Civil). Si ya eras mayor, esa opción no aplica y hay que evaluar otras vías.', ['Fecha en que tu padre o madre obtuvo la nacionalidad', 'Tu edad en ese momento', 'Tu partida de nacimiento, apostillada'], ['escc'], 'es'],
@@ -1604,10 +1634,10 @@
       var g = G[r[6]], gl = el('a', 'btn btn-outline', g[0]); gl.href = g[1];
       if (g[1] === '#argentina') gl.addEventListener('click', function (e) { e.preventDefault(); if (typeof selectTab === 'function') selectTab('argentina'); document.getElementById('tramites').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
       act.appendChild(wa); act.appendChild(gl); box.appendChild(act);
-      var src = el('p', 'or-src'); src.appendChild(document.createTextNode(r[5].length > 1 ? 'Fuentes oficiales: ' : 'Fuente oficial: '));
+      if (r[5].length) { var src = el('p', 'or-src'); src.appendChild(document.createTextNode(r[5].length > 1 ? 'Fuentes oficiales: ' : 'Fuente oficial: '));
       r[5].forEach(function (k, i) { if (i) src.appendChild(document.createTextNode(' · ')); var a = el('a', '', S[k][0]); a.href = S[k][1]; a.target = '_blank'; a.rel = 'noopener'; src.appendChild(a); });
       src.appendChild(document.createTextNode('. ' + (r[7] || VER) + '.'));
-      box.appendChild(src);
+      box.appendChild(src); }
       box.appendChild(backBtn('Empezar de nuevo', function () { trail = ['start']; answers = []; ask('start', true); }));
       body.appendChild(box);
       focus(h, true);
@@ -1616,5 +1646,14 @@
   })();
 </script>
 
+<script>
+(function () {
+  var bs = document.querySelectorAll('.dd-btn');
+  function close(x) { bs.forEach(function (b) { if (b !== x) b.setAttribute('aria-expanded', 'false'); }); }
+  bs.forEach(function (b) { b.addEventListener('click', function () { close(b); b.setAttribute('aria-expanded', b.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'); }); });
+  document.addEventListener('click', function (e) { if (!e.target.closest('.dd')) close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+})();
+</script>
 </body>
 </html>
