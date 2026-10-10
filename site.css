@@ -106,6 +106,18 @@
   .menu-btn svg { width: 20px; height: 20px; stroke: var(--navy); stroke-width: 1.8; fill: none; stroke-linecap: round; }
   .menu-btn[aria-expanded="true"] { background: var(--navy); }
   .menu-btn[aria-expanded="true"] svg { stroke: var(--white); }
+  .dd { position: relative; }
+  .dd-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
+  .dd-btn:hover, .dd-btn[aria-expanded="true"] { color: var(--navy); }
+  .dd-chev { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+  .dd-btn[aria-expanded="true"] .dd-chev { transform: rotate(180deg); }
+  .dd-menu { display: none; position: absolute; top: 100%; left: -16px; min-width: 240px; padding: 8px; background: var(--white); border: 1px solid var(--line-strong); border-radius: 10px; box-shadow: 0 12px 32px rgba(38, 36, 61, .14); z-index: 60; }
+  .dd-menu a { display: block; padding: 10px 12px; border-radius: 6px; white-space: nowrap; color: var(--ink); }
+  .dd-menu a:hover { background: var(--paper); color: var(--navy); }
+  .dd-btn[aria-expanded="true"] + .dd-menu { display: block; }
+  @media (hover: hover) and (pointer: fine) { .dd:hover .dd-menu { display: block; } }
+  .mnav-h { display: block; padding: 16px 0 4px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+  .mnav a.sub { padding-left: 14px; }
   .mnav { border-top: 1px solid var(--line-strong); }
   .mnav .wrap { display: flex; flex-direction: column; padding-block: 8px 16px; }
   .mnav a { text-decoration: none; font-weight: 600; padding: 12px 0; min-height: 44px; border-bottom: 1px solid var(--line); }
@@ -148,7 +160,7 @@
   @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } }
   .hero .kicker { color: var(--navy); }
   .hero h1 { font-size: clamp(2.5rem, 5.6vw, 4.3rem); line-height: 1.02; margin-bottom: 22px; }
-  .hero h1 em { font-style: italic; color: var(--burgundy); }
+  .hero h1 em { font-style: normal; color: var(--burgundy); }
   .hero .lead { font-size: 1.1rem; color: var(--ink-soft); max-width: 46ch; margin-bottom: 32px; }
   .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
 
