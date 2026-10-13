@@ -18,7 +18,7 @@
 <meta property="og:title" content="Migratio Gestoría">
 <meta property="og:description" content="Gestoría migratoria y consular: ciudadanía italiana y española, juicios en Italia, visados y documentación de cualquier país. Atención 100% remota.">
 <meta property="og:url" content="https://migratiogestoria.com/">
-<meta property="og:image" content="https://migratiogestoria.com/og-image.jpg">
+<meta property="og:image" content="https://migratiogestoria.com/og-migratio.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -35,7 +35,7 @@
   "areaServed": "Worldwide",
   "availableLanguage": "es",
   "url": "https://migratiogestoria.com/",
-  "image": "https://migratiogestoria.com/og-image.jpg",
+  "image": "https://migratiogestoria.com/og-migratio.jpg",
   "sameAs": ["https://instagram.com/migratio.gestoria"]
 }
 </script>
@@ -154,25 +154,31 @@
   .menu-btn[aria-expanded="true"] svg { stroke: var(--white); }
   .dd { position: relative; }
   .dd-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
-  .dd-btn:hover, .dd-btn[aria-expanded="true"] { color: var(--navy); }
+  .dd-btn:hover, .dd-btn[aria-expanded="true"], nav.links a[aria-current], .dd.cur > .dd-btn { color: var(--navy); }
+  nav.links > a[aria-current], .dd.cur > .dd-btn { box-shadow: inset 0 -2px 0 var(--burgundy); }
   .dd-chev { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
   .dd-btn[aria-expanded="true"] .dd-chev { transform: rotate(180deg); }
-  .dd-menu { display: none; position: absolute; top: 100%; left: -16px; min-width: 240px; padding: 8px; background: var(--white); border: 1px solid var(--line-strong); border-radius: 10px; box-shadow: 0 12px 32px rgba(38, 36, 61, .14); z-index: 60; }
-  .dd-menu a { display: block; padding: 10px 12px; border-radius: 6px; white-space: nowrap; color: var(--ink); }
-  .dd-menu a:hover { background: var(--paper); color: var(--navy); }
+  .dd-menu { display: none; position: absolute; top: 100%; left: -18px; min-width: 300px; padding: 8px; background: var(--white); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: 0 14px 36px rgba(38, 36, 61, .16); z-index: 60; }
+  .dd-menu::before { content: ""; position: absolute; left: 0; right: 0; top: -10px; height: 10px; }
+  .dd-menu a { display: grid; gap: 2px; padding: 10px 12px; border-radius: 8px; white-space: nowrap; }
+  .dd-menu a b { font-weight: 700; color: var(--ink); }
+  .dd-menu a span { font-size: .8rem; font-weight: 500; color: var(--ink-soft); }
+  .dd-menu a:hover, .dd-menu a[aria-current] { background: var(--sand); }
+  .dd-menu a:hover b, .dd-menu a[aria-current] b { color: var(--navy); }
   .dd-btn[aria-expanded="true"] + .dd-menu { display: block; }
   @media (hover: hover) and (pointer: fine) { .dd:hover .dd-menu { display: block; } }
   .mnav-h { display: block; padding: 16px 0 4px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
   .mnav a.sub { padding-left: 14px; }
+  .mnav a[aria-current] { color: var(--burgundy); }
   .mnav { border-top: 1px solid var(--line-strong); }
   .mnav .wrap { display: flex; flex-direction: column; padding-block: 8px 16px; }
   .mnav a { text-decoration: none; font-weight: 600; padding: 12px 0; min-height: 44px; border-bottom: 1px solid var(--line); }
   .mnav a:last-child { border-bottom: none; }
-  @media (max-width: 900px) {
+  @media (max-width: 1080px) {
     nav.links { display: none; }
     .menu-btn { display: grid; }
   }
-  @media (min-width: 901px) { .mnav { display: none !important; } }
+  @media (min-width: 1081px) { .mnav { display: none !important; } }
 
   .skip {
     position: absolute;
@@ -858,21 +864,22 @@
       <div class="dd">
         <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-italia">Italia<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
         <div class="dd-menu" id="dd-italia">
-          <a href="ciudadania-italiana/">Ciudadanía italiana</a>
-          <a href="juicio-ciudadania-italiana/">Juicio de ciudadanía</a>
-          <a href="turnos-consulado-italiano/">Turnos en el consulado</a>
+          <a href="ciudadania-italiana/"><b>Ciudadanía italiana</b><span>Por descendencia, vía consular</span></a>
+          <a href="juicio-ciudadania-italiana/"><b>Juicio de ciudadanía</b><span>Vía judicial ante tribunales italianos</span></a>
+          <a href="turnos-consulado-italiano/"><b>Turnos en el consulado</b><span>Pasaporte, CIE, ciudadanía e hijos menores</span></a>
+          <a href="solicitud-turno/"><b>Solicitar turno en línea</b><span>Cargá tus datos y te contactamos</span></a>
         </div>
       </div>
+      <a href="ciudadania-espanola/">España</a>
       <div class="dd">
-        <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-otros">Otros servicios<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
-        <div class="dd-menu" id="dd-otros">
-          <a href="ciudadania-espanola/">Ciudadanía española</a>
-          <a href="visa-estados-unidos/">Visa de turista EE. UU.</a>
-          <a href="visas-oceania/">Visas Oceanía y Bali</a>
-          <a href="#genealogia">Genealogía</a>
-          <a href="#tramites">Todos los trámites</a>
+        <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-visas">Visas<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
+        <div class="dd-menu" id="dd-visas">
+          <a href="visa-estados-unidos/"><b>Estados Unidos</b><span>Visa de turista y formulario DS-160</span></a>
+          <a href="visas-oceania/"><b>Australia, Nueva Zelanda y Bali</b><span>Turismo, Working Holiday y estudio</span></a>
         </div>
       </div>
+      <a href="#genealogia">Genealogía</a>
+      <a href="#tramites">Todos los trámites</a>
     </nav>
     <div class="nav-actions">
       <a class="btn btn-primary nav-cta" href="#contacto">Contacto</a>
@@ -887,14 +894,17 @@
       <a class="sub" href="ciudadania-italiana/">Ciudadanía italiana</a>
       <a class="sub" href="juicio-ciudadania-italiana/">Juicio de ciudadanía</a>
       <a class="sub" href="turnos-consulado-italiano/">Turnos en el consulado</a>
-      <span class="mnav-h mono">Otros servicios</span>
+      <a class="sub" href="solicitud-turno/">Solicitar turno en línea</a>
+      <span class="mnav-h mono">España</span>
       <a class="sub" href="ciudadania-espanola/">Ciudadanía española</a>
-      <a class="sub" href="visa-estados-unidos/">Visa de turista EE. UU.</a>
-      <a class="sub" href="visas-oceania/">Visas Oceanía y Bali</a>
+      <span class="mnav-h mono">Visas</span>
+      <a class="sub" href="visa-estados-unidos/">Estados Unidos</a>
+      <a class="sub" href="visas-oceania/">Australia, Nueva Zelanda y Bali</a>
+      <span class="mnav-h mono">Más</span>
       <a class="sub" href="#genealogia">Genealogía</a>
       <a class="sub" href="#tramites">Todos los trámites</a>
-      <a href="#proceso">Cómo trabajamos</a>
-      <a href="#faq">Preguntas frecuentes</a>
+      <a class="sub" href="#proceso">Cómo trabajamos</a>
+      <a class="sub" href="#faq">Preguntas frecuentes</a>
       <a href="#contacto">Contacto</a>
     </div>
   </nav>
@@ -1074,7 +1084,7 @@
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:28px">
         <a class="btn btn-primary" href="turnos-consulado-italiano/">Ver turnos y plazos</a>
-        <a class="btn btn-outline" href="solicitud-pasaporte/">Solicitar turno en línea</a>
+        <a class="btn btn-outline" href="solicitud-turno/">Solicitar turno en línea</a>
       </div>
     </div>
   </section>
@@ -1653,6 +1663,11 @@
   bs.forEach(function (b) { b.addEventListener('click', function () { close(b); b.setAttribute('aria-expanded', b.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'); }); });
   document.addEventListener('click', function (e) { if (!e.target.closest('.dd')) close(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  document.querySelectorAll('nav.links a, .mnav a').forEach(function (a) {
+    if (a.hash || a.pathname === '/' || a.pathname !== location.pathname) return;
+    a.setAttribute('aria-current', 'page');
+    var d = a.closest('.dd'); if (d) d.classList.add('cur');
+  });
 })();
 </script>
 </body>
