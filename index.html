@@ -333,7 +333,7 @@
   }
   .tab img { height: 28px; width: auto; }
   .gen-grid .req { background: var(--white); }
-  .tab img.pass { height: 36px; border-radius: 3px; box-shadow: 0 1px 3px rgba(38, 36, 61, .25); }
+  .svc .mini-pass { grid-row: span 2; margin-top: 2px; height: 34px; width: auto; border-radius: 2px; box-shadow: 0 1px 3px rgba(38, 36, 61, .25); }
   .tab .globe { width: 28px; height: 28px; display: grid; place-items: center; }
   .tab .count { font-family: var(--f-mono); font-size: .7rem; color: var(--ink-soft); font-weight: 500; }
   .tab:hover { border-color: var(--navy); }
@@ -947,9 +947,9 @@
       </div>
 
       <div class="tablist" role="tablist" aria-label="Destinos">
-        <button class="tab" role="tab" id="tab-italia" aria-controls="italia" aria-selected="true"><img class="pass" src="pasaporte-it.webp" alt="" width="101" height="144">Italia</button>
-        <button class="tab" role="tab" id="tab-espana" aria-controls="espana" aria-selected="false" tabindex="-1"><img class="pass" src="pasaporte-es.webp" alt="" width="101" height="144">España</button>
-        <button class="tab" role="tab" id="tab-argentina" aria-controls="argentina" aria-selected="false" tabindex="-1"><img class="pass" src="pasaporte-ar.webp" alt="" width="101" height="144">Argentina</button>
+        <button class="tab" role="tab" id="tab-italia" aria-controls="italia" aria-selected="true"><img src="stamp-italia.svg" alt="">Italia</button>
+        <button class="tab" role="tab" id="tab-espana" aria-controls="espana" aria-selected="false" tabindex="-1"><img src="stamp-espana-v3.png" alt="">España</button>
+        <button class="tab" role="tab" id="tab-argentina" aria-controls="argentina" aria-selected="false" tabindex="-1"><img src="stamp-argentina.svg" alt="">Argentina</button>
         <button class="tab" role="tab" id="tab-otros" aria-controls="otros" aria-selected="false" tabindex="-1"><span class="globe"><svg class="ico" aria-hidden="true"><use href="#ic-globe"/></svg></span>Otros destinos</button>
       </div>
 
@@ -959,7 +959,7 @@
           <p>Ciudadanía por descendencia y trámites ante el consulado o la Justicia italiana.</p>
         </div>
         <div class="svc-grid">
-          <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-passport"/></svg><h4>Pasaporte y ciudadanía iure sanguinis</h4><p>Vía consular si tu padre, madre, abuelo o abuela tiene, o tenía al morir, solo la ciudadanía italiana. <a class="more" href="ciudadania-italiana/">Requisitos y cómo lo gestionamos →</a></p></article>
+          <article class="svc"><img class="mini-pass" src="pasaporte-it.webp" alt="" width="101" height="144"><h4>Pasaporte y ciudadanía iure sanguinis</h4><p>Vía consular si tu padre, madre, abuelo o abuela tiene, o tenía al morir, solo la ciudadanía italiana. <a class="more" href="ciudadania-italiana/">Requisitos y cómo lo gestionamos →</a></p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-search"/></svg><h4>Búsqueda de actas y genealogía</h4><p>Investigación genealógica y localización de partidas.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-rings"/></svg><h4>Ciudadanía por matrimonio</h4><p>3 años de matrimonio (2 si viven en Italia, la mitad con hijos) y certificado B1.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg><h4>Inscripción al AIRE</h4><p>Registro obligatorio para italianos residentes en el exterior. Lo tramitamos en Fast It, el portal consular.</p></article>
@@ -990,7 +990,7 @@
           <p>Ciudadanía, residencia y documentación ante el Estado español. <a class="more" href="ciudadania-espanola/">Qué opciones quedan después de la Ley de Nietos →</a></p>
         </div>
         <div class="svc-grid">
-          <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-passport"/></svg><h4>Ciudadanía por Ley de Memoria Democrática</h4><p>Revisión de carpeta y armado del expediente.</p></article>
+          <article class="svc"><img class="mini-pass" src="pasaporte-es.webp" alt="" width="101" height="144"><h4>Ciudadanía por Ley de Memoria Democrática</h4><p>Revisión de carpeta y armado del expediente.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg><h4>Inscripción de menores</h4><p>Ante el consulado, por Código Civil (la LMD ya no está vigente).</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-search"/></svg><h4>Búsqueda de actas y genealogía en España</h4><p>Partidas del Registro Civil español, con investigación genealógica.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-stamp"/></svg><h4>Apostilla en España</h4><p>Legalización de documentos emitidos en España.</p></article>
@@ -1005,7 +1005,7 @@
           <p>Ciudadanía argentina y la documentación de base para cualquier trámite.</p>
         </div>
         <div class="svc-grid">
-          <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-passport"/></svg><h4>Ciudadanía argentina por opción</h4><p>Para hijos de argentinos nacidos en el exterior, ante el Registro Civil. Preparamos la partida extranjera apostillada y traducida, y el resto de la carpeta.</p></article>
+          <article class="svc"><img class="mini-pass" src="pasaporte-ar.webp" alt="" width="101" height="144"><h4>Ciudadanía argentina por opción</h4><p>Para hijos de argentinos nacidos en el exterior, ante el Registro Civil. Preparamos la partida extranjera apostillada y traducida, y el resto de la carpeta.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-scale"/></svg><h4>Ciudadanía argentina por naturalización</h4><p>Vía judicial, ante el juzgado federal, para extranjeros con 2 años de residencia. Armamos la carpeta: partidas, antecedentes penales y medios de vida.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-search"/></svg><h4>Búsqueda de actas y genealogía</h4><p>Partidas del Registro Civil argentino, con investigación genealógica.</p></article>
           <article class="svc"><svg class="ico" aria-hidden="true"><use href="#ic-doc"/></svg><h4>Rectificación de actas</h4><p>Corrección de errores en partidas del Registro Civil.</p></article>
