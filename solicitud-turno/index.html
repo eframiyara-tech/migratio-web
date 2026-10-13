@@ -12,14 +12,14 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png?v=2">
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png?v=2">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
-<link rel="canonical" href="https://migratiogestoria.com/solicitud-pasaporte/">
+<link rel="canonical" href="https://migratiogestoria.com/solicitud-turno/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_AR">
 <meta property="og:site_name" content="Migratio Gestoría">
 <meta property="og:title" content="Solicitud de turno · Consulado italiano">
 <meta property="og:description" content="Formulario para clientes de Migratio Gestoría: datos para gestionar el turno de pasaporte, CIE o ciudadanía italiana.">
-<meta property="og:url" content="https://migratiogestoria.com/solicitud-pasaporte/">
-<meta property="og:image" content="https://migratiogestoria.com/og-image.jpg">
+<meta property="og:url" content="https://migratiogestoria.com/solicitud-turno/">
+<meta property="og:image" content="https://migratiogestoria.com/og-migratio.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -185,21 +185,22 @@
       <div class="dd">
         <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-italia">Italia<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
         <div class="dd-menu" id="dd-italia">
-          <a href="../ciudadania-italiana/">Ciudadanía italiana</a>
-          <a href="../juicio-ciudadania-italiana/">Juicio de ciudadanía</a>
-          <a href="../turnos-consulado-italiano/">Turnos en el consulado</a>
+          <a href="../ciudadania-italiana/"><b>Ciudadanía italiana</b><span>Por descendencia, vía consular</span></a>
+          <a href="../juicio-ciudadania-italiana/"><b>Juicio de ciudadanía</b><span>Vía judicial ante tribunales italianos</span></a>
+          <a href="../turnos-consulado-italiano/"><b>Turnos en el consulado</b><span>Pasaporte, CIE, ciudadanía e hijos menores</span></a>
+          <a href="../solicitud-turno/"><b>Solicitar turno en línea</b><span>Cargá tus datos y te contactamos</span></a>
         </div>
       </div>
+      <a href="../ciudadania-espanola/">España</a>
       <div class="dd">
-        <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-otros">Otros servicios<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
-        <div class="dd-menu" id="dd-otros">
-          <a href="../ciudadania-espanola/">Ciudadanía española</a>
-          <a href="../visa-estados-unidos/">Visa de turista EE. UU.</a>
-          <a href="../visas-oceania/">Visas Oceanía y Bali</a>
-          <a href="../#genealogia">Genealogía</a>
-          <a href="../#tramites">Todos los trámites</a>
+        <button class="dd-btn" type="button" aria-expanded="false" aria-controls="dd-visas">Visas<svg class="dd-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
+        <div class="dd-menu" id="dd-visas">
+          <a href="../visa-estados-unidos/"><b>Estados Unidos</b><span>Visa de turista y formulario DS-160</span></a>
+          <a href="../visas-oceania/"><b>Australia, Nueva Zelanda y Bali</b><span>Turismo, Working Holiday y estudio</span></a>
         </div>
       </div>
+      <a href="../#genealogia">Genealogía</a>
+      <a href="../#tramites">Todos los trámites</a>
     </nav>
     <div class="nav-actions">
       <a class="btn btn-primary nav-cta" href="../#contacto">Contacto</a>
@@ -215,12 +216,17 @@
       <a class="sub" href="../ciudadania-italiana/">Ciudadanía italiana</a>
       <a class="sub" href="../juicio-ciudadania-italiana/">Juicio de ciudadanía</a>
       <a class="sub" href="../turnos-consulado-italiano/">Turnos en el consulado</a>
-      <span class="mnav-h mono">Otros servicios</span>
+      <a class="sub" href="../solicitud-turno/">Solicitar turno en línea</a>
+      <span class="mnav-h mono">España</span>
       <a class="sub" href="../ciudadania-espanola/">Ciudadanía española</a>
-      <a class="sub" href="../visa-estados-unidos/">Visa de turista EE. UU.</a>
-      <a class="sub" href="../visas-oceania/">Visas Oceanía y Bali</a>
+      <span class="mnav-h mono">Visas</span>
+      <a class="sub" href="../visa-estados-unidos/">Estados Unidos</a>
+      <a class="sub" href="../visas-oceania/">Australia, Nueva Zelanda y Bali</a>
+      <span class="mnav-h mono">Más</span>
       <a class="sub" href="../#genealogia">Genealogía</a>
       <a class="sub" href="../#tramites">Todos los trámites</a>
+      <a class="sub" href="../#proceso">Cómo trabajamos</a>
+      <a class="sub" href="../#faq">Preguntas frecuentes</a>
       <a href="../#contacto">Contacto</a>
     </div>
   </nav>
@@ -701,6 +707,11 @@
   bs.forEach(function (b) { b.addEventListener('click', function () { close(b); b.setAttribute('aria-expanded', b.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'); }); });
   document.addEventListener('click', function (e) { if (!e.target.closest('.dd')) close(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  document.querySelectorAll('nav.links a, .mnav a').forEach(function (a) {
+    if (a.hash || a.pathname === '/' || a.pathname !== location.pathname) return;
+    a.setAttribute('aria-current', 'page');
+    var d = a.closest('.dd'); if (d) d.classList.add('cur');
+  });
 })();
 </script>
 </body>
