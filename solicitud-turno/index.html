@@ -567,10 +567,14 @@
       var men = st.kind === 'menor', out = [
         ['dniF', men ? 'DNI del menor, frente' : 'DNI, frente', 1],
         ['dniD', men ? 'DNI del menor, dorso' : 'DNI, dorso', 1],
-        ['pas', st.tram === 'pas' ? 'Pasaporte anterior, si corresponde' : 'Pasaporte italiano, si corresponde', 0, 'La página con la foto y los datos.']
+        ['pas', st.tram === 'pas' ? (men ? 'Pasaporte anterior del menor, si corresponde' : 'Pasaporte anterior, si corresponde') : 'Pasaporte italiano, si corresponde', 0, 'La página con la foto y los datos.']
       ];
       if (st.tram === 'ciu') out.pop();
-      if (men) out.push(['prog', 'Documento del progenitor italiano', 0, 'DNI o pasaporte.']);
+      if (men && (st.tram === 'pas' || st.tram === 'ambos')) out.push(
+        ['progDniF', 'DNI del progenitor italiano, frente', 1, 'Del progenitor que le transmitió la ciudadanía. Si los dos son italianos, de uno de ellos.'],
+        ['progDniD', 'DNI del progenitor italiano, dorso', 0, 'Si el archivo del frente ya tiene las dos caras, dejalo vacío.'],
+        ['progPas', 'Pasaporte italiano vigente del progenitor, si tiene', 0, 'Del mismo progenitor. La página con la foto y los datos.']);
+      else if (men) out.push(['prog', 'Documento del progenitor italiano', 0, 'DNI o pasaporte.']);
       return out;
     }
     function size(n) { return n > 1048576 ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
