@@ -633,14 +633,19 @@
       if (window.PDFLib) return Promise.resolve(window.PDFLib);
       return pdfLib || (pdfLib = new Promise(function (ok, ko) { var sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js'; sc.onload = function () { window.PDFLib ? ok(window.PDFLib) : ko(); }; sc.onerror = ko; document.head.appendChild(sc); }));
     }
-    // Une las caras en un PDF. Con fotos lo arma acá; si alguna parte ya es PDF, usa pdf-lib.
+    // Une las caras en un PDF de 1 MB como máximo (límite de Prenot@mi). Con fotos lo arma acá; si alguna parte ya es PDF, usa pdf-lib.
+    var LIMITE = 1000000, PASOS = [null, [1600, 0.8], [1400, 0.72], [1100, 0.65], [900, 0.6], [700, 0.55]];
     function joinDni(fs) {
-      if (fs.every(function (f) { return f.type === 'image/jpeg'; })) {
-        var tot = fs.reduce(function (a, f) { return a + f.data.length * 0.75; }, 0);
-        return Promise.all(fs.map(function (f) { return tot > 900000 ? shrink(f, 1400, 0.72) : f; })).then(function (gs) {
-          return Promise.all(gs.map(function (g) { return dims(g).then(function (d) { return { w: d.w, h: d.h, bytes: u8(g.data) }; }); }));
-        }).then(function (imgs) { return to64(jpgPdf(imgs)); });
+      var fotos = fs.every(function (f) { return f.type === 'image/jpeg'; });
+      function intento(k) {
+        var p = PASOS[k];
+        return Promise.all(fs.map(function (f) { return p && f.type !== 'application/pdf' ? shrink(f, p[0], p[1]) : f; })).then(function (gs) {
+          return fotos ? Promise.all(gs.map(function (g) { return dims(g).then(function (d) { return { w: d.w, h: d.h, bytes: u8(g.data) }; }); })).then(function (imgs) { return to64(jpgPdf(imgs)); }) : conLib(gs);
+        }).then(function (d) { return d.length * 0.75 <= LIMITE || k === PASOS.length - 1 ? d : intento(k + 1); });
       }
+      return intento(0);
+    }
+    function conLib(fs) {
       return loadPdfLib().then(function (L) {
         return L.PDFDocument.create().then(function (doc) {
           return fs.reduce(function (pr, f) {
@@ -649,7 +654,7 @@
               if (f.type === 'application/pdf') return L.PDFDocument.load(bytes, { ignoreEncryption: true }).then(function (src) { return doc.copyPages(src, src.getPageIndices()).then(function (ps) { ps.forEach(function (p) { doc.addPage(p); }); }); });
               return (f.type === 'image/png' ? doc.embedPng(bytes) : doc.embedJpg(bytes)).then(function (im) { var k = Math.min(523 / im.width, 770 / im.height, 1), pg = doc.addPage([595, 842]); pg.drawImage(im, { x: (595 - im.width * k) / 2, y: (842 - im.height * k) / 2, width: im.width * k, height: im.height * k }); });
             });
-          }, Promise.resolve()).then(function () { return doc.saveAsBase64(); });
+          }, Promise.resolve()).then(function () { return doc.saveAsBase64({ useObjectStreams: true }); });
         });
       });
     }
@@ -661,7 +666,7 @@
           var fs = [files[g[0]], g[0] === 'dniF' && files.both ? null : files[g[1]]].filter(Boolean);
           if (!fs.length) return;
           var nm = upName(g[2]), base = 'DNI' + (nm ? ' ' + nm : (g[0] === 'dniF' ? (men ? ' DEL MENOR' : '') : ' DEL PROGENITOR'));
-          return joinDni(fs).then(function (d) { out.push({ nombre: base + '.pdf', tipo: 'application/pdf', datos: d }); used[g[0]] = used[g[1]] = 1; }, function () {});
+          return joinDni(fs).then(function (d) { out.push({ nombre: base + (d.length * 0.75 > LIMITE ? ' (supera 1 MB)' : '') + '.pdf', tipo: 'application/pdf', datos: d }); used[g[0]] = used[g[1]] = 1; }, function () {});
         });
       }, Promise.resolve()).then(function () {
         list.forEach(function (s) { var f = files[s[0]]; if (f && !used[s[0]]) out.push({ nombre: flabel(f) + '.' + f.ext, tipo: f.type, datos: f.data }); });
