@@ -401,6 +401,7 @@
           { k: 'defTram', l: 'Sumar la inscripción de la defunción', m: 'Podemos inscribir la defunción en el Consulado por ustedes.', t: 'cta', c: 'Sumarla a mi solicitud', w: eq('defInscr', 'No') });
         out = [['Datos del menor', 'Tal cual figuran en su DNI.', [
           { k: 'nombre', l: 'Nombre completo del menor', t: 'text' },
+          { k: 'sexo', l: 'Sexo del menor', t: 'choice', o: ['Femenino', 'Masculino'] },
           { k: 'fechaNac', l: 'Fecha de nacimiento del menor', t: 'date' },
           { k: 'estatura', l: 'Estatura del menor', h: 'En centímetros.', t: 'number', min: 30, max: 220 },
           { k: 'ojos', l: 'Color de ojos del menor', t: 'choice', o: OJOS }
@@ -594,6 +595,85 @@
       img.onerror = function () { URL.revokeObjectURL(url); cb('No pudimos leer la foto. Probá con otra o con un PDF.'); };
       img.src = url;
     }
+    // DNI en un solo PDF, con el nombre de la persona: "DNI NOMBRE APELLIDO.pdf", listo para subir a Prenot@mi.
+    function upName(n) { return String(n || '').normalize('NFD').replace(/([nN])\u0303/g, function (m, c) { return c === 'n' ? '\u00f1' : '\u00d1'; }).replace(/[\u0300-\u036f]/g, '').normalize('NFC').replace(/\s+/g, ' ').trim().toUpperCase(); }
+    function u8(d) { var b = atob(d), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+    function to64(a) { var s = '', i, n = 0x8000; for (i = 0; i < a.length; i += n) s += String.fromCharCode.apply(null, a.subarray(i, i + n)); return btoa(s); }
+    function dims(f) { return createImageBitmap(new Blob([u8(f.data)], { type: f.type })).then(function (b) { var r = { w: b.width, h: b.height }; if (b.close) b.close(); return r; }); }
+    function shrink(f, max, q) {
+      return createImageBitmap(new Blob([u8(f.data)], { type: f.type })).then(function (b) {
+        var k = Math.min(1, max / Math.max(b.width, b.height)), c = document.createElement('canvas');
+        c.width = Math.round(b.width * k); c.height = Math.round(b.height * k); c.getContext('2d').drawImage(b, 0, 0, c.width, c.height);
+        return new Promise(function (ok) { c.toBlob(ok, 'image/jpeg', q); });
+      }).then(function (bl) { return new Promise(function (ok) { b64(bl, function (d) { ok({ type: 'image/jpeg', data: d }); }); }); });
+    }
+    // PDF A4 con las fotos (JPEG) una debajo de la otra, en una sola página.
+    function jpgPdf(imgs) {
+      var W = 595, H = 842, M = 36, G = 18, n = imgs.length, cellH = (H - 2 * M - G * (n - 1)) / n, cellW = W - 2 * M, enc = new TextEncoder(), parts = [], offs = [], len = 0;
+      function put(x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; }
+      function obj(i, body) { offs[i] = len; put(i + ' 0 obj\n'); body(); put('\nendobj\n'); }
+      var cs = '', xo = '';
+      imgs.forEach(function (im, i) {
+        var k = Math.min(cellW / im.w, cellH / im.h), w = im.w * k, h = im.h * k, x = (W - w) / 2, y = H - M - i * (cellH + G) - (cellH + h) / 2;
+        cs += 'q ' + w.toFixed(2) + ' 0 0 ' + h.toFixed(2) + ' ' + x.toFixed(2) + ' ' + y.toFixed(2) + ' cm /Im' + i + ' Do Q\n'; xo += '/Im' + i + ' ' + (5 + i) + ' 0 R ';
+      });
+      put('%PDF-1.4\n%\xe2\xe3\xcf\xd3\n');
+      obj(1, function () { put('<< /Type /Catalog /Pages 2 0 R >>'); });
+      obj(2, function () { put('<< /Type /Pages /Kids [3 0 R] /Count 1 >>'); });
+      obj(3, function () { put('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + W + ' ' + H + '] /Resources << /XObject << ' + xo + '>> >> /Contents 4 0 R >>'); });
+      obj(4, function () { put('<< /Length ' + enc.encode(cs).length + ' >>\nstream\n' + cs + 'endstream'); });
+      imgs.forEach(function (im, i) { obj(5 + i, function () { put('<< /Type /XObject /Subtype /Image /Width ' + im.w + ' /Height ' + im.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + im.bytes.length + ' >>\nstream\n'); put(im.bytes); put('\nendstream'); }); });
+      var x = len, tot = 5 + n, t = 'xref\n0 ' + tot + '\n0000000000 65535 f \n';
+      for (var i = 1; i < tot; i++) t += String(offs[i]).padStart(10, '0') + ' 00000 n \n';
+      put(t + 'trailer\n<< /Size ' + tot + ' /Root 1 0 R >>\nstartxref\n' + x + '\n%%EOF\n');
+      var out = new Uint8Array(len), p = 0; parts.forEach(function (b) { out.set(b, p); p += b.length; }); return out;
+    }
+    var pdfLib = null;
+    function loadPdfLib() {
+      if (window.PDFLib) return Promise.resolve(window.PDFLib);
+      return pdfLib || (pdfLib = new Promise(function (ok, ko) { var sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js'; sc.onload = function () { window.PDFLib ? ok(window.PDFLib) : ko(); }; sc.onerror = ko; document.head.appendChild(sc); }));
+    }
+    // Une las caras en un PDF. Con fotos lo arma acá; si alguna parte ya es PDF, usa pdf-lib.
+    function joinDni(fs) {
+      if (fs.every(function (f) { return f.type === 'image/jpeg'; })) {
+        var tot = fs.reduce(function (a, f) { return a + f.data.length * 0.75; }, 0);
+        return Promise.all(fs.map(function (f) { return tot > 900000 ? shrink(f, 1400, 0.72) : f; })).then(function (gs) {
+          return Promise.all(gs.map(function (g) { return dims(g).then(function (d) { return { w: d.w, h: d.h, bytes: u8(g.data) }; }); }));
+        }).then(function (imgs) { return to64(jpgPdf(imgs)); });
+      }
+      return loadPdfLib().then(function (L) {
+        return L.PDFDocument.create().then(function (doc) {
+          return fs.reduce(function (pr, f) {
+            return pr.then(function () {
+              var bytes = u8(f.data);
+              if (f.type === 'application/pdf') return L.PDFDocument.load(bytes, { ignoreEncryption: true }).then(function (src) { return doc.copyPages(src, src.getPageIndices()).then(function (ps) { ps.forEach(function (p) { doc.addPage(p); }); }); });
+              return (f.type === 'image/png' ? doc.embedPng(bytes) : doc.embedJpg(bytes)).then(function (im) { var k = Math.min(523 / im.width, 770 / im.height, 1), pg = doc.addPage([595, 842]); pg.drawImage(im, { x: (595 - im.width * k) / 2, y: (842 - im.height * k) / 2, width: im.width * k, height: im.height * k }); });
+            });
+          }, Promise.resolve()).then(function () { return doc.saveAsBase64(); });
+        });
+      });
+    }
+    // Archivos a enviar: cada DNI unido en un PDF; el resto, tal cual. Si algo falla, manda las partes por separado.
+    function docsOut(list) {
+      var men = st.kind === 'menor', groups = [['dniF', 'dniD', st.d.nombre], ['progDniF', 'progDniD', st.d.progNombre]], used = {}, out = [];
+      return groups.reduce(function (pr, g) {
+        return pr.then(function () {
+          var fs = [files[g[0]], g[0] === 'dniF' && files.both ? null : files[g[1]]].filter(Boolean);
+          if (!fs.length) return;
+          var nm = upName(g[2]), base = 'DNI' + (nm ? ' ' + nm : (g[0] === 'dniF' ? (men ? ' DEL MENOR' : '') : ' DEL PROGENITOR'));
+          return joinDni(fs).then(function (d) { out.push({ nombre: base + '.pdf', tipo: 'application/pdf', datos: d }); used[g[0]] = used[g[1]] = 1; }, function () {});
+        });
+      }, Promise.resolve()).then(function () {
+        list.forEach(function (s) { var f = files[s[0]]; if (f && !used[s[0]]) out.push({ nombre: flabel(f) + '.' + f.ext, tipo: f.type, datos: f.data }); });
+        return out;
+      });
+    }
+    // Nota lista para pegar en Prenot@mi cuando el turno es de un menor (lo pide el progenitor desde su cuenta).
+    function nota() {
+      if (st.kind !== 'menor' || !st.d.nombre) return null;
+      var h = st.d.sexo === 'Femenino' ? 'MI HIJA MENOR DE EDAD' : st.d.sexo === 'Masculino' ? 'MI HIJO MENOR DE EDAD' : 'MI HIJO/A MENOR DE EDAD';
+      return ['Nota para Prenot@mi', 'EL TURNO ES PARA ' + h + ', ' + upName(st.d.nombre) + '.'];
+    }
     function flabel(f) { return f.slot === 'dniF' && files.both ? f.label.replace('frente', 'frente y dorso') : f.label; }
     function attach(move) {
       var all = steps(), list = slots(); st.i = all.length;
@@ -679,9 +759,13 @@
       var send = btn('btn btn-primary', 'Enviar solicitud', function () {
         if (!cb.checked) { err.textContent = 'Marcá la casilla para enviar.'; err.hidden = false; cb.focus(); return; }
         err.hidden = true; send.disabled = back.disabled = true; send.textContent = 'Enviando…';
-        var data = { v: 1, id: sid, tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', datos: envio().map(function (r) { return [r[0], r[1]]; }).concat(files.later ? [['Documentación', 'La envía después, por WhatsApp o correo']] : []), archivos: files.later ? [] : list.filter(function (s) { return files[s[0]]; }).map(function (s) { var f = files[s[0]]; return { nombre: flabel(f) + '.' + f.ext, tipo: f.type, datos: f.data }; }) };
-        var ac = window.AbortController ? new AbortController() : null, to = setTimeout(function () { if (ac) ac.abort(); }, 90000);
-        fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data), signal: ac ? ac.signal : undefined }).then(json).then(function (r) { clearTimeout(to); if (r && r.ok) done(); else confirm(); }).catch(function () { clearTimeout(to); confirm(); });
+        var nt = nota(), datos = envio().map(function (r) { return [r[0], r[1]]; });
+        if (nt) datos.unshift(nt);
+        (files.later ? Promise.resolve([]) : docsOut(list)).then(function (arch) {
+          var data = { v: 1, id: sid, tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', datos: datos.concat(files.later ? [['Documentación', 'La envía después, por WhatsApp o correo']] : []), archivos: arch };
+          var ac = window.AbortController ? new AbortController() : null, to = setTimeout(function () { if (ac) ac.abort(); }, 90000);
+          fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data), signal: ac ? ac.signal : undefined }).then(json).then(function (r) { clearTimeout(to); if (r && r.ok) done(); else confirm(); }).catch(function () { clearTimeout(to); confirm(); });
+        });
       });
       send.id = 'sf-send';
       cb.addEventListener('change', function () { err.hidden = true; });
