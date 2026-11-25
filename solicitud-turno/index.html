@@ -310,7 +310,7 @@
     var OJOS = ['Marrón', 'Verde', 'Celeste', 'Gris', 'Negro'];
     var CONS = ['Mendoza', 'Córdoba', 'Rosario', 'Buenos Aires', 'La Plata', 'Lomas de Zamora', 'Morón', 'Mar del Plata', 'Bahía Blanca', 'Otro o no lo sé'];
     // Datos que pasan al cargar otro familiar. El correo no: cada mayor tiene el suyo y el del menor es el de su progenitor (ver _fam).
-    var SHARED = ['domicilio', 'cp', 'cambioDom', 'consulado', 'celular', 'servicio', '_fam', '_fechas', '_fechasL'];
+    var SHARED = ['domicilio', 'cp', 'cambioDom', 'consulado', 'celular', 'servicio', '_fam', '_fechas', '_fechasL', '_familia'];
     var TRAM = { pas: ['Pasaporte', 'Pasaporte italiano'], cie: ['CIE', 'Carta de identidad (CIE)'], ambos: ['Pasaporte y CIE', 'Pasaporte italiano y CIE'], ciu: ['Ciudadanía', 'Turno de ciudadanía italiana'] };
     var KIND = { mayor: 'Mayor de edad', menor: 'Menor de edad' };
     function eq(k, v) { return function (d) { return d[k] === v; }; }
@@ -319,7 +319,8 @@
       var pas = tram !== 'cie', cie = tram !== 'pas', men = kind === 'menor', fin = [], out;
       if (tram === 'ciu') return [
         ['Tus datos', 'Tal cual figuran en tu DNI.', [
-          { k: 'nombre', l: 'Nombre completo', t: 'text', ac: 'name' },
+          { k: 'apellidos', l: 'Apellidos', t: 'text', ac: 'family-name' },
+          { k: 'nombres', l: 'Nombres', t: 'text', ac: 'given-name' },
           { k: 'lugarNac', l: 'Lugar de nacimiento', t: 'text' },
           { k: 'fechaNac', l: 'Fecha de nacimiento', t: 'date', ac: 'bday' }
         ]],
@@ -370,7 +371,8 @@
       fin = [tram === 'pas' ? 'Pasaporte y turno' : tram === 'cie' ? 'CIE y turno' : 'Pasaporte, CIE y turno', 'Último paso antes de subir la documentación.', fin];
       if (!men) {
         out = [['Tus datos', 'Tal cual figuran en tu DNI.', [
-          { k: 'nombre', l: 'Nombre completo', t: 'text', ac: 'name' },
+          { k: 'apellidos', l: 'Apellidos', t: 'text', ac: 'family-name' },
+          { k: 'nombres', l: 'Nombres', t: 'text', ac: 'given-name' },
           { k: 'lugarNac', l: 'Lugar de nacimiento', t: 'text' },
           { k: 'fechaNac', l: 'Fecha de nacimiento', t: 'date', ac: 'bday' },
           { k: 'estatura', l: 'Estatura', h: 'En centímetros.', t: 'number', req: 1, min: 50, max: 250 },
@@ -406,7 +408,8 @@
           { k: 'defInscr', l: '¿Inscribió la defunción de su cónyuge en el Consulado?', t: 'choice', o: SN, req: 1, w: eq('civil', 'Viudo/a') },
           { k: 'defTram', l: 'Sumar la inscripción de la defunción', m: 'Podemos inscribir la defunción en el Consulado por ustedes.', t: 'cta', c: 'Sumarla a mi solicitud', w: eq('defInscr', 'No') });
         out = [['Datos del menor', 'Tal cual figuran en su DNI.', [
-          { k: 'nombre', l: 'Nombre completo del menor', t: 'text' },
+          { k: 'apellidos', l: 'Apellidos del menor', t: 'text' },
+          { k: 'nombres', l: 'Nombres del menor', t: 'text' },
           { k: 'sexo', l: 'Sexo del menor', t: 'choice', o: ['Femenino', 'Masculino'] },
           { k: 'fechaNac', l: 'Fecha de nacimiento del menor', t: 'date' },
           { k: 'estatura', l: 'Estatura del menor', h: 'En centímetros.', t: 'number', min: 30, max: 220 },
@@ -484,7 +487,7 @@
     function star(n) { var s = el('span', 'sf-rq', ' *'); s.setAttribute('aria-hidden', 'true'); n.appendChild(s); }
     function field(f, wrap) {
       var id = 'sf-' + f.k, box, input, err = el('span', 'sf-err'); err.id = id + '-e'; err.hidden = true;
-      function set(v) { st.d[f.k] = v; save(); box.removeAttribute('data-bad'); err.hidden = true; refresh(wrap); }
+      function set(v) { st.d[f.k] = v; if (f.k === 'nombres' || f.k === 'apellidos') st.d.nombre = ((st.d.nombres || '') + ' ' + (st.d.apellidos || '')).trim(); save(); box.removeAttribute('data-bad'); err.hidden = true; refresh(wrap); }
       if (f.t === 'note') { box = el('p', 'sf-f sf-warn', f.l); box.setAttribute('data-k', f.k); return box; }
       if (f.t === 'cta') {
         box = el('div', 'sf-f sf-cta'); box.appendChild(el('span', 'sf-ctam', f.m));
@@ -860,7 +863,7 @@
         if (st.x) datos.unshift(['Solicitud vinculada', 'Antes pidió el turno de ' + (st.x === 'pas' ? 'pasaporte' : 'CIE') + ' con estos mismos datos']);
         if (nt) datos.unshift(nt);
         (files.later ? Promise.resolve([]) : docsOut(list)).then(function (arch) {
-          var data = { v: 1, id: sid, tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', vincula: st.x ? st.vsid || '' : '', datos: datos.concat(files.later ? [['Documentación', 'La envía después, por WhatsApp o correo']] : []), archivos: arch };
+          var data = { v: 1, id: sid, tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', familia: st.d._familia || st.d.apellidos || st.d.nombre || '', vincula: st.x ? st.vsid || '' : '', datos: datos.concat(files.later ? [['Documentación', 'La envía después, por WhatsApp o correo']] : []), archivos: arch };
           var ac = window.AbortController ? new AbortController() : null, to = setTimeout(function () { if (ac) ac.abort(); }, 90000);
           fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data), signal: ac ? ac.signal : undefined }).then(json).then(function (r) { clearTimeout(to); if (r && r.ok) done(); else confirm(); }).catch(function () { clearTimeout(to); confirm(); });
         });
@@ -872,6 +875,7 @@
       go(h, move);
     }
     function done() {
+      if (!st.d._familia && st.d.apellidos) st.d._familia = st.d.apellidos.trim();
       if (!files.later) { st.sent = st.sent || {}; Object.keys(files).forEach(function (k) { if (files[k] && files[k].data) st.sent[k] = 1; }); if (files.both && files.dniF) st.sent.dniD = 1; }
       if (st.d.noFechas) {
         st.d._fechas = 1;
