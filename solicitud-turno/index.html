@@ -44,6 +44,10 @@
   .sf-fields { display: grid; gap: 24px; }
   .sf-f { display: flex; flex-direction: column; gap: 4px; min-width: 0; margin: 0; padding: 0; border: 0; }
   .sf-f[hidden] { display: none; }
+  .sf-extra { margin-top: 28px; padding: 20px 22px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--white); }
+  .sf-extra h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  .sf-extra p { margin: 0; color: var(--ink-soft); }
+  .sf-extra .sf-nav { margin-top: 14px; }
   .sf-f:not([hidden]) { animation: rise 260ms cubic-bezier(0.23, 1, 0.32, 1) both; }
   .sf-f > label, .sf-f > legend { padding: 0; font-weight: 700; font-size: 1rem; }
   .sf-f .hint { color: var(--ink-soft); font-size: .88rem; }
@@ -420,7 +424,13 @@
     function btn(cls, txt, fn) { var b = el('button', cls, txt); b.type = 'button'; b.addEventListener('click', fn); return b; }
     function fmt(f, v) { if (f.cf) return v.replace(/\s/g, '').toUpperCase(); if (f.t === 'date' && /^\d{4}-\d{2}-\d{2}$/.test(v)) { var p = v.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; } return f.t === 'number' ? v + (f.u == null ? ' cm' : f.u) : v; }
     function shown(f) { return !f.w || f.w(st.d); }
-    function steps() { return st.kind ? flow(st.tram, st.kind) : []; }
+    // st.x: trámite que ya envió (pasaporte o CIE). Al sumar el otro, solo se preguntan los datos que faltan.
+    function steps() {
+      if (!st.kind) return [];
+      var f = flow(st.tram, st.kind); if (!st.x) return f;
+      var prev = {}; flow(st.x, st.kind).forEach(function (s) { s[2].forEach(function (x) { prev[x.k] = 1; }); });
+      return f.map(function (s) { return [s[0], s[1], s[2].filter(function (x) { return !prev[x.k]; })]; }).filter(function (s) { return s[2].length; });
+    }
     function carry() { var keep = {}; SHARED.forEach(function (k) { if (st.d[k]) keep[k] = st.d[k]; }); return keep; }
     function head(title, sub) {
       body.innerHTML = '';
@@ -443,7 +453,7 @@
       return opts;
     }
     function start(move) {
-      st.tram = ''; st.kind = ''; st.i = -1; progress(0, 1, 'Inicio');
+      st.tram = ''; st.kind = ''; st.i = -1; delete st.x; progress(0, 1, 'Inicio');
       var h = head('¿Qué turno necesitás?', 'Son unos 5 minutos. Tené a mano el DNI y, si lo hay, el pasaporte anterior: al final vas a subir una foto de cada uno.');
       body.appendChild(pickers([['pas', 'Pasaporte', 'Para sacarlo o renovarlo.'], ['cie', 'CIE', 'Carta de identidad italiana.'], ['ambos', 'Pasaporte y CIE', 'Los dos turnos en una sola carga.'], ['ciu', 'Ciudadanía', 'Turno para presentar tu carpeta.']], function (v) { st.tram = v; enter(true); }));
       go(h, move);
@@ -534,7 +544,7 @@
       var form = el('form', 'sf-fields'); form.noValidate = true;
       s[2].forEach(function (f) { var b = field(f, form); b.hidden = !shown(f); form.appendChild(b); });
       var nav = el('div', 'sf-nav');
-      nav.appendChild(btn('sf-back', 'Volver', function () { if (st.i === 0) { if (st.tram === 'ciu') start(true); else who(true); } else { st.i--; step(true); } }));
+      nav.appendChild(btn('sf-back', 'Volver', function () { if (st.i === 0) { if (st.tram === 'ciu' || st.x) start(true); else who(true); } else { st.i--; step(true); } }));
       var next = el('button', 'btn btn-primary', 'Siguiente'); next.type = 'submit'; nav.appendChild(next);
       form.appendChild(nav);
       form.addEventListener('submit', function (e) {
@@ -554,14 +564,14 @@
     // Orden de Prenot@mi para el pasaporte: así llegan primero en el correo y la planilla.
     var ORD_PAS = ['domicilio', 'cp', 'hijos', 'hijosProg', 'hijosCant', 'civil', 'conyuge', 'primer', 'pasAnt', 'progTiene', 'progPas', 'estatura', 'ojos'];
     function envio() {
-      var r = rows();
+      var r = rows(true);
       if (st.tram !== 'pas' && st.tram !== 'ambos') return r;
       var a = r.filter(function (x) { return ORD_PAS.indexOf(x[3]) >= 0; }).sort(function (x, y) { return ORD_PAS.indexOf(x[3]) - ORD_PAS.indexOf(y[3]); });
       return a.concat(r.filter(function (x) { return ORD_PAS.indexOf(x[3]) < 0; }));
     }
-    function rows() {
+    function rows(full) {
       var out = [];
-      steps().forEach(function (s, n) { s[2].forEach(function (f) { if (shown(f) && st.d[f.k]) out.push([f.l.replace(/^¿|\?$/g, ''), fmt(f, st.d[f.k]), n, f.k]); }); });
+      (full ? flow(st.tram, st.kind) : steps()).forEach(function (s, n) { s[2].forEach(function (f) { if (shown(f) && st.d[f.k]) out.push([f.l.replace(/^¿|\?$/g, ''), fmt(f, st.d[f.k]), n, f.k]); }); });
       return out;
     }
     // Documentación: fotos o PDF. Las fotos se achican en el dispositivo antes de enviarlas.
@@ -782,7 +792,7 @@
     function review(move) {
       var all = steps(), list = slots(); st.i = all.length;
       progress(all.length + 2, all.length + 2, 'Paso ' + (all.length + 2) + ' de ' + (all.length + 2));
-      var h = head('Revisá tus datos', 'Si algo está mal, volvé al paso y corregilo.');
+      var h = head('Revisá tus datos', 'Si algo está mal, volvé al paso y corregilo.' + (st.x ? ' Los datos que ya cargaste para ' + (st.x === 'pas' ? 'el pasaporte' : 'la CIE') + ' van junto con esta solicitud.' : ''));
       function section(title, fn) {
         var sec = el('div', 'sf-rev'), top = el('div', 'sf-revtop'), dl = el('dl');
         top.appendChild(el('h3', '', title)); top.appendChild(btn('sf-edit', 'Editar', fn)); top.lastChild.setAttribute('aria-label', 'Editar ' + title.toLowerCase());
@@ -813,6 +823,7 @@
         if (!cb.checked) { err.textContent = 'Marcá la casilla para enviar.'; err.hidden = false; cb.focus(); return; }
         err.hidden = true; send.disabled = back.disabled = true; send.textContent = 'Enviando…';
         var nt = nota(), datos = envio().map(function (r) { return [r[0], r[1]]; });
+        if (st.x) datos.unshift(['Solicitud vinculada', 'Antes pidió el turno de ' + (st.x === 'pas' ? 'pasaporte' : 'CIE') + ' con estos mismos datos']);
         if (nt) datos.unshift(nt);
         (files.later ? Promise.resolve([]) : docsOut(list)).then(function (arch) {
           var data = { v: 1, id: sid, tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', datos: datos.concat(files.later ? [['Documentación', 'La envía después, por WhatsApp o correo']] : []), archivos: arch };
@@ -842,6 +853,16 @@
       } else {
         h = head('Recibimos tu solicitud', 'Ya tenemos tus datos y tu documentación. Te escribimos para confirmar los detalles antes de pedir el turno.');
         nav.appendChild(btn('btn btn-primary', 'Cargar otro familiar', otro)); body.appendChild(nav);
+      }
+      // Ofrece el otro documento: CIE después del pasaporte, pasaporte después de la CIE. Reusa los datos y la documentación.
+      if (!st.x && (st.tram === 'pas' || st.tram === 'cie')) {
+        var otroT = st.tram === 'pas' ? 'cie' : 'pas', nom = otroT === 'cie' ? 'la CIE' : 'el pasaporte', box = el('div', 'sf-extra');
+        box.appendChild(el('h3', '', '¿' + (st.kind === 'menor' ? 'El menor también necesita ' : 'También necesitás ') + nom + '?'));
+        box.appendChild(el('p', '', 'Es otro turno, en un día distinto, y tiene sus propios honorarios. Usamos los datos y la documentación que ya cargaste: solo te preguntamos lo que falta para ' + nom + '.'));
+        var bn = el('div', 'sf-nav'); bn.appendChild(btn('btn btn-outline', 'Sumar ' + nom, function () {
+          st = { tram: otroT, kind: st.kind, i: 0, d: st.d, x: st.tram }; save();
+          if (steps().length) step(true); else attach(true);
+        })); box.appendChild(bn); body.appendChild(box);
       }
       try { localStorage.setItem(KEY, JSON.stringify({ tram: st.tram, kind: '', i: -1, d: carry() })); } catch (e) {}
       h.focus({ preventScroll: true }); document.getElementById('solicitud').scrollIntoView({ block: 'start' });
