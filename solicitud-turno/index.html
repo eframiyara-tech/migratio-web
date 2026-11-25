@@ -416,7 +416,7 @@
     }
     var st = { tram: '', kind: '', i: -1, d: {} };
     try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.d && TRAM[s.tram] && (!s.kind || KIND[s.kind])) st = s; } catch (e) {}
-    var hash = { '#pasaporte': 'pas', '#cie': 'cie', '#pasaporte-y-cie': 'ambos', '#ciudadania': 'ciu' }[location.hash];
+    var hash = { '#pasaporte': 'pas', '#cie': 'cie', '#pasaporte-y-cie': 'pas', '#ciudadania': 'ciu' }[location.hash];
     // Con #trámite en el enlace abre ese trámite (si había otro a medio cargar, empieza el nuevo). Sin #, retoma lo que estaba cargando o muestra el menú de trámites.
     if (hash && !(st.kind && st.i >= 0 && st.tram === hash)) { st.tram = hash; st.kind = ''; st.i = -1; }
     function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
@@ -455,7 +455,7 @@
     function start(move) {
       st.tram = ''; st.kind = ''; st.i = -1; delete st.x; progress(0, 1, 'Inicio');
       var h = head('¿Qué turno necesitás?', 'Son unos 5 minutos. Tené a mano el DNI y, si lo hay, el pasaporte anterior: al final vas a subir una foto de cada uno.');
-      body.appendChild(pickers([['pas', 'Pasaporte', 'Para sacarlo o renovarlo.'], ['cie', 'CIE', 'Carta de identidad italiana.'], ['ambos', 'Pasaporte y CIE', 'Los dos turnos en una sola carga.'], ['ciu', 'Ciudadanía', 'Turno para presentar tu carpeta.']], function (v) { st.tram = v; enter(true); }));
+      body.appendChild(pickers([['pas', 'Pasaporte', 'Para sacarlo o renovarlo.'], ['cie', 'CIE', 'Carta de identidad italiana.'], ['ciu', 'Ciudadanía', 'Turno para presentar tu carpeta.']], function (v) { st.tram = v; enter(true); }));
       go(h, move);
     }
     // El turno de ciudadanía no distingue mayor y menor: entra directo a los datos.
