@@ -607,66 +607,113 @@
         return new Promise(function (ok) { c.toBlob(ok, 'image/jpeg', q); });
       }).then(function (bl) { return new Promise(function (ok) { b64(bl, function (d) { ok({ type: 'image/jpeg', data: d }); }); }); });
     }
-    // PDF A4 con las fotos (JPEG) una debajo de la otra, en una sola página.
+    // PDF A4 con las imágenes (JPEG), dos por página, una debajo de la otra.
     function jpgPdf(imgs) {
-      var W = 595, H = 842, M = 36, G = 18, n = imgs.length, cellH = (H - 2 * M - G * (n - 1)) / n, cellW = W - 2 * M, enc = new TextEncoder(), parts = [], offs = [], len = 0;
+      var W = 595, H = 842, M = 36, G = 18, cellW = W - 2 * M, enc = new TextEncoder(), parts = [], offs = [], len = 0, pages = [];
+      for (var q = 0; q < imgs.length; q += 2) pages.push(imgs.slice(q, q + 2));
       function put(x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; }
       function obj(i, body) { offs[i] = len; put(i + ' 0 obj\n'); body(); put('\nendobj\n'); }
-      var cs = '', xo = '';
-      imgs.forEach(function (im, i) {
-        var k = Math.min(cellW / im.w, cellH / im.h), w = im.w * k, h = im.h * k, x = (W - w) / 2, y = H - M - i * (cellH + G) - (cellH + h) / 2;
-        cs += 'q ' + w.toFixed(2) + ' 0 0 ' + h.toFixed(2) + ' ' + x.toFixed(2) + ' ' + y.toFixed(2) + ' cm /Im' + i + ' Do Q\n'; xo += '/Im' + i + ' ' + (5 + i) + ' 0 R ';
-      });
+      // Objetos: 1 catálogo, 2 páginas, y por cada página: hoja, contenido; después una imagen por foto.
+      var np = pages.length, img0 = 3 + 2 * np, kids = pages.map(function (p, i) { return (3 + 2 * i) + ' 0 R'; }).join(' ');
       put('%PDF-1.4\n%\xe2\xe3\xcf\xd3\n');
       obj(1, function () { put('<< /Type /Catalog /Pages 2 0 R >>'); });
-      obj(2, function () { put('<< /Type /Pages /Kids [3 0 R] /Count 1 >>'); });
-      obj(3, function () { put('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + W + ' ' + H + '] /Resources << /XObject << ' + xo + '>> >> /Contents 4 0 R >>'); });
-      obj(4, function () { put('<< /Length ' + enc.encode(cs).length + ' >>\nstream\n' + cs + 'endstream'); });
-      imgs.forEach(function (im, i) { obj(5 + i, function () { put('<< /Type /XObject /Subtype /Image /Width ' + im.w + ' /Height ' + im.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + im.bytes.length + ' >>\nstream\n'); put(im.bytes); put('\nendstream'); }); });
-      var x = len, tot = 5 + n, t = 'xref\n0 ' + tot + '\n0000000000 65535 f \n';
+      obj(2, function () { put('<< /Type /Pages /Kids [' + kids + '] /Count ' + np + ' >>'); });
+      var n0 = 0;
+      pages.forEach(function (pg, pi) {
+        var n = pg.length, cellH = (H - 2 * M - G * (n - 1)) / n, cs = '', xo = '';
+        pg.forEach(function (im, i) {
+          var k = Math.min(cellW / im.w, cellH / im.h), w = im.w * k, h = im.h * k, x = (W - w) / 2, y = H - M - i * (cellH + G) - (cellH + h) / 2, id = img0 + n0 + i;
+          cs += 'q ' + w.toFixed(2) + ' 0 0 ' + h.toFixed(2) + ' ' + x.toFixed(2) + ' ' + y.toFixed(2) + ' cm /Im' + i + ' Do Q\n'; xo += '/Im' + i + ' ' + id + ' 0 R ';
+        });
+        obj(3 + 2 * pi, function () { put('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + W + ' ' + H + '] /Resources << /XObject << ' + xo + '>> >> /Contents ' + (4 + 2 * pi) + ' 0 R >>'); });
+        obj(4 + 2 * pi, function () { put('<< /Length ' + enc.encode(cs).length + ' >>\nstream\n' + cs + 'endstream'); });
+        n0 += n;
+      });
+      imgs.forEach(function (im, i) { obj(img0 + i, function () { put('<< /Type /XObject /Subtype /Image /Width ' + im.w + ' /Height ' + im.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + im.bytes.length + ' >>\nstream\n'); put(im.bytes); put('\nendstream'); }); });
+      var x = len, tot = img0 + imgs.length, t = 'xref\n0 ' + tot + '\n0000000000 65535 f \n';
       for (var i = 1; i < tot; i++) t += String(offs[i]).padStart(10, '0') + ' 00000 n \n';
       put(t + 'trailer\n<< /Size ' + tot + ' /Root 1 0 R >>\nstartxref\n' + x + '\n%%EOF\n');
       var out = new Uint8Array(len), p = 0; parts.forEach(function (b) { out.set(b, p); p += b.length; }); return out;
     }
-    var pdfLib = null;
-    function loadPdfLib() {
-      if (window.PDFLib) return Promise.resolve(window.PDFLib);
-      return pdfLib || (pdfLib = new Promise(function (ok, ko) { var sc = document.createElement('script'); sc.src = 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js'; sc.onload = function () { window.PDFLib ? ok(window.PDFLib) : ko(); }; sc.onerror = ko; document.head.appendChild(sc); }));
+    // pdf.js se carga solo si alguien sube un PDF: convierte cada página en imagen para poder comprimirla.
+    var PDFJS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/', pdfjs = null;
+    function loadPdfjs() {
+      if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+      return pdfjs || (pdfjs = new Promise(function (ok, ko) {
+        var sc = document.createElement('script'); sc.src = PDFJS + 'pdf.min.js';
+        sc.onload = function () {
+          var L = window.pdfjsLib; if (!L) return ko();
+          L.GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob(['importScripts("' + PDFJS + 'pdf.worker.min.js");'], { type: 'text/javascript' }));
+          ok(L);
+        };
+        sc.onerror = ko; document.head.appendChild(sc);
+      }));
     }
-    // Une las caras en un PDF de 1 MB como máximo (límite de Prenot@mi). Con fotos lo arma acá; si alguna parte ya es PDF, usa pdf-lib.
-    var LIMITE = 1000000, PASOS = [null, [1600, 0.8], [1400, 0.72], [1100, 0.65], [900, 0.6], [700, 0.55]];
-    function joinDni(fs) {
-      var fotos = fs.every(function (f) { return f.type === 'image/jpeg'; });
-      function intento(k) {
-        var p = PASOS[k];
-        return Promise.all(fs.map(function (f) { return p && f.type !== 'application/pdf' ? shrink(f, p[0], p[1]) : f; })).then(function (gs) {
-          return fotos ? Promise.all(gs.map(function (g) { return dims(g).then(function (d) { return { w: d.w, h: d.h, bytes: u8(g.data) }; }); })).then(function (imgs) { return to64(jpgPdf(imgs)); }) : conLib(gs);
-        }).then(function (d) { return d.length * 0.75 <= LIMITE || k === PASOS.length - 1 ? d : intento(k + 1); });
-      }
-      return intento(0);
-    }
-    function conLib(fs) {
-      return loadPdfLib().then(function (L) {
-        return L.PDFDocument.create().then(function (doc) {
-          return fs.reduce(function (pr, f) {
-            return pr.then(function () {
-              var bytes = u8(f.data);
-              if (f.type === 'application/pdf') return L.PDFDocument.load(bytes, { ignoreEncryption: true }).then(function (src) { return doc.copyPages(src, src.getPageIndices()).then(function (ps) { ps.forEach(function (p) { doc.addPage(p); }); }); });
-              return (f.type === 'image/png' ? doc.embedPng(bytes) : doc.embedJpg(bytes)).then(function (im) { var k = Math.min(523 / im.width, 770 / im.height, 1), pg = doc.addPage([595, 842]); pg.drawImage(im, { x: (595 - im.width * k) / 2, y: (842 - im.height * k) / 2, width: im.width * k, height: im.height * k }); });
-            });
-          }, Promise.resolve()).then(function () { return doc.saveAsBase64({ useObjectStreams: true }); });
-        });
+    function pdfPages(f) {
+      return loadPdfjs().then(function (L) { return L.getDocument({ data: u8(f.data) }).promise; }).then(function (doc) {
+        var out = [], chain = Promise.resolve();
+        for (var n = 1; n <= doc.numPages; n++) (function (n) {
+          chain = chain.then(function () { return doc.getPage(n); }).then(function (pg) {
+            var v1 = pg.getViewport({ scale: 1 }), k = Math.min(3, 2000 / Math.max(v1.width, v1.height)), v = pg.getViewport({ scale: k }), c = document.createElement('canvas'), x = c.getContext('2d');
+            c.width = Math.round(v.width); c.height = Math.round(v.height); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+            return pg.render({ canvasContext: x, viewport: v }).promise.then(function () { return new Promise(function (ok) { c.toBlob(ok, 'image/jpeg', 0.85); }); });
+          }).then(function (bl) { return new Promise(function (ok) { b64(bl, function (d) { out.push({ type: 'image/jpeg', data: d }); ok(); }); }); });
+        })(n);
+        return chain.then(function () { return out; });
       });
     }
-    // Archivos a enviar: cada DNI unido en un PDF; el resto, tal cual. Si algo falla, manda las partes por separado.
+    // Todo pasa a imágenes JPEG: fotos tal cual, PDF página por página, otros formatos recomprimidos.
+    function toImgs(fs) {
+      return Promise.all(fs.map(function (f) { return f.type === 'image/jpeg' ? [f] : f.type === 'application/pdf' ? pdfPages(f) : shrink(f, 2000, 0.85).then(function (g) { return [g]; }); }))
+        .then(function (ls) { return [].concat.apply([], ls); });
+    }
+    // Arma un PDF de 1 MB como máximo (límite de Prenot@mi): si se pasa, recomprime las imágenes cada vez más.
+    var LIMITE = 1000000, PASOS = [null, [1600, 0.8], [1400, 0.72], [1100, 0.65], [900, 0.6], [700, 0.55], [600, 0.45]];
+    // Huella de 64 bits de una imagen (dHash) para detectar páginas repetidas.
+    function huella(f) {
+      return createImageBitmap(new Blob([u8(f.data)], { type: f.type })).then(function (b) {
+        var c = document.createElement('canvas'), x = c.getContext('2d'); c.width = 9; c.height = 8; x.drawImage(b, 0, 0, 9, 8);
+        var px = x.getImageData(0, 0, 9, 8).data, g = [], h = [];
+        for (var i = 0; i < 72; i++) g.push(px[i * 4] * 0.3 + px[i * 4 + 1] * 0.59 + px[i * 4 + 2] * 0.11);
+        for (var r = 0; r < 8; r++) for (var k = 0; k < 8; k++) h.push(g[r * 9 + k] > g[r * 9 + k + 1] ? 1 : 0);
+        return h;
+      });
+    }
+    // Saca las páginas repetidas y deja como máximo dos (frente y dorso).
+    function unicas(imgs) {
+      return Promise.all(imgs.map(huella)).then(function (hs) {
+        var keep = [];
+        imgs.forEach(function (im, i) {
+          var dup = keep.some(function (j) { var d = 0; for (var b = 0; b < 64; b++) d += hs[i][b] !== hs[j][b]; return d <= 10; });
+          if (!dup) keep.push(i);
+        });
+        return keep.slice(0, 2).map(function (i) { return imgs[i]; });
+      });
+    }
+    function joinPdf(fs) {
+      return toImgs(fs).then(unicas).then(function (base) {
+        function intento(k) {
+          var p = PASOS[k];
+          return Promise.all(base.map(function (f) { return p ? shrink(f, p[0], p[1]) : f; })).then(function (gs) {
+            return Promise.all(gs.map(function (g) { return dims(g).then(function (d) { return { w: d.w, h: d.h, bytes: u8(g.data) }; }); }));
+          }).then(function (imgs) { var d = to64(jpgPdf(imgs)); return d.length * 0.75 <= LIMITE || k === PASOS.length - 1 ? d : intento(k + 1); });
+        }
+        return intento(0);
+      });
+    }
+    // Archivos a enviar, listos para Prenot@mi: cada DNI en un PDF con el nombre de la persona, y el pasaporte vigente del progenitor también. El resto, tal cual. Si algo falla, manda los originales.
     function docsOut(list) {
-      var men = st.kind === 'menor', groups = [['dniF', 'dniD', st.d.nombre], ['progDniF', 'progDniD', st.d.progNombre]], used = {}, out = [];
+      var men = st.kind === 'menor', pn = upName(st.d.progNombre), used = {}, out = [];
+      var groups = [
+        [['dniF', 'dniD'], 'DNI' + (upName(st.d.nombre) ? ' ' + upName(st.d.nombre) : (men ? ' DEL MENOR' : ''))],
+        [['progDniF', 'progDniD'], 'DNI ' + (pn || 'DEL PROGENITOR')],
+        [['progPas'], 'PASAPORTE ITALIANO VIGENTE DE' + (pn ? ' ' + pn : 'L PROGENITOR')]
+      ];
       return groups.reduce(function (pr, g) {
         return pr.then(function () {
-          var fs = [files[g[0]], g[0] === 'dniF' && files.both ? null : files[g[1]]].filter(Boolean);
+          var fs = g[0].filter(function (k) { return files[k] && !(k === 'dniD' && files.both); }).map(function (k) { return files[k]; });
           if (!fs.length) return;
-          var nm = upName(g[2]), base = 'DNI' + (nm ? ' ' + nm : (g[0] === 'dniF' ? (men ? ' DEL MENOR' : '') : ' DEL PROGENITOR'));
-          return joinDni(fs).then(function (d) { out.push({ nombre: base + (d.length * 0.75 > LIMITE ? ' (supera 1 MB)' : '') + '.pdf', tipo: 'application/pdf', datos: d }); used[g[0]] = used[g[1]] = 1; }, function () {});
+          return joinPdf(fs).then(function (d) { out.push({ nombre: g[1] + (d.length * 0.75 > LIMITE ? ' (supera 1 MB)' : '') + '.pdf', tipo: 'application/pdf', datos: d }); g[0].forEach(function (k) { used[k] = 1; }); }, function () {});
         });
       }, Promise.resolve()).then(function () {
         list.forEach(function (s) { var f = files[s[0]]; if (f && !used[s[0]]) out.push({ nombre: flabel(f) + '.' + f.ext, tipo: f.type, datos: f.data }); });
