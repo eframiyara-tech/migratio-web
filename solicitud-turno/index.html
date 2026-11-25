@@ -310,7 +310,7 @@
     var OJOS = ['Marrón', 'Verde', 'Celeste', 'Gris', 'Negro'];
     var CONS = ['Mendoza', 'Córdoba', 'Rosario', 'Buenos Aires', 'La Plata', 'Lomas de Zamora', 'Morón', 'Mar del Plata', 'Bahía Blanca', 'Otro o no lo sé'];
     // Datos que pasan al cargar otro familiar. El correo no: cada mayor tiene el suyo y el del menor es el de su progenitor (ver _fam).
-    var SHARED = ['domicilio', 'cp', 'cambioDom', 'consulado', 'celular', 'servicio', '_fam'];
+    var SHARED = ['domicilio', 'cp', 'cambioDom', 'consulado', 'celular', 'servicio', '_fam', '_fechas', 'noFechas', 'cuales'];
     var TRAM = { pas: ['Pasaporte', 'Pasaporte italiano'], cie: ['CIE', 'Carta de identidad (CIE)'], ambos: ['Pasaporte y CIE', 'Pasaporte italiano y CIE'], ciu: ['Ciudadanía', 'Turno de ciudadanía italiana'] };
     var KIND = { mayor: 'Mayor de edad', menor: 'Menor de edad' };
     function eq(k, v) { return function (d) { return d[k] === v; }; }
@@ -429,7 +429,10 @@
     // st.x: trámite que ya envió (pasaporte o CIE). Al sumar el otro, solo se preguntan los datos que faltan.
     function steps() {
       if (!st.kind) return [];
-      var f = flow(st.tram, st.kind); if (!st.x) return f;
+      var f = flow(st.tram, st.kind);
+      // Las fechas en que no pueden ir valen para toda la familia: si ya las contestó otro familiar, no se vuelven a preguntar.
+      if (st.d._fechas) f = f.map(function (s) { return [s[0], s[1], s[2].filter(function (x) { return x.k !== 'noFechas' && x.k !== 'cuales'; })]; });
+      if (!st.x) return f;
       var prev = {}; flow(st.x, st.kind).forEach(function (s) { s[2].forEach(function (x) { prev[x.k] = 1; }); });
       return f.map(function (s) { return [s[0], s[1], s[2].filter(function (x) { return !prev[x.k] && x.k !== 'email'; })]; }).filter(function (s) { return s[2].length; });
     }
@@ -856,6 +859,7 @@
       go(h, move);
     }
     function done() {
+      if (st.d.noFechas) st.d._fechas = 1;
       var duen = st.kind === 'menor' ? st.d.progNombre : st.d.nombre;
       if (duen && st.d.email) { st.d._fam = st.d._fam || {}; st.d._fam[upName(duen)] = st.d.email; }
       progress(1, 1, 'Enviado');
