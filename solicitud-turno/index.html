@@ -438,7 +438,14 @@
       if (sub) body.appendChild(el('p', 'sf-sub', sub));
       return h;
     }
+    // La dirección muestra el trámite que se ve en pantalla: #pasaporte, #cie o #ciudadania (sin # en el menú de trámites).
+    function syncHash() {
+      var h = { pas: '#pasaporte', cie: '#cie', ciu: '#ciudadania' }[st.tram] || '';
+      if (location.hash !== h) try { history.replaceState(null, '', location.pathname + location.search + h); } catch (e) {}
+    }
+    window.addEventListener('hashchange', function () { location.reload(); });
     function progress(n, total, label) {
+      syncHash();
       stepEl.textContent = label; kindEl.textContent = st.tram ? TRAM[st.tram][0] + (st.kind && st.tram !== 'ciu' ? ' · ' + KIND[st.kind] : '') : 'Consulado italiano';
       bar.style.width = Math.round(100 * n / total) + '%';
     }
@@ -718,7 +725,9 @@
       var groups = [
         [['dniF', 'dniD'], 'DNI' + (upName(st.d.nombre) ? ' ' + upName(st.d.nombre) : (men ? ' DEL MENOR' : ''))],
         [['progDniF', 'progDniD'], 'DNI ' + (pn || 'DEL PROGENITOR')],
-        [['progPas'], 'PASAPORTE ITALIANO VIGENTE DE' + (pn ? ' ' + pn : 'L PROGENITOR')]
+        [['progPas'], 'PASAPORTE ITALIANO VIGENTE DE' + (pn ? ' ' + pn : 'L PROGENITOR')],
+        [['pas'], 'PASAPORTE' + (upName(st.d.nombre) ? ' ' + upName(st.d.nombre) : (men ? ' DEL MENOR' : ''))],
+        [['prog'], 'DOCUMENTO DE' + (pn ? ' ' + pn : 'L PROGENITOR')]
       ];
       return groups.reduce(function (pr, g) {
         return pr.then(function () {
@@ -841,7 +850,7 @@
       progress(1, 1, 'Enviado');
       // Analytics: cuenta la solicitud enviada. Solo el tipo de trámite, sin datos personales.
       try { if (window.gtag) gtag('event', 'solicitud_turno', { tramite: TRAM[st.tram][1], para: KIND[st.kind] || '', documentacion: files.later ? 'despues' : 'adjunta' }); } catch (e) {}
-      var otro = function () { files = {}; st = { tram: st.tram, kind: '', i: -1, d: carry() }; enter(true); }, nav = el('div', 'sf-nav sf-end'), h;
+      var otro = function () { files = {}; st = { tram: st.x || st.tram, kind: '', i: -1, d: carry() }; enter(true); }, nav = el('div', 'sf-nav sf-end'), h;
       if (files.later) {
         h = head('Recibimos tu solicitud', 'Falta la documentación: mandanos una foto o un PDF del DNI, frente y dorso' + (st.tram === 'ciu' ? '' : ', y del pasaporte anterior si corresponde') + '.');
         var quien = st.d.nombre ? ' Soy ' + st.d.nombre + '.' : '', asunto = 'Documentación · ' + TRAM[st.tram][1] + (st.d.nombre ? ' · ' + st.d.nombre : '');
