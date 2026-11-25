@@ -309,7 +309,8 @@
     var SN = ['Sí', 'No'];
     var OJOS = ['Marrón', 'Verde', 'Celeste', 'Gris', 'Negro'];
     var CONS = ['Mendoza', 'Córdoba', 'Rosario', 'Buenos Aires', 'La Plata', 'Lomas de Zamora', 'Morón', 'Mar del Plata', 'Bahía Blanca', 'Otro o no lo sé'];
-    var SHARED = ['domicilio', 'cp', 'cambioDom', 'consulado', 'celular', 'email', 'servicio'];
+    // Datos que pasan al cargar otro familiar. El correo no: cada mayor tiene el suyo y el del menor es el de su progenitor (ver _fam).
+    var SHARED = ['domicilio', 'cp', 'cambioDom', 'consulado', 'celular', 'servicio', '_fam'];
     var TRAM = { pas: ['Pasaporte', 'Pasaporte italiano'], cie: ['CIE', 'Carta de identidad (CIE)'], ambos: ['Pasaporte y CIE', 'Pasaporte italiano y CIE'], ciu: ['Ciudadanía', 'Turno de ciudadanía italiana'] };
     var KIND = { mayor: 'Mayor de edad', menor: 'Menor de edad' };
     function eq(k, v) { return function (d) { return d[k] === v; }; }
@@ -342,9 +343,10 @@
         { k: 'cp', l: 'Código postal', t: 'text', im: 'numeric', ac: 'postal-code' },
         { k: 'cambioDom', l: men ? '¿Cambiaron de domicilio recientemente?' : '¿Cambiaste de domicilio recientemente?', t: 'choice', o: SN },
         { k: 'consulado', l: men ? 'Consulado que les corresponde' : 'Consulado que te corresponde', t: 'select', o: CONS },
-        { k: 'celular', l: 'Celular', h: 'Con código de área. Te escribimos a este número.', t: 'tel', req: 1, ac: 'tel' },
-        { k: 'email', l: 'Correo electrónico', t: 'email', ac: 'email' }
+        { k: 'celular', l: 'Celular', h: 'Con código de área. Te escribimos a este número.', t: 'tel', req: 1, ac: 'tel' }
       ]];
+      // El correo solo en pasaporte: para la CIE la gestoría usa un correo propio (recibe el código OTP).
+      if (tram === 'pas') contacto[2].push({ k: 'email', l: men ? 'Correo electrónico del progenitor' : 'Correo electrónico', h: men ? 'El del progenitor italiano.' : 'Cada mayor de edad necesita un correo propio.', t: 'email', ac: 'email' });
       if (pas && !men) fin.push(
         { k: 'primer', l: '¿Es tu primer pasaporte italiano?', t: 'choice', o: SN, req: 1 },
         { k: 'pasAnt', l: 'Número del pasaporte anterior', t: 'text', req: 1, na: 'No lo tengo a mano', w: eq('primer', 'No') });
@@ -429,7 +431,7 @@
       if (!st.kind) return [];
       var f = flow(st.tram, st.kind); if (!st.x) return f;
       var prev = {}; flow(st.x, st.kind).forEach(function (s) { s[2].forEach(function (x) { prev[x.k] = 1; }); });
-      return f.map(function (s) { return [s[0], s[1], s[2].filter(function (x) { return !prev[x.k]; })]; }).filter(function (s) { return s[2].length; });
+      return f.map(function (s) { return [s[0], s[1], s[2].filter(function (x) { return !prev[x.k] && x.k !== 'email'; })]; }).filter(function (s) { return s[2].length; });
     }
     function carry() { var keep = {}; SHARED.forEach(function (k) { if (st.d[k]) keep[k] = st.d[k]; }); return keep; }
     function head(title, sub) {
@@ -539,13 +541,20 @@
       if (!v) return f.req ? (f.t === 'choice' || f.t === 'select' ? 'Elegí una opción.' : 'Completá este dato.') : '';
       if (f.cf && !/^[A-Za-z0-9]{16}$/.test(v.replace(/\s/g, ''))) return 'Revisá el código fiscal: tiene 16 letras y números.';
       if (f.t === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'Revisá el correo: tiene que ser como nombre@ejemplo.com.';
+      if (f.k === 'email' && st.kind === 'mayor') {
+        var fm = st.d._fam || {}, yo = upName(st.d.nombre), otroN = Object.keys(fm).filter(function (n) { return n !== yo && fm[n].toLowerCase() === v.toLowerCase(); })[0];
+        if (otroN) return 'Ese correo ya lo usaste para ' + otroN + '. Cada mayor de edad necesita un correo propio.';
+      }
       if (f.t === 'tel' && v.replace(/\D/g, '').length < 8) return 'Revisá el número: tiene que incluir el código de área.';
       if (f.t === 'number' && !(+v >= f.min && +v <= f.max)) return f.e || 'Ingresá la estatura en centímetros, por ejemplo 170.';
       if (f.t === 'date' && !(/^\d{4}-\d{2}-\d{2}$/.test(v) && v <= new Date().toISOString().slice(0, 10) && v >= '1900-01-01')) return 'Revisá la fecha.';
       return '';
     }
+    // Correos ya cargados en esta sesión, por persona: { 'NOMBRE APELLIDO': correo }.
+    function famMail() { var fm = st.d._fam || {}, who = st.kind === 'menor' ? st.d.progNombre : st.d.nombre; return who ? fm[upName(who)] || '' : ''; }
     function step(move) {
       var all = steps(), s = all[st.i];
+      if (!st.d.email && s[2].some(function (f) { return f.k === 'email'; }) && famMail()) st.d.email = famMail();
       progress(st.i + 1, all.length + 2, 'Paso ' + (st.i + 1) + ' de ' + (all.length + 2));
       var h = head(s[0], s[1] + ' Solo los datos con * son obligatorios.');
       var form = el('form', 'sf-fields'); form.noValidate = true;
@@ -847,6 +856,8 @@
       go(h, move);
     }
     function done() {
+      var duen = st.kind === 'menor' ? st.d.progNombre : st.d.nombre;
+      if (duen && st.d.email) { st.d._fam = st.d._fam || {}; st.d._fam[upName(duen)] = st.d.email; }
       progress(1, 1, 'Enviado');
       // Analytics: cuenta la solicitud enviada. Solo el tipo de trámite, sin datos personales.
       try { if (window.gtag) gtag('event', 'solicitud_turno', { tramite: TRAM[st.tram][1], para: KIND[st.kind] || '', documentacion: files.later ? 'despues' : 'adjunta' }); } catch (e) {}
