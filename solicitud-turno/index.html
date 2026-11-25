@@ -364,7 +364,7 @@
         { k: 'cfNum', l: men ? 'Código fiscal del menor' : 'Código fiscal', h: '16 letras y números.', t: 'text', cf: 1, req: 1, w: eq('cf', 'Sí') });
       fin.push(
         { k: 'servicio', l: men ? '¿Qué modalidad quieren?' : '¿Qué modalidad querés?', h: 'Exprés: turno desde 24 horas. Común: en hasta 10 días.', t: 'choice', o: ['Exprés', 'Común'] },
-        men ? { k: 'noFechas', l: '¿Hay alguna fecha en los próximos 30 días en la que no puedan ir al Consulado?', h: pas ? 'Tienen que asistir ambos progenitores y el menor.' : '', t: 'choice', o: SN }
+        men ? { k: 'noFechas', l: '¿Hay alguna fecha en los próximos 30 días en la que no puedan ir al Consulado?', h: pas ? 'Tienen que ir el menor, la madre y el padre. Contá cualquier fecha en la que alguno de los tres no pueda.' : '', t: 'choice', o: SN }
             : { k: 'noFechas', l: '¿Hay alguna fecha en la que no puedas ir al Consulado?', h: 'A corto plazo: por un viaje, una enfermedad, etc.', t: 'choice', o: SN },
         { k: 'cuales', l: '¿Qué fechas o días?', h: 'Recordá que los turnos son por la mañana.', t: 'text', req: 1, w: eq('noFechas', 'Sí') });
       fin = [tram === 'pas' ? 'Pasaporte y turno' : tram === 'cie' ? 'CIE y turno' : 'Pasaporte, CIE y turno', 'Último paso antes de subir la documentación.', fin];
