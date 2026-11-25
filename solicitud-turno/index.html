@@ -310,7 +310,7 @@
     var OJOS = ['Marrón', 'Verde', 'Celeste', 'Gris', 'Negro'];
     var CONS = ['Mendoza', 'Córdoba', 'Rosario', 'Buenos Aires', 'La Plata', 'Lomas de Zamora', 'Morón', 'Mar del Plata', 'Bahía Blanca', 'Otro o no lo sé'];
     // Datos que pasan al cargar otro familiar. El correo no: cada mayor tiene el suyo y el del menor es el de su progenitor (ver _fam).
-    var SHARED = ['domicilio', 'cp', 'cambioDom', 'consulado', 'celular', 'servicio', '_fam', '_fechas', 'noFechas', 'cuales'];
+    var SHARED = ['domicilio', 'cp', 'cambioDom', 'consulado', 'celular', 'servicio', '_fam', '_fechas', '_fechasL'];
     var TRAM = { pas: ['Pasaporte', 'Pasaporte italiano'], cie: ['CIE', 'Carta de identidad (CIE)'], ambos: ['Pasaporte y CIE', 'Pasaporte italiano y CIE'], ciu: ['Ciudadanía', 'Turno de ciudadanía italiana'] };
     var KIND = { mayor: 'Mayor de edad', menor: 'Menor de edad' };
     function eq(k, v) { return function (d) { return d[k] === v; }; }
@@ -430,8 +430,8 @@
     function steps() {
       if (!st.kind) return [];
       var f = flow(st.tram, st.kind);
-      // Las fechas en que no pueden ir valen para toda la familia: si ya las contestó otro familiar, no se vuelven a preguntar.
-      if (st.d._fechas) f = f.map(function (s) { return [s[0], s[1], s[2].filter(function (x) { return x.k !== 'noFechas' && x.k !== 'cuales'; })]; });
+      // Cada mayor contesta sus propias fechas. Al menor no se le preguntan si ya contestó algún familiar: van los padres y valen esas fechas.
+      if (st.d._fechas && st.kind === 'menor') f = f.map(function (s) { return [s[0], s[1], s[2].filter(function (x) { return x.k !== 'noFechas' && x.k !== 'cuales'; })]; });
       if (!st.x) return f;
       var prev = {}; flow(st.x, st.kind).forEach(function (s) { s[2].forEach(function (x) { prev[x.k] = 1; }); });
       return f.map(function (s) { return [s[0], s[1], s[2].filter(function (x) { return !prev[x.k] && x.k !== 'email'; })]; }).filter(function (s) { return s[2].length; });
@@ -606,6 +606,12 @@
         ['progDniD', 'DNI del progenitor italiano, dorso', 0, 'Si el archivo del frente ya tiene las dos caras, dejalo vacío.'],
         ['progPas', 'Pasaporte italiano vigente del progenitor, si tiene', 0, 'Del mismo progenitor. La página con la foto y los datos.']);
       else if (men) out.push(['prog', 'Documento del progenitor italiano', 0, 'DNI o pasaporte.']);
+      // Al sumar el otro trámite no se vuelve a pedir lo que ya mandó: va a la misma carpeta.
+      var ya = st.x && st.sent;
+      if (ya) {
+        out = out.filter(function (s) { return !ya[s[0]] && !(s[0] === 'prog' && (ya.progDniF || ya.progPas)); });
+        if (ya.prog) out.forEach(function (s) { if (s[0] === 'progDniF') { s[2] = 0; s[3] = 'Si el documento del progenitor que mandaste para la CIE ya era su DNI, dejalo vacío.'; } });
+      }
       return out;
     }
     function size(n) { return n > 1048576 ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
@@ -733,7 +739,8 @@
     }
     // Archivos a enviar, listos para Prenot@mi: cada DNI en un PDF con el nombre de la persona, y el pasaporte vigente del progenitor también. El resto, tal cual. Si algo falla, manda los originales.
     function docsOut(list) {
-      var men = st.kind === 'menor', pn = upName(st.d.progNombre), used = {}, out = [];
+      var men = st.kind === 'menor', pn = upName(st.d.progNombre), used = {}, out = [], pide = {};
+      list.forEach(function (s) { pide[s[0]] = 1; });
       var groups = [
         [['dniF', 'dniD'], 'DNI' + (upName(st.d.nombre) ? ' ' + upName(st.d.nombre) : (men ? ' DEL MENOR' : ''))],
         [['progDniF', 'progDniD'], 'DNI ' + (pn || 'DEL PROGENITOR')],
@@ -743,7 +750,7 @@
       ];
       return groups.reduce(function (pr, g) {
         return pr.then(function () {
-          var fs = g[0].filter(function (k) { return files[k] && !(k === 'dniD' && files.both); }).map(function (k) { return files[k]; });
+          var fs = g[0].filter(function (k) { return pide[k] && files[k] && !(k === 'dniD' && files.both); }).map(function (k) { return files[k]; });
           if (!fs.length) return;
           return joinPdf(fs).then(function (d) { out.push({ nombre: g[1] + (d.length * 0.75 > LIMITE ? ' (supera 1 MB)' : '') + '.pdf', tipo: 'application/pdf', datos: d }); g[0].forEach(function (k) { used[k] = 1; }); }, function () {});
         });
@@ -761,6 +768,7 @@
     function flabel(f) { return f.slot === 'dniF' && files.both ? f.label.replace('frente', 'frente y dorso') : f.label; }
     function attach(move) {
       var all = steps(), list = slots(); st.i = all.length;
+      if (!list.length) return review(move);
       progress(all.length + 1, all.length + 2, 'Paso ' + (all.length + 1) + ' de ' + (all.length + 2));
       var h = head('Documentación', 'Subí una foto nítida o un PDF de cada documento. Solo los que tienen * son obligatorios.');
       var form = el('form', 'sf-fields'); form.noValidate = true;
@@ -826,12 +834,14 @@
         if (!mine.length) body.lastChild.appendChild(el('p', 'sf-none', 'Sin completar.'));
       });
       var addDoc = section('Documentación', function () { attach(true); });
-      if (files.later) addDoc('Envío', 'Después, por WhatsApp o correo'); else list.forEach(function (s) { if (files[s[0]]) addDoc(flabel(files[s[0]]), files[s[0]].name); });
+      if (st.x && st.sent) addDoc('Ya enviada', 'La que mandaste para ' + (st.x === 'pas' ? 'el pasaporte' : 'la CIE'));
+      if (!list.length) body.lastChild.querySelector('.sf-edit').hidden = true;
+      else if (files.later) addDoc('Envío', 'Después, por WhatsApp o correo'); else list.forEach(function (s) { if (files[s[0]]) addDoc(flabel(files[s[0]]), files[s[0]].name); });
       var ok = el('label', 'sf-ok'), cb = el('input'); cb.type = 'checkbox'; cb.id = 'sf-okc';
       ok.appendChild(cb); ok.appendChild(el('span', '', 'Confirmo que los datos son correctos y autorizo a Migratio Gestoría a usarlos, junto con la documentación adjunta, para gestionar el turno.'));
       body.appendChild(ok);
       var err = el('span', 'sf-err'); err.hidden = true; err.setAttribute('role', 'alert'); body.appendChild(err);
-      var nav = el('div', 'sf-nav'), back = btn('sf-back', 'Volver', function () { attach(true); });
+      var nav = el('div', 'sf-nav'), back = btn('sf-back', 'Volver', function () { if (list.length) attach(true); else { st.i = all.length - 1; step(true); } });
       var sid = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
       function fail() {
         send.disabled = back.disabled = false; send.textContent = 'Enviar solicitud';
@@ -844,10 +854,13 @@
         if (!cb.checked) { err.textContent = 'Marcá la casilla para enviar.'; err.hidden = false; cb.focus(); return; }
         err.hidden = true; send.disabled = back.disabled = true; send.textContent = 'Enviando…';
         var nt = nota(), datos = envio().map(function (r) { return [r[0], r[1]]; });
+        if (st.kind === 'menor' && st.d._fechas && !st.d.noFechas) datos.push(['Fechas en que no pueden ir', (st.d._fechasL || []).join(' · ') || 'Ninguna, según contestó la familia']);
+        st.sid = sid;
+        if (st.x && st.sent) datos.push(['Documentación ya enviada', 'Con la solicitud de ' + (st.x === 'pas' ? 'pasaporte' : 'CIE') + ', en la misma carpeta']);
         if (st.x) datos.unshift(['Solicitud vinculada', 'Antes pidió el turno de ' + (st.x === 'pas' ? 'pasaporte' : 'CIE') + ' con estos mismos datos']);
         if (nt) datos.unshift(nt);
         (files.later ? Promise.resolve([]) : docsOut(list)).then(function (arch) {
-          var data = { v: 1, id: sid, tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', datos: datos.concat(files.later ? [['Documentación', 'La envía después, por WhatsApp o correo']] : []), archivos: arch };
+          var data = { v: 1, id: sid, tramite: TRAM[st.tram][1], para: KIND[st.kind], nombre: st.d.nombre || '', vincula: st.x ? st.vsid || '' : '', datos: datos.concat(files.later ? [['Documentación', 'La envía después, por WhatsApp o correo']] : []), archivos: arch };
           var ac = window.AbortController ? new AbortController() : null, to = setTimeout(function () { if (ac) ac.abort(); }, 90000);
           fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data), signal: ac ? ac.signal : undefined }).then(json).then(function (r) { clearTimeout(to); if (r && r.ok) done(); else confirm(); }).catch(function () { clearTimeout(to); confirm(); });
         });
@@ -859,7 +872,11 @@
       go(h, move);
     }
     function done() {
-      if (st.d.noFechas) st.d._fechas = 1;
+      if (!files.later) { st.sent = st.sent || {}; Object.keys(files).forEach(function (k) { if (files[k] && files[k].data) st.sent[k] = 1; }); if (files.both && files.dniF) st.sent.dniD = 1; }
+      if (st.d.noFechas) {
+        st.d._fechas = 1;
+        if (st.d.noFechas === 'Sí' && st.d.cuales) { var fl = st.d._fechasL = st.d._fechasL || [], lin = upName(st.d.nombre) + ': ' + st.d.cuales; if (fl.indexOf(lin) < 0) fl.push(lin); }
+      }
       var duen = st.kind === 'menor' ? st.d.progNombre : st.d.nombre;
       if (duen && st.d.email) { st.d._fam = st.d._fam || {}; st.d._fam[upName(duen)] = st.d.email; }
       progress(1, 1, 'Enviado');
@@ -884,7 +901,7 @@
         box.appendChild(el('h3', '', '¿' + (st.kind === 'menor' ? 'El menor también necesita ' : 'También necesitás ') + nom + '?'));
         box.appendChild(el('p', '', 'Es otro turno, en un día distinto, y tiene sus propios honorarios. Usamos los datos y la documentación que ya cargaste: solo te preguntamos lo que falta para ' + nom + '.'));
         var bn = el('div', 'sf-nav'); bn.appendChild(btn('btn btn-outline', 'Sumar ' + nom, function () {
-          st = { tram: otroT, kind: st.kind, i: 0, d: st.d, x: st.tram }; save();
+          st = { tram: otroT, kind: st.kind, i: 0, d: st.d, x: st.tram, vsid: st.sid, sent: st.sent }; save();
           if (steps().length) step(true); else attach(true);
         })); box.appendChild(bn); body.appendChild(box);
       }
