@@ -412,8 +412,9 @@
     }
     var st = { tram: '', kind: '', i: -1, d: {} };
     try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.d && TRAM[s.tram] && (!s.kind || KIND[s.kind])) st = s; } catch (e) {}
-    var hash = { '#pasaporte': 'pas', '#cie': 'cie', '#ciudadania': 'ciu' }[location.hash];
-    if (hash && !(st.kind && st.i >= 0)) { st.tram = hash; st.kind = ''; st.i = -1; }
+    var hash = { '#pasaporte': 'pas', '#cie': 'cie', '#pasaporte-y-cie': 'ambos', '#ciudadania': 'ciu' }[location.hash];
+    // Con #trámite en el enlace abre ese trámite (si había otro a medio cargar, empieza el nuevo). Sin #, retoma lo que estaba cargando o muestra el menú de trámites.
+    if (hash && !(st.kind && st.i >= 0 && st.tram === hash)) { st.tram = hash; st.kind = ''; st.i = -1; }
     function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
     function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
     function btn(cls, txt, fn) { var b = el('button', cls, txt); b.type = 'button'; b.addEventListener('click', fn); return b; }
@@ -845,7 +846,7 @@
       try { localStorage.setItem(KEY, JSON.stringify({ tram: st.tram, kind: '', i: -1, d: carry() })); } catch (e) {}
       h.focus({ preventScroll: true }); document.getElementById('solicitud').scrollIntoView({ block: 'start' });
     }
-    if (st.kind && st.i >= 0) { if (st.i >= steps().length) attach(false); else step(false); } else if (st.tram) enter(false); else start(false);
+    if (st.kind && st.i >= 0) { if (st.i >= steps().length) attach(false); else step(false); } else if (st.tram && hash) enter(false); else start(false);
   })();
 </script>
 <script>
