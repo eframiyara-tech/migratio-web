@@ -995,9 +995,9 @@
         var otroT = st.tram === 'pas' ? 'cie' : 'pas', nom = otroT === 'cie' ? 'la CIE' : 'el pasaporte', box = el('div', 'sf-extra');
         var men = st.kind === 'menor', resto = 'Es otro turno, en un día distinto, y tiene sus propios honorarios. No repetís nada: usamos los datos y la documentación que ya cargaste y solo te preguntamos lo que falta.';
         if (otroT === 'cie') {
-          // Fuentes: Consulado de Bruselas (viaje UE, Islandia, Noruega, Suiza), esteri.it (validez), cartaidentita.interno.gov.it (servicios digitales).
-          box.appendChild(el('h3', '', men ? 'Sumá la Carta de Identidad italiana del menor' : 'Sumá tu Carta de Identidad italiana'));
-          box.appendChild(el('p', '', 'La CIE es el documento de identidad italiano. ' + (men ? 'Le sirve para viajar' : 'Con ella viajás') + ' por la Unión Europea, Islandia, Noruega y Suiza sin usar el pasaporte' + (men ? '. ' : ', y es tu identidad digital para hacer trámites online con Italia. ') + (men ? 'Para menores dura 5 años (3 si tiene menos de 3).' : 'Dura 10 años.')));
+          // Fuentes: Consulado de Bruselas (viaje UE y Schengen), esteri.it (validez), cartaidentita.interno.gov.it (servicios digitales).
+          box.appendChild(el('h3', '', men ? 'Novedad: el menor ya puede tener su Carta de Identidad italiana' : 'Novedad: ya podés sacar tu Carta de Identidad italiana'));
+          box.appendChild(el('p', '', 'Antes solo se podía tramitar en Italia; ahora también se pide en el Consulado. La CIE es el documento de identidad italiano: ' + (men ? 'le sirve para viajar' : 'con ella viajás') + ' por Europa (Unión Europea y espacio Schengen) sin usar el pasaporte' + (men ? '. ' : ', y es tu identidad digital para hacer trámites online con Italia. ') + (men ? 'Para menores dura 5 años (3 si tiene menos de 3).' : 'Dura 10 años.')));
           box.appendChild(el('p', 'sf-extra-sub', resto));
         } else {
           box.appendChild(el('h3', '', '¿' + (men ? 'El menor también necesita ' : 'También necesitás ') + nom + '?'));
