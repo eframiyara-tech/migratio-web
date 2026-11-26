@@ -729,8 +729,9 @@
         return keep.slice(0, 2).map(function (i) { return imgs[i]; });
       });
     }
-    function joinPdf(fs) {
-      return toImgs(fs).then(unicas).then(function (base) {
+    // parts: grupos de archivos (por ejemplo, DNI y pasaporte); de cada grupo se sacan las páginas repetidas y se dejan dos como máximo.
+    function joinPdf(parts) {
+      return Promise.all(parts.map(function (fs) { return toImgs(fs).then(unicas); })).then(function (ls) { return [].concat.apply([], ls); }).then(function (base) {
         function intento(k) {
           var p = PASOS[k];
           return Promise.all(base.map(function (f) { return p ? shrink(f, p[0], p[1]) : f; })).then(function (gs) {
@@ -744,18 +745,19 @@
     function docsOut(list) {
       var men = st.kind === 'menor', pn = upName(st.d.progNombre), used = {}, out = [], pide = {};
       list.forEach(function (s) { pide[s[0]] = 1; });
+      function tiene(k) { return pide[k] && files[k] && !(k === 'dniD' && files.both); }
       var groups = [
         [['dniF', 'dniD'], 'DNI' + (upName(st.d.nombre) ? ' ' + upName(st.d.nombre) : (men ? ' DEL MENOR' : ''))],
-        [['progDniF', 'progDniD'], 'DNI ' + (pn || 'DEL PROGENITOR')],
-        [['progPas'], 'PASAPORTE ITALIANO VIGENTE DE' + (pn ? ' ' + pn : 'L PROGENITOR')],
+        // Menor: DNI y pasaporte vigente del progenitor en un solo PDF.
+        [['progDniF', 'progDniD', 'progPas'], (tiene('progDniF') || tiene('progDniD')) && tiene('progPas') ? 'DNI Y PASAPORTE ITALIANO VIGENTE DE' + (pn ? ' ' + pn : 'L PROGENITOR') : tiene('progPas') ? 'PASAPORTE ITALIANO VIGENTE DE' + (pn ? ' ' + pn : 'L PROGENITOR') : 'DNI ' + (pn || 'DEL PROGENITOR'), [['progDniF', 'progDniD'], ['progPas']]],
         [['pas'], 'PASAPORTE' + (upName(st.d.nombre) ? ' ' + upName(st.d.nombre) : (men ? ' DEL MENOR' : ''))],
         [['prog'], 'DOCUMENTO DE' + (pn ? ' ' + pn : 'L PROGENITOR')]
       ];
       return groups.reduce(function (pr, g) {
         return pr.then(function () {
-          var fs = g[0].filter(function (k) { return pide[k] && files[k] && !(k === 'dniD' && files.both); }).map(function (k) { return files[k]; });
-          if (!fs.length) return;
-          return joinPdf(fs).then(function (d) { out.push({ nombre: g[1] + (d.length * 0.75 > LIMITE ? ' (supera 1 MB)' : '') + '.pdf', tipo: 'application/pdf', datos: d }); g[0].forEach(function (k) { used[k] = 1; }); }, function () {});
+          var parts = (g[2] || [g[0]]).map(function (ks) { return ks.filter(tiene).map(function (k) { return files[k]; }); }).filter(function (fs) { return fs.length; });
+          if (!parts.length) return;
+          return joinPdf(parts).then(function (d) { out.push({ nombre: g[1] + (d.length * 0.75 > LIMITE ? ' (supera 1 MB)' : '') + '.pdf', tipo: 'application/pdf', datos: d }); g[0].forEach(function (k) { used[k] = 1; }); }, function () {});
         });
       }, Promise.resolve()).then(function () {
         list.forEach(function (s) { var f = files[s[0]]; if (f && !used[s[0]]) out.push({ nombre: flabel(f) + '.' + f.ext, tipo: f.type, datos: f.data }); });
