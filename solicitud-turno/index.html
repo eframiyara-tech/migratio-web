@@ -49,6 +49,10 @@
   .sf-extra p { margin: 0; color: var(--ink-soft); }
   .sf-extra .sf-nav { margin-top: 14px; }
   .sf-extra .sf-extra-sub { margin-top: 10px; font-size: .92rem; }
+  .sf-extra-cie .sf-cie-img { float: right; width: 150px; margin: -4px -6px 8px 14px; }
+  .sf-extra-cie .sf-cie-img svg { display: block; width: 100%; height: auto; }
+  @media (max-width: 560px) { .sf-extra-cie .sf-cie-img { float: none; width: 170px; margin: 0 0 12px; } }
+  .sf-extra-cie .sf-nav { clear: both; }
   .sf-f:not([hidden]) { animation: rise 260ms cubic-bezier(0.23, 1, 0.32, 1) both; }
   .sf-f > label, .sf-f > legend { padding: 0; font-weight: 700; font-size: 1rem; }
   .sf-f .hint { color: var(--ink-soft); font-size: .88rem; }
@@ -947,9 +951,6 @@
         var nt = nota(), datos = envio().map(function (r) { return [r[0], r[1]]; });
         if (st.kind === 'menor' && st.d._fechas && !st.d.noFechas) datos.push(['Fechas en que no pueden ir', (st.d._fechasL || []).join(' · ') || 'Ninguna, según contestó la familia']);
         st.sid = sid;
-        // Mientras se prueba el recorte automático: cómo salió en cada foto.
-        var recs = list.filter(function (s) { return files[s[0]] && files[s[0]].rec; }).map(function (s) { var f = files[s[0]]; return flabel(f) + ': ' + (f.rec === 'aplicado' ? (f.recortada ? 'recortada' : 'el cliente eligió la foto entera') : f.rec); });
-        if (recs.length && !files.later) datos.push(['Recorte automático', recs.join(' · ')]);
         if (st.x && st.sent) datos.push(['Documentación ya enviada', 'Con la solicitud de ' + (st.x === 'pas' ? 'pasaporte' : 'CIE') + ', en la misma carpeta']);
         if (st.x) datos.unshift(['Solicitud vinculada', 'Antes pidió el turno de ' + (st.x === 'pas' ? 'pasaporte' : 'CIE') + ' con estos mismos datos']);
         if (nt) datos.unshift(nt);
@@ -996,8 +997,9 @@
         var men = st.kind === 'menor', resto = 'Es otro turno, en un día distinto, y tiene sus propios honorarios. No repetís nada: usamos los datos y la documentación que ya cargaste y solo te preguntamos lo que falta.';
         if (otroT === 'cie') {
           // Fuentes: Consulado de Bruselas (viaje UE y Schengen), esteri.it (validez), cartaidentita.interno.gov.it (servicios digitales).
+          box.className = 'sf-extra sf-extra-cie'; var fig = el('div', 'sf-cie-img'); fig.innerHTML = '<svg viewBox="0 0 168 112" role="img" aria-label="Carta de Identidad italiana"><g transform="rotate(-6 84 56)"><rect x="12" y="14" width="144" height="88" rx="10" fill="#1f2a44" opacity=".12" transform="translate(3 4)"/><rect x="12" y="14" width="144" height="88" rx="10" fill="#f7f4ee" stroke="#cfc1a4" stroke-width="1.5"/><path d="M22 14h8v88h-8a10 10 0 0 1-10-10V24a10 10 0 0 1 10-10z" fill="#008C45"/><rect x="30" y="14" width="7" height="88" fill="#fff"/><rect x="37" y="14" width="7" height="88" fill="#CD212A"/><rect x="54" y="28" width="30" height="38" rx="4" fill="#dcd5c8"/><circle cx="69" cy="42" r="7" fill="#b7ad9c"/><path d="M57 64c2-9 22-9 24 0z" fill="#b7ad9c"/><rect x="92" y="28" width="22" height="16" rx="3" fill="#d9b45a"/><path d="M92 36h22M103 28v16" stroke="#b8923a" stroke-width="1"/><rect x="92" y="52" width="50" height="5" rx="2.5" fill="#cfc6b6"/><rect x="92" y="62" width="38" height="5" rx="2.5" fill="#cfc6b6"/><rect x="54" y="76" width="88" height="5" rx="2.5" fill="#e2dacb"/><rect x="54" y="86" width="64" height="5" rx="2.5" fill="#e2dacb"/><text x="146" y="40" text-anchor="end" font-family="sans-serif" font-size="11" font-weight="700" fill="#1f2a44">CIE</text></g></svg>'; box.appendChild(fig);
           box.appendChild(el('h3', '', men ? 'Novedad: el menor ya puede tener su Carta de Identidad italiana' : 'Novedad: ya podés sacar tu Carta de Identidad italiana'));
-          box.appendChild(el('p', '', 'Antes solo se podía tramitar en Italia; ahora también se pide en el Consulado. La CIE es el documento de identidad italiano: ' + (men ? 'le sirve para viajar' : 'con ella viajás') + ' por Europa (Unión Europea y espacio Schengen) sin usar el pasaporte' + (men ? '. ' : ', y es tu identidad digital para hacer trámites online con Italia. ') + (men ? 'Para menores dura 5 años (3 si tiene menos de 3).' : 'Dura 10 años.')));
+          box.appendChild(el('p', '', 'Antes solo se podía tramitar en Italia; ahora también se pide en el Consulado. La CIE es el documento de identidad italiano: ' + (men ? 'le sirve para viajar' : 'con ella viajás') + ' por Europa sin usar el pasaporte' + (men ? '. ' : ', y es tu identidad digital para hacer trámites online con Italia. ') + (men ? 'Para menores dura 5 años (3 si tiene menos de 3).' : 'Dura 10 años.')));
           box.appendChild(el('p', 'sf-extra-sub', resto));
         } else {
           box.appendChild(el('h3', '', '¿' + (men ? 'El menor también necesita ' : 'También necesitás ') + nom + '?'));
