@@ -48,6 +48,7 @@
   .sf-extra h3 { margin: 0 0 6px; font-size: 1.05rem; }
   .sf-extra p { margin: 0; color: var(--ink-soft); }
   .sf-extra .sf-nav { margin-top: 14px; }
+  .sf-extra .sf-extra-sub { margin-top: 10px; font-size: .92rem; }
   .sf-f:not([hidden]) { animation: rise 260ms cubic-bezier(0.23, 1, 0.32, 1) both; }
   .sf-f > label, .sf-f > legend { padding: 0; font-weight: 700; font-size: 1rem; }
   .sf-f .hint { color: var(--ink-soft); font-size: .88rem; }
@@ -630,14 +631,18 @@
       img.onload = function () {
         var k = Math.min(1, 2000 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas');
         c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
-        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
         function enc(cv, ok) { cv.toBlob(function (bl) { if (!bl) return ok(null); b64(bl, function (d) { ok(d ? { data: d, size: bl.size } : null); }); }, 'image/jpeg', 0.82); }
         enc(c, function (o) {
           if (!o) return raw(file.type, 'jpg');
           // Foto de un documento: se intenta recortar y enderezar. Si no se detecta el documento, va la foto entera.
-          recorte(c).then(function (rc) {
-            if (!rc) return cb('', { ext: 'jpg', type: 'image/jpeg', data: o.data, size: o.size });
-            enc(rc, function (r) { cb('', r ? { ext: 'jpg', type: 'image/jpeg', data: r.data, size: r.size, alt: o, recortada: true } : { ext: 'jpg', type: 'image/jpeg', data: o.data, size: o.size }); });
+          // Para recortar se usa la foto a mayor resolución: el documento suele ocupar solo una parte.
+          var kb = Math.min(1, 4000 / Math.max(img.naturalWidth, img.naturalHeight)), cbig = document.createElement('canvas');
+          cbig.width = Math.round(img.naturalWidth * kb); cbig.height = Math.round(img.naturalHeight * kb); cbig.getContext('2d').drawImage(img, 0, 0, cbig.width, cbig.height);
+          recorte(cbig).then(function (rs) {
+            URL.revokeObjectURL(url);
+            if (!rs.c) return cb('', { ext: 'jpg', type: 'image/jpeg', data: o.data, size: o.size, rec: rs.r });
+            enc(rs.c, function (r) { cb('', r ? { ext: 'jpg', type: 'image/jpeg', data: r.data, size: r.size, alt: o, recortada: true, rec: 'aplicado' } : { ext: 'jpg', type: 'image/jpeg', data: o.data, size: o.size, rec: 'error' }); });
           });
         });
       };
@@ -663,32 +668,46 @@
       cvP.catch(function () { cvP = null; });
       return cvP;
     }
+    // Devuelve { c: lienzo recortado o null, r: 'aplicado' | 'sin bordes' | 'sin herramienta' }.
     function recorte(c) {
       return cargarCv().then(function (cv) {
-        var src = cv.imread(c), k = Math.min(1, 900 / Math.max(c.width, c.height)), sm = new cv.Mat(), g = new cv.Mat(), e = new cv.Mat(), cs = new cv.MatVector(), hi = new cv.Mat(), ker = cv.Mat.ones(3, 3, cv.CV_8U), best = null, ba = 0;
+        var src = cv.imread(c), k = Math.min(1, 900 / Math.max(c.width, c.height)), sm = new cv.Mat(), g = new cv.Mat(), e = new cv.Mat(), bw = new cv.Mat(), hi = new cv.Mat(), ker = cv.Mat.ones(3, 3, cv.CV_8U), ker2 = cv.Mat.ones(9, 9, cv.CV_8U), quad = null;
+        function mejor(bin, minA, libre) {
+          var cs = new cv.MatVector(), A = bin.cols * bin.rows, best = null, ba = 0;
+          cv.findContours(bin, cs, hi, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+          for (var i = 0; i < cs.size(); i++) {
+            var ct = cs.get(i), a0 = cv.contourArea(ct);
+            if (a0 > minA * A && a0 < 0.97 * A && a0 > ba) {
+              var ap = new cv.Mat(); cv.approxPolyDP(ct, ap, 0.02 * cv.arcLength(ct, true), true);
+              if (ap.rows === 4 && cv.isContourConvex(ap)) { ba = a0; best = []; for (var j = 0; j < 4; j++) best.push({ x: ap.data32S[j * 2], y: ap.data32S[j * 2 + 1] }); }
+              else if (libre) { var rr = cv.minAreaRect(ct), rw = rr.size.width * rr.size.height; if (a0 > 0.8 * rw) { ba = a0; best = cv.RotatedRect.points(rr).map(function (p) { return { x: p.x, y: p.y }; }); } }
+              ap.delete();
+            }
+            ct.delete();
+          }
+          cs.delete(); return best;
+        }
         try {
           cv.resize(src, sm, new cv.Size(Math.round(c.width * k), Math.round(c.height * k)));
-          cv.cvtColor(sm, g, cv.COLOR_RGBA2GRAY); cv.GaussianBlur(g, g, new cv.Size(5, 5), 0); cv.Canny(g, e, 40, 140); cv.dilate(e, e, ker);
-          cv.findContours(e, cs, hi, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
-          var A = sm.cols * sm.rows;
-          for (var i = 0; i < cs.size(); i++) {
-            var ct = cs.get(i), ap = new cv.Mat(); cv.approxPolyDP(ct, ap, 0.02 * cv.arcLength(ct, true), true);
-            var a = cv.contourArea(ap);
-            if (ap.rows === 4 && a > 0.12 * A && a < 0.97 * A && cv.isContourConvex(ap) && a > ba) { ba = a; best = []; for (var j = 0; j < 4; j++) best.push({ x: ap.data32S[j * 2] / k, y: ap.data32S[j * 2 + 1] / k }); }
-            ap.delete(); ct.delete();
-          }
-          if (!best) return null;
-          var s1 = best.slice().sort(function (p, q) { return (p.x + p.y) - (q.x + q.y); }), s2 = best.slice().sort(function (p, q) { return (p.x - p.y) - (q.x - q.y); });
+          cv.cvtColor(sm, g, cv.COLOR_RGBA2GRAY); cv.GaussianBlur(g, g, new cv.Size(5, 5), 0);
+          // 1) Bordes. 2) Si no aparecen, el documento como la zona clara sobre fondo oscuro.
+          cv.Canny(g, e, 40, 140); cv.dilate(e, e, ker); quad = mejor(e, 0.05, false);
+          if (!quad) { cv.threshold(g, bw, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU); cv.morphologyEx(bw, bw, cv.MORPH_CLOSE, ker2); cv.morphologyEx(bw, bw, cv.MORPH_OPEN, ker2); quad = mejor(bw, 0.04, true); }
+          if (!quad) return { c: null, r: 'sin bordes' };
+          quad = quad.map(function (p) { return { x: p.x / k, y: p.y / k }; });
+          var s1 = quad.slice().sort(function (p, q) { return (p.x + p.y) - (q.x + q.y); }), s2 = quad.slice().sort(function (p, q) { return (p.x - p.y) - (q.x - q.y); });
           var tl = s1[0], br = s1[3], bl = s2[0], tr = s2[3], dd = function (p, q) { return Math.hypot(p.x - q.x, p.y - q.y); };
           var W = Math.round(Math.max(dd(tl, tr), dd(bl, br))), H = Math.round(Math.max(dd(tl, bl), dd(tr, br)));
-          if (W < 200 || H < 120) return null;
+          if (W < 150 || H < 100) return { c: null, r: 'sin bordes' };
           var m1 = cv.matFromArray(4, 1, cv.CV_32FC2, [tl.x, tl.y, tr.x, tr.y, br.x, br.y, bl.x, bl.y]), m2 = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, W, 0, W, H, 0, H]), M = cv.getPerspectiveTransform(m1, m2), out = new cv.Mat();
           cv.warpPerspective(src, out, M, new cv.Size(W, H), cv.INTER_LINEAR, cv.BORDER_REPLICATE, new cv.Scalar());
           var oc = document.createElement('canvas'); cv.imshow(oc, out);
+          var kz = Math.min(1, 2000 / Math.max(oc.width, oc.height));
+          if (kz < 1) { var oz = document.createElement('canvas'); oz.width = Math.round(oc.width * kz); oz.height = Math.round(oc.height * kz); oz.getContext('2d').drawImage(oc, 0, 0, oz.width, oz.height); oc = oz; }
           m1.delete(); m2.delete(); M.delete(); out.delete();
-          return oc;
-        } finally { src.delete(); sm.delete(); g.delete(); e.delete(); cs.delete(); hi.delete(); ker.delete(); }
-      }).catch(function () { return null; });
+          return { c: oc, r: 'aplicado' };
+        } finally { src.delete(); sm.delete(); g.delete(); e.delete(); bw.delete(); hi.delete(); ker.delete(); ker2.delete(); }
+      }).catch(function () { return { c: null, r: 'sin herramienta' }; });
     }
     // DNI en un solo PDF, con el nombre de la persona: "DNI NOMBRE APELLIDO.pdf", listo para subir a Prenot@mi.
     function upName(n) { return String(n || '').normalize('NFD').replace(/([nN])\u0303/g, function (m, c) { return c === 'n' ? '\u00f1' : '\u00d1'; }).replace(/[\u0300-\u036f]/g, '').normalize('NFC').replace(/\s+/g, ' ').trim().toUpperCase(); }
@@ -928,6 +947,9 @@
         var nt = nota(), datos = envio().map(function (r) { return [r[0], r[1]]; });
         if (st.kind === 'menor' && st.d._fechas && !st.d.noFechas) datos.push(['Fechas en que no pueden ir', (st.d._fechasL || []).join(' · ') || 'Ninguna, según contestó la familia']);
         st.sid = sid;
+        // Mientras se prueba el recorte automático: cómo salió en cada foto.
+        var recs = list.filter(function (s) { return files[s[0]] && files[s[0]].rec; }).map(function (s) { var f = files[s[0]]; return flabel(f) + ': ' + (f.rec === 'aplicado' ? (f.recortada ? 'recortada' : 'el cliente eligió la foto entera') : f.rec); });
+        if (recs.length && !files.later) datos.push(['Recorte automático', recs.join(' · ')]);
         if (st.x && st.sent) datos.push(['Documentación ya enviada', 'Con la solicitud de ' + (st.x === 'pas' ? 'pasaporte' : 'CIE') + ', en la misma carpeta']);
         if (st.x) datos.unshift(['Solicitud vinculada', 'Antes pidió el turno de ' + (st.x === 'pas' ? 'pasaporte' : 'CIE') + ' con estos mismos datos']);
         if (nt) datos.unshift(nt);
@@ -971,9 +993,17 @@
       // Ofrece el otro documento: CIE después del pasaporte, pasaporte después de la CIE. Reusa los datos y la documentación.
       if (!st.x && (st.tram === 'pas' || st.tram === 'cie')) {
         var otroT = st.tram === 'pas' ? 'cie' : 'pas', nom = otroT === 'cie' ? 'la CIE' : 'el pasaporte', box = el('div', 'sf-extra');
-        box.appendChild(el('h3', '', '¿' + (st.kind === 'menor' ? 'El menor también necesita ' : 'También necesitás ') + nom + '?'));
-        box.appendChild(el('p', '', 'Es otro turno, en un día distinto, y tiene sus propios honorarios. Usamos los datos y la documentación que ya cargaste: solo te preguntamos lo que falta para ' + nom + '.'));
-        var bn = el('div', 'sf-nav'); bn.appendChild(btn('btn btn-outline', 'Sumar ' + nom, function () {
+        var men = st.kind === 'menor', resto = 'Es otro turno, en un día distinto, y tiene sus propios honorarios. No repetís nada: usamos los datos y la documentación que ya cargaste y solo te preguntamos lo que falta.';
+        if (otroT === 'cie') {
+          // Fuentes: Consulado de Bruselas (viaje UE, Islandia, Noruega, Suiza), esteri.it (validez), cartaidentita.interno.gov.it (servicios digitales).
+          box.appendChild(el('h3', '', men ? 'Sumá la Carta de Identidad italiana del menor' : 'Sumá tu Carta de Identidad italiana'));
+          box.appendChild(el('p', '', 'La CIE es el documento de identidad italiano. ' + (men ? 'Le sirve para viajar' : 'Con ella viajás') + ' por la Unión Europea, Islandia, Noruega y Suiza sin usar el pasaporte' + (men ? '. ' : ', y es tu identidad digital para hacer trámites online con Italia. ') + (men ? 'Para menores dura 5 años (3 si tiene menos de 3).' : 'Dura 10 años.')));
+          box.appendChild(el('p', 'sf-extra-sub', resto));
+        } else {
+          box.appendChild(el('h3', '', '¿' + (men ? 'El menor también necesita ' : 'También necesitás ') + nom + '?'));
+          box.appendChild(el('p', '', resto));
+        }
+        var bn = el('div', 'sf-nav'); bn.appendChild(btn(otroT === 'cie' ? 'btn btn-primary' : 'btn btn-outline', otroT === 'cie' ? 'Sí, sumar la Carta de Identidad' : 'Sumar ' + nom, function () {
           st = { tram: otroT, kind: st.kind, i: 0, d: st.d, x: st.tram, vsid: st.sid, sent: st.sent }; save();
           if (steps().length) step(true); else attach(true);
         })); box.appendChild(bn); body.appendChild(box);
