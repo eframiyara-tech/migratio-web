@@ -81,6 +81,8 @@
   .sf-f .sf-file input { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; padding: 0; border: 0; opacity: 0; cursor: pointer; }
   .sf-file input:focus-visible + .btn { outline: 3px solid var(--navy); outline-offset: 3px; }
   .sf-f[data-bad] .sf-file .btn { border-color: var(--burgundy); }
+  .sf-prev { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+  .sf-prev img { max-width: 180px; max-height: 120px; border: 1px solid var(--line, #d9d4cc); border-radius: 6px; background: #f4f1ec; }
   .sf-fname { color: var(--ink-soft); font-size: .92rem; overflow-wrap: anywhere; min-width: 0; }
   .sf-nav .btn:disabled { opacity: .6; cursor: progress; }
   .sf-na { align-self: flex-start; margin-top: 10px; }
@@ -629,10 +631,64 @@
         var k = Math.min(1, 2000 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas');
         c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
         c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
-        c.toBlob(function (bl) { if (!bl) return raw(file.type, 'jpg'); b64(bl, function (d) { d ? cb('', { ext: 'jpg', type: 'image/jpeg', data: d, size: bl.size }) : cb('No pudimos leer la foto. Probá de nuevo.'); }); }, 'image/jpeg', 0.82);
+        function enc(cv, ok) { cv.toBlob(function (bl) { if (!bl) return ok(null); b64(bl, function (d) { ok(d ? { data: d, size: bl.size } : null); }); }, 'image/jpeg', 0.82); }
+        enc(c, function (o) {
+          if (!o) return raw(file.type, 'jpg');
+          // Foto de un documento: se intenta recortar y enderezar. Si no se detecta el documento, va la foto entera.
+          recorte(c).then(function (rc) {
+            if (!rc) return cb('', { ext: 'jpg', type: 'image/jpeg', data: o.data, size: o.size });
+            enc(rc, function (r) { cb('', r ? { ext: 'jpg', type: 'image/jpeg', data: r.data, size: r.size, alt: o, recortada: true } : { ext: 'jpg', type: 'image/jpeg', data: o.data, size: o.size }); });
+          });
+        });
       };
       img.onerror = function () { URL.revokeObjectURL(url); cb('No pudimos leer la foto. Probá con otra o con un PDF.'); };
       img.src = url;
+    }
+    // Recorte automático de documentos con OpenCV.js: se descarga solo la primera vez que alguien sube una foto.
+    var CV_URL = 'https://cdn.jsdelivr.net/npm/@techstark/opencv-js@4.10.0-release.1/dist/opencv.js', cvP = null;
+    function cargarCv() {
+      if (cvP) return cvP;
+      cvP = new Promise(function (ok, ko) {
+        var t = setTimeout(ko, 45000), sc = document.createElement('script');
+        function listo(m) { clearTimeout(t); if (m && m.then) try { delete m.then; } catch (e) {} window.cv = m; ok(m); }
+        sc.src = CV_URL; sc.async = true; sc.onerror = function () { clearTimeout(t); ko(); };
+        sc.onload = function () {
+          var c = window.cv; if (!c) return ko();
+          if (c.Mat) return listo(c);
+          if (typeof c.then === 'function') return c.then(listo);
+          c.onRuntimeInitialized = function () { listo(c); };
+        };
+        document.head.appendChild(sc);
+      });
+      cvP.catch(function () { cvP = null; });
+      return cvP;
+    }
+    function recorte(c) {
+      return cargarCv().then(function (cv) {
+        var src = cv.imread(c), k = Math.min(1, 900 / Math.max(c.width, c.height)), sm = new cv.Mat(), g = new cv.Mat(), e = new cv.Mat(), cs = new cv.MatVector(), hi = new cv.Mat(), ker = cv.Mat.ones(3, 3, cv.CV_8U), best = null, ba = 0;
+        try {
+          cv.resize(src, sm, new cv.Size(Math.round(c.width * k), Math.round(c.height * k)));
+          cv.cvtColor(sm, g, cv.COLOR_RGBA2GRAY); cv.GaussianBlur(g, g, new cv.Size(5, 5), 0); cv.Canny(g, e, 40, 140); cv.dilate(e, e, ker);
+          cv.findContours(e, cs, hi, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+          var A = sm.cols * sm.rows;
+          for (var i = 0; i < cs.size(); i++) {
+            var ct = cs.get(i), ap = new cv.Mat(); cv.approxPolyDP(ct, ap, 0.02 * cv.arcLength(ct, true), true);
+            var a = cv.contourArea(ap);
+            if (ap.rows === 4 && a > 0.12 * A && a < 0.97 * A && cv.isContourConvex(ap) && a > ba) { ba = a; best = []; for (var j = 0; j < 4; j++) best.push({ x: ap.data32S[j * 2] / k, y: ap.data32S[j * 2 + 1] / k }); }
+            ap.delete(); ct.delete();
+          }
+          if (!best) return null;
+          var s1 = best.slice().sort(function (p, q) { return (p.x + p.y) - (q.x + q.y); }), s2 = best.slice().sort(function (p, q) { return (p.x - p.y) - (q.x - q.y); });
+          var tl = s1[0], br = s1[3], bl = s2[0], tr = s2[3], dd = function (p, q) { return Math.hypot(p.x - q.x, p.y - q.y); };
+          var W = Math.round(Math.max(dd(tl, tr), dd(bl, br))), H = Math.round(Math.max(dd(tl, bl), dd(tr, br)));
+          if (W < 200 || H < 120) return null;
+          var m1 = cv.matFromArray(4, 1, cv.CV_32FC2, [tl.x, tl.y, tr.x, tr.y, br.x, br.y, bl.x, bl.y]), m2 = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, W, 0, W, H, 0, H]), M = cv.getPerspectiveTransform(m1, m2), out = new cv.Mat();
+          cv.warpPerspective(src, out, M, new cv.Size(W, H), cv.INTER_LINEAR, cv.BORDER_REPLICATE, new cv.Scalar());
+          var oc = document.createElement('canvas'); cv.imshow(oc, out);
+          m1.delete(); m2.delete(); M.delete(); out.delete();
+          return oc;
+        } finally { src.delete(); sm.delete(); g.delete(); e.delete(); cs.delete(); hi.delete(); ker.delete(); }
+      }).catch(function () { return null; });
     }
     // DNI en un solo PDF, con el nombre de la persona: "DNI NOMBRE APELLIDO.pdf", listo para subir a Prenot@mi.
     function upName(n) { return String(n || '').normalize('NFD').replace(/([nN])\u0303/g, function (m, c) { return c === 'n' ? '\u00f1' : '\u00d1'; }).replace(/[\u0300-\u036f]/g, '').normalize('NFC').replace(/\s+/g, ' ').trim().toUpperCase(); }
@@ -775,7 +831,7 @@
       var all = steps(), list = slots(); st.i = all.length;
       if (!list.length) return review(move);
       progress(all.length + 1, all.length + 2, 'Paso ' + (all.length + 1) + ' de ' + (all.length + 2));
-      var h = head('Documentación', 'Subí una foto nítida o un PDF de cada documento. Solo los que tienen * son obligatorios.');
+      var h = head('Documentación', 'Desde el celular, tocá "Sacar foto": apoyá el documento sobre una mesa oscura, con buena luz y sin flash, que se vea entero y sin reflejos. Lo recortamos y enderezamos solos. También podés subir una foto o un PDF que ya tengas. Solo los que tienen * son obligatorios.');
       var form = el('form', 'sf-fields'); form.noValidate = true;
       list.forEach(function (s) {
         var id = 'sf-file-' + s[0], box = el('div', 'sf-f'), lab = el('label', '', s[1]); lab.htmlFor = id; if (s[2]) star(lab); box.appendChild(lab);
@@ -784,18 +840,29 @@
         input.type = 'file'; input.id = id; input.accept = 'image/*,application/pdf'; if (s[2]) input.required = true;
         err.id = id + '-e'; err.hidden = true; input.setAttribute('aria-describedby', id + '-n ' + id + '-e'); name.id = id + '-n';
         var del = btn('sf-edit', 'Quitar', function () { delete files[s[0]]; paint(); input.focus(); }); del.setAttribute('aria-label', 'Quitar ' + s[1].toLowerCase());
-        function paint() { var f = files[s[0]]; face.textContent = f ? 'Cambiar' : 'Elegir foto o PDF'; name.textContent = f ? f.name + ' · ' + size(f.size) : ''; del.hidden = !f; if (f) { box.removeAttribute('data-bad'); err.hidden = true; } }
-        input.addEventListener('change', function () {
-          var file = input.files && input.files[0]; if (!file) return;
+        // Cámara trasera directa, solo en teléfonos y tablets.
+        var tactil = window.matchMedia && matchMedia('(pointer: coarse)').matches, cam = el('label', 'sf-file'), cin = el('input'), cface = el('span', 'btn btn-outline');
+        cin.type = 'file'; cin.accept = 'image/*'; cin.setAttribute('capture', 'environment'); cin.id = id + '-cam'; cam.hidden = !tactil;
+        var prev = el('div', 'sf-prev'), pimg = el('img'), alt = btn('sf-edit', '', function () { var f = files[s[0]]; if (!f || !f.alt) return; var o = { data: f.data, size: f.size }; f.data = f.alt.data; f.size = f.alt.size; f.alt = o; f.recortada = !f.recortada; paint(); });
+        pimg.alt = 'Vista previa'; prev.appendChild(pimg); prev.appendChild(alt);
+        function paint() {
+          var f = files[s[0]]; face.textContent = f ? 'Cambiar archivo' : (tactil ? 'Subir archivo' : 'Elegir foto o PDF'); cface.textContent = f ? 'Sacar otra' : 'Sacar foto';
+          name.textContent = f ? f.name + ' · ' + size(f.size) : ''; del.hidden = !f; if (f) { box.removeAttribute('data-bad'); err.hidden = true; }
+          prev.hidden = !(f && f.type === 'image/jpeg'); if (!prev.hidden) pimg.src = 'data:image/jpeg;base64,' + f.data;
+          alt.hidden = !(f && f.alt); if (f && f.alt) alt.textContent = f.recortada ? 'Usar la foto sin recortar' : 'Usar la foto recortada';
+        }
+        cin.addEventListener('change', function () { var file = cin.files && cin.files[0]; cin.value = ''; if (file) usar(file); });
+        input.addEventListener('change', function () { var file = input.files && input.files[0]; input.value = ''; if (file) usar(file); });
+        function usar(file) {
           name.textContent = 'Preparando…'; err.hidden = true;
           prep(file, function (msg, f) {
-            input.value = '';
             if (msg) { err.textContent = msg; err.hidden = false; box.setAttribute('data-bad', ''); paint(); return; }
             f.slot = s[0]; f.label = s[1].replace(/, si corresponde$/, ''); f.name = file.name; files[s[0]] = f; paint();
           });
-        });
+        }
+        cam.appendChild(cin); cam.appendChild(cface); row.appendChild(cam);
         pick.appendChild(input); pick.appendChild(face); row.appendChild(pick); row.appendChild(name); row.appendChild(del);
-        box.appendChild(row);
+        box.appendChild(row); box.appendChild(prev);
         if (s[0] === 'dniF') {
           var bl = el('label', 'sf-opt sf-na'), bc = el('input'); bc.type = 'checkbox'; bc.id = 'sf-both'; bc.checked = !!files.both;
           bc.addEventListener('change', function () { files.both = bc.checked; if (bc.checked) delete files.dniD; var d = form.querySelector('[data-k="dniD"]'); d.hidden = bc.checked; d.removeAttribute('data-bad'); });
